@@ -15,5 +15,14 @@
   "bugs": {
     "url": "https://github.com/ganta/chrome-extension-marktone/issues"
   },
-  "homepage": "https://github.com/ganta/chrome-extension-marktone#readme"
+  "homepage": "https://github.com/ganta/chrome-extension-marktone#readme",
+  "devDependencies": {
+    "@types/chrome": "0.0.86",
+    "css-loader": "3.0.0",
+    "style-loader": "0.23.1",
+    "ts-loader": "6.0.3",
+    "typescript": "3.5.2",
+    "webpack": "4.34.0",
+    "webpack-cli": "3.3.4"
+  }
 }
