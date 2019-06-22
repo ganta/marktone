@@ -1,0 +1,28 @@
+{
+  "name": "Marktone",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "description": "Change a Rich Text input area to Markdown input area on kintone",
+  "homepage_url": "https://github.com/ganta/chrome-extension-marktone",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "clipboardRead",
+    "https://*.cybozu.com/k/*",
+    "https://*.cybozu-dev.com/k/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.cybozu.com/k/*",
+        "https://*.cybozu-dev.com/k/*"
+      ],
+      "js": [
+        "js/content.js"
+      ]
+    }
+  ]
+}
