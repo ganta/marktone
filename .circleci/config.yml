@@ -1,0 +1,23 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@1.0.1
+
+workflows:
+  main:
+    jobs:
+      - pack
+
+jobs:
+  pack:
+    executor:
+      name: node/default
+      tag: 10.16.0
+    steps:
+      - checkout
+      - run:
+          name: Install Node modules
+          command: npm install
+      - run:
+          name: Execute Webpack
+          command: npx webpack
