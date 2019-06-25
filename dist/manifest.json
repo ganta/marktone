@@ -23,6 +23,15 @@
       "js": [
         "js/content.js"
       ]
+    },
+    {
+      "matches": [
+        "https://*.cybozu.com/k/*",
+        "https://*.cybozu-dev.com/k/*"
+      ],
+      "css": [
+        "css/content.css"
+      ]
     }
   ]
 }
