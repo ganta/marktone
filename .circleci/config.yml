@@ -15,9 +15,11 @@ jobs:
       tag: 10.16.0
     steps:
       - checkout
-      - run:
-          name: Install Node modules
-          command: npm install
+      - node/with-cache:
+          steps:
+            - run:
+                name: Install Node modules
+                command: npm install
       - run:
           name: Execute Webpack
           command: npx webpack
