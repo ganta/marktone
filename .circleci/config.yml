@@ -6,9 +6,23 @@ orbs:
 workflows:
   main:
     jobs:
+      - lint
       - pack
 
 jobs:
+  lint:
+    executor:
+      name: node/default
+      tag: 10.16.0
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run:
+                name: Execute ESLint
+                command: npx eslint --ext .ts,.tsx . --format junit --output-file ./test-reports/eslint/results.xml
+      - store_test_results:
+          path: ./test-reports
   pack:
     executor:
       name: node/default
