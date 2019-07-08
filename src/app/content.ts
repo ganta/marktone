@@ -35,7 +35,7 @@ function addMarktone(event: Event, element: HTMLElement): void {
     textArea.classList.add('marktone-textarea');
 
     marktone.appendChild(textArea);
-    element.insertAdjacentElement('afterbegin', marktone);
+    element.prepend(marktone);
 }
 
 delegateEvent(document, 'click', 'form[class$="-ui-comments-commentform-form"', addMarktone);
