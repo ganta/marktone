@@ -1,5 +1,7 @@
 import '../styles/content.scss';
 
+import * as marked from 'marked';
+
 function delegateEvent(
     element: Document | HTMLElement,
     eventName: string,
@@ -31,8 +33,13 @@ function addMarktone(event: Event, element: HTMLElement): void {
     const marktone = document.createElement('div');
     marktone.classList.add('marktone');
 
-    const textArea = document.createElement('textarea');
+    const textArea = document.createElement('textarea') as HTMLTextAreaElement;
     textArea.classList.add('marktone-textarea');
+
+    textArea.addEventListener('keyup', (): void => {
+        const originalEditorField = element.querySelector('div[class*="-ui-editor-field"][role="textbox"]') as HTMLElement;
+        originalEditorField.innerHTML = marked(textArea.value);
+    });
 
     marktone.appendChild(textArea);
     element.prepend(marktone);
