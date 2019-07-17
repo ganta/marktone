@@ -37,7 +37,7 @@ function addMarktone(event: Event, element: HTMLElement): void {
     textArea.classList.add('marktone-textarea');
 
     textArea.addEventListener('keyup', (): void => {
-        const originalEditorField = element.querySelector('div[class*="-ui-editor-field"][role="textbox"]') as HTMLElement;
+        const originalEditorField = element.querySelector('div.ocean-ui-editor-field[role="textbox"]') as HTMLElement;
         originalEditorField.innerHTML = marked(textArea.value);
     });
 
@@ -45,4 +45,4 @@ function addMarktone(event: Event, element: HTMLElement): void {
     element.prepend(marktone);
 }
 
-delegateEvent(document, 'click', 'form[class$="-ui-comments-commentform-form"', addMarktone);
+delegateEvent(document, 'click', 'form.ocean-ui-comments-commentform-form', addMarktone);
