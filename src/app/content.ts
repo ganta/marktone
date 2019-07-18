@@ -43,6 +43,8 @@ function addMarktone(event: Event, element: HTMLElement): void {
 
     marktone.appendChild(textArea);
     element.prepend(marktone);
+
+    textArea.focus();
 }
 
 delegateEvent(document, 'click', 'form.ocean-ui-comments-commentform-form', addMarktone);
