@@ -1,8 +1,24 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
-  "extends": ["airbnb-base", "plugin:@typescript-eslint/recommended"],
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "airbnb",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "globals": {
     "document": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "@typescript-eslint/explicit-member-accessibility": 0,
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "react/jsx-indent" : ["error", 4],
+    "react/jsx-filename-extension": "off"
   }
 }
