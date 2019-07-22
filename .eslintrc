@@ -19,6 +19,7 @@
     "@typescript-eslint/explicit-member-accessibility": 0,
     "@typescript-eslint/explicit-function-return-type": 0,
     "react/jsx-indent" : ["error", 4],
+    "react/jsx-indent-props" : ["error", 4],
     "react/jsx-filename-extension": "off"
   },
   "settings": {
