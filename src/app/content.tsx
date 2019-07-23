@@ -24,15 +24,15 @@ function addMarktone(event: Event, formElement: HTMLElement): void {
     // eslint-disable-next-line no-console
     console.log(event, formElement);
 
-    let marktoneWrapper = formElement.querySelector('div.marktone-wrap') as HTMLElement;
-    if (!marktoneWrapper) {
-        marktoneWrapper = document.createElement('div');
-        marktoneWrapper.classList.add('marktone-wrap');
-        formElement.prepend(marktoneWrapper);
+    let marktoneContainer = formElement.querySelector('div.marktone-container') as HTMLElement;
+    if (marktoneContainer === null) {
+        marktoneContainer = document.createElement('div');
+        marktoneContainer.classList.add('marktone-container');
+        formElement.prepend(marktoneContainer);
     }
 
     const originalEditorField = formElement.querySelector('div.ocean-ui-editor-field[role="textbox"]') as HTMLElement;
-    ReactDOM.render(<Marktone rawText="" originalEditorField={originalEditorField} />, marktoneWrapper);
+    ReactDOM.render(<Marktone rawText="" originalEditorField={originalEditorField} />, marktoneContainer);
 }
 
 delegateEvent(document, 'click', 'form.ocean-ui-comments-commentform-form', addMarktone);
