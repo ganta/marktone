@@ -20,18 +20,18 @@ function delegateEvent(
     });
 }
 
-function addMarktone(event: Event, element: HTMLElement): void {
+function addMarktone(event: Event, formElement: HTMLElement): void {
     // eslint-disable-next-line no-console
-    console.log(event, element);
+    console.log(event, formElement);
 
-    let marktoneWrapper = element.querySelector('div.marktone-wrap') as HTMLElement;
+    let marktoneWrapper = formElement.querySelector('div.marktone-wrap') as HTMLElement;
     if (!marktoneWrapper) {
         marktoneWrapper = document.createElement('div');
         marktoneWrapper.classList.add('marktone-wrap');
-        element.prepend(marktoneWrapper);
+        formElement.prepend(marktoneWrapper);
     }
 
-    const originalEditorField = element.querySelector('div.ocean-ui-editor-field[role="textbox"]') as HTMLElement;
+    const originalEditorField = formElement.querySelector('div.ocean-ui-editor-field[role="textbox"]') as HTMLElement;
     ReactDOM.render(<Marktone rawText="" originalEditorField={originalEditorField} />, marktoneWrapper);
 }
 
