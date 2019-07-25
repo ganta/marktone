@@ -51,4 +51,19 @@ function addMarktone(event: Event, formElement: HTMLElement): void {
     formExpandedObserver.observe(formElement.parentElement as Node, { attributes: true, attributeFilter: ['aria-expanded'] });
 }
 
+function addMarktoneWhenReply(event: Event, replyButton: HTMLElement): void {
+    let commentsWrapper = replyButton.closest('div.ocean-ui-comments-post-wrapper') as HTMLElement;
+    if (commentsWrapper === null) { // The first comment has not wrapper.
+        commentsWrapper = replyButton.closest('div.ocean-ui-comments-commentbase') as HTMLElement;
+    }
+    const formElement = commentsWrapper.querySelector('form.ocean-ui-comments-commentform-form') as HTMLElement;
+
+    addMarktone(event, formElement);
+}
+
+// for the first comment
 delegateEvent(document, 'click', 'form.ocean-ui-comments-commentform-form', addMarktone);
+// for the reply comment
+delegateEvent(document, 'click', 'a.ocean-ui-comments-commentbase-comment', addMarktoneWhenReply);
+// for the replay all comment
+delegateEvent(document, 'click', 'a.ocean-ui-comments-commentbase-commentall', addMarktoneWhenReply);
