@@ -10,10 +10,29 @@ interface MarktoneState {
     rawText: string;
 }
 
+class MarktoneRendererFactory {
+    static create(): marked.Renderer {
+        const renderer = new marked.Renderer();
+
+        renderer.heading = (text, level): string => {
+            const fontSize = 2.0 - (0.2 * level);
+            let style = `font-size: ${fontSize}em; font-weight: bold;`;
+            if (level <= 2) {
+                style += ' border-bottom: 1px solid #ddd;';
+            }
+
+            return `<h${level} style="${style}">${text}</h${level}>`;
+        };
+
+        return renderer;
+    }
+}
+
 marked.setOptions({
     gfm: true, // Enable GitHub Flavored Markdown.
     breaks: true, // Add 'br' element on a single line break.
     headerIds: false,
+    renderer: MarktoneRendererFactory.create(),
 });
 
 class Marktone extends React.Component<MarktoneProps, MarktoneState> {
