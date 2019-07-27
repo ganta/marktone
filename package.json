@@ -41,6 +41,8 @@
     "@types/marked": "^0.6.5",
     "@types/react": "^16.8.23",
     "@types/react-dom": "^16.8.4",
+    "@types/webscopeio__react-textarea-autocomplete": "^2.3.0",
+    "@webscopeio/react-textarea-autocomplete": "^4.6.1",
     "marked": "^0.7.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
