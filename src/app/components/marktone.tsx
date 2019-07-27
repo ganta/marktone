@@ -10,6 +10,11 @@ interface MarktoneState {
     rawText: string;
 }
 
+marked.setOptions({
+    gfm: true, // Enable GitHub Flavored Markdown.
+    breaks: true, // Add 'br' element on a single line break.
+});
+
 class Marktone extends React.Component<MarktoneProps, MarktoneState> {
     private readonly textArea: React.RefObject<HTMLTextAreaElement>;
 
