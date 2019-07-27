@@ -13,6 +13,7 @@ interface MarktoneState {
 marked.setOptions({
     gfm: true, // Enable GitHub Flavored Markdown.
     breaks: true, // Add 'br' element on a single line break.
+    headerIds: false,
 });
 
 class Marktone extends React.Component<MarktoneProps, MarktoneState> {
