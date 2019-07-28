@@ -21,9 +21,6 @@ function delegateEvent(
 }
 
 function addMarktone(event: Event, formElement: HTMLElement): void {
-    // eslint-disable-next-line no-console
-    console.log(event, formElement);
-
     let marktoneContainer = formElement.querySelector('div.marktone-container') as HTMLElement;
     if (marktoneContainer !== null) { return; } // Do nothing if the container already exists.
 
