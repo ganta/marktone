@@ -35,7 +35,7 @@ function addMarktone(event: Event, formElement: HTMLElement): void {
     formElement.prepend(marktoneContainer);
 
     // First rendering.
-    ReactDOM.render(<Marktone rawText="" originalEditorField={originalEditorField} />, marktoneContainer);
+    ReactDOM.render(<Marktone originalEditorField={originalEditorField} />, marktoneContainer);
 
     // Toggle opening and closing of Marktone according to the expansion state of the original form.
     const formExpandedObserver = new MutationObserver(() => {
@@ -43,7 +43,10 @@ function addMarktone(event: Event, formElement: HTMLElement): void {
         const isOriginalFormExpanded = (originalCommentContainer.getAttribute('aria-expanded') === 'true');
 
         if (isOriginalFormExpanded) {
-            ReactDOM.render(<Marktone rawText="" originalEditorField={originalEditorField} />, marktoneContainer);
+            ReactDOM.render(
+                <Marktone originalEditorField={originalEditorField} />,
+                marktoneContainer,
+            );
         } else {
             ReactDOM.unmountComponentAtNode(marktoneContainer);
         }
