@@ -2,6 +2,7 @@ import * as React from 'react';
 import ReactTextareaAutocomplete, { ItemComponentProps } from '@webscopeio/react-textarea-autocomplete';
 import '@webscopeio/react-textarea-autocomplete/style.css';
 import * as marked from 'marked';
+import Kintone from '../kintone';
 
 interface MarktoneProps {
     originalEditorField: HTMLElement;
@@ -43,22 +44,33 @@ const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
     );
 };
 
-function dataProvider(token: string) {
-    console.log(token);
-    return [
-        {
-            type: DirectoryEntityType.USER, id: 1, name: 'John Smith', avatar: 'https://static.cybozu-dev.com/k/kintone_19.9.3_5873/image/cybozu/icon/user_48.png',
-        },
-        {
-            type: DirectoryEntityType.USER, id: 1, name: 'Alice', avatar: 'https://static.cybozu-dev.com/k/kintone_19.9.3_5873/image/cybozu/icon/user_48.png',
-        },
-        {
-            type: DirectoryEntityType.ORGANIZATION, id: 1, name: 'Sample Org', avatar: 'https://static.cybozu.com/contents/k/image/argo/preset/user/organization_48.png',
-        },
-        {
-            type: DirectoryEntityType.GROUP, id: 1, name: 'Sample Group', avatar: 'https://static.cybozu.com/contents/k/image/argo/preset/user/group_48.png',
-        },
-    ];
+async function dataProvider(token: string) {
+    const presetOrganizationImageURL = 'https://static.cybozu.com/contents/k/image/argo/preset/user/organization_48.png';
+    const presetGroupImageURL = 'https://static.cybozu.com/contents/k/image/argo/preset/user/group_48.png';
+
+    const rawData = await Kintone.searchDirectory(token);
+    const { result } = rawData;
+
+    const users = result.users.map((user): MentionCandidateItem => ({
+        type: DirectoryEntityType.USER,
+        id: parseInt(user.id, 10),
+        name: user.name,
+        avatar: user.photo.size_24,
+    }));
+    const organizations = result.orgs.map((organization): MentionCandidateItem => ({
+        type: DirectoryEntityType.ORGANIZATION,
+        id: parseInt(organization.id, 10),
+        name: organization.name,
+        avatar: presetOrganizationImageURL,
+    }));
+    const groups = result.groups.map((group): MentionCandidateItem => ({
+        type: DirectoryEntityType.GROUP,
+        id: parseInt(group.id, 10),
+        name: group.name,
+        avatar: presetGroupImageURL,
+    }));
+
+    return [...users, ...organizations, ...groups];
 }
 
 class MarktoneRendererFactory {

@@ -9,7 +9,8 @@
   ],
   "globals": {
     "document": true,
-    "MutationObserver": true
+    "MutationObserver": true,
+    "fetch": true
   },
   "parserOptions": {
     "ecmaFeatures": {
