@@ -86,8 +86,28 @@ class MarktoneRendererFactory {
 
             return `<h${level} style="${style}">${text}</h${level}>`;
         };
+        renderer.html = (html): string => this.convertMentionToHTML(html);
+        renderer.text = (text): string => this.convertMentionToHTML(text);
 
         return renderer;
+    }
+
+    private static convertMentionToHTML(str: string): string {
+        const regexp = /@(user|organization|group):(\d+)\/([^\s]+)/g;
+        const idAttributeNames: { [key: string]: string } = {
+            user: 'mention-id',
+            organization: 'org-mention-id',
+            group: 'group-mention-id',
+        };
+        const className = 'ocean-ui-plugin-mention-user ocean-ui-plugin-linkbubble-no';
+        const style = '-webkit-user-modify: read-only;';
+
+        const replacer = (match: string, type: string, id: string, name: string): string => {
+            const attrName = idAttributeNames[type];
+            return `<a class="${className}" href="#" data-${attrName}="${id}" tabindex="-1" style="${style}">@${name}</a>`;
+        };
+
+        return str.replace(regexp, replacer);
     }
 }
 
