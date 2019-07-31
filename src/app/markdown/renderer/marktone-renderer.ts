@@ -1,4 +1,8 @@
-import { Renderer } from 'marked';
+/* eslint-disable import/no-duplicates */
+import * as marked from 'marked';
+import { MarkedOptions, Renderer } from 'marked';
+
+/* eslint-enable import/no-duplicates */
 
 class MarktoneRendererHelper {
     static convertMentionToHTML(str: string): string {
@@ -18,6 +22,28 @@ class MarktoneRendererHelper {
 
         return str.replace(regexp, replacer);
     }
+
+    static escapeHTML(html: string): string {
+        const escapeTest = /[&<>"']/;
+        const escapeReplace = /[&<>"']/g;
+        const replacements: { [key: string]: string } = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;',
+        };
+
+        if (escapeTest.test(html)) {
+            return html.replace(escapeReplace, ch => replacements[ch]);
+        }
+
+        return html;
+    }
+}
+
+interface Render {
+    options: MarkedOptions;
 }
 
 class MarktoneRenderer extends Renderer {
@@ -39,6 +65,13 @@ class MarktoneRenderer extends Renderer {
 
     html(html: string): string {
         return MarktoneRendererHelper.convertMentionToHTML(html);
+    }
+
+    code(code: string, language: string, isEscaped: boolean): string {
+        const escapedCode = isEscaped ? code : MarktoneRendererHelper.escapeHTML(code);
+        const style = 'background-color: #f6f8fa; border-radius: 3px; padding: 8px 16px;';
+
+        return `<pre style="${style}"><code>${escapedCode}</code></pre>`;
     }
 
     //
