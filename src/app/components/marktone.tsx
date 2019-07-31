@@ -2,6 +2,7 @@ import * as React from 'react';
 import ReactTextareaAutocomplete, { ItemComponentProps } from '@webscopeio/react-textarea-autocomplete';
 import '@webscopeio/react-textarea-autocomplete/style.css';
 import * as marked from 'marked';
+import MarktoneRenderer from '../markdown/renderer/marktone-renderer';
 import Kintone from '../kintone';
 
 interface MarktoneProps {
@@ -73,49 +74,11 @@ async function dataProvider(token: string) {
     return [...users, ...organizations, ...groups];
 }
 
-class MarktoneRendererFactory {
-    static create(): marked.Renderer {
-        const renderer = new marked.Renderer();
-
-        renderer.heading = (text, level): string => {
-            const fontSize = 2.0 - (0.2 * level);
-            let style = `font-size: ${fontSize}em; font-weight: bold;`;
-            if (level <= 2) {
-                style += ' border-bottom: 1px solid #ddd;';
-            }
-
-            return `<h${level} style="${style}">${text}</h${level}>`;
-        };
-        renderer.html = (html): string => this.convertMentionToHTML(html);
-        renderer.text = (text): string => this.convertMentionToHTML(text);
-
-        return renderer;
-    }
-
-    private static convertMentionToHTML(str: string): string {
-        const regexp = /@(user|organization|group):(\d+)\/([^\s]+)/g;
-        const idAttributeNames: { [key: string]: string } = {
-            user: 'mention-id',
-            organization: 'org-mention-id',
-            group: 'group-mention-id',
-        };
-        const className = 'ocean-ui-plugin-mention-user ocean-ui-plugin-linkbubble-no';
-        const style = '-webkit-user-modify: read-only;';
-
-        const replacer = (match: string, type: string, id: string, name: string): string => {
-            const attrName = idAttributeNames[type];
-            return `<a class="${className}" href="#" data-${attrName}="${id}" tabindex="-1" style="${style}">@${name}</a>`;
-        };
-
-        return str.replace(regexp, replacer);
-    }
-}
-
 marked.setOptions({
     gfm: true, // Enable GitHub Flavored Markdown.
     breaks: true, // Add 'br' element on a single line break.
     headerIds: false,
-    renderer: MarktoneRendererFactory.create(),
+    renderer: MarktoneRenderer.create(),
 });
 
 class Marktone extends React.Component<MarktoneProps, MarktoneState> {
