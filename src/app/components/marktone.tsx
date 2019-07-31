@@ -78,7 +78,7 @@ marked.setOptions({
     gfm: true, // Enable GitHub Flavored Markdown.
     breaks: true, // Add 'br' element on a single line break.
     headerIds: false,
-    renderer: MarktoneRenderer.create(),
+    renderer: new MarktoneRenderer(),
 });
 
 class Marktone extends React.Component<MarktoneProps, MarktoneState> {

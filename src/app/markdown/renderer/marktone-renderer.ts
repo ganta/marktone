@@ -1,4 +1,4 @@
-import * as marked from 'marked';
+import { Renderer } from 'marked';
 
 class MarktoneRendererHelper {
     static convertMentionToHTML(str: string): string {
@@ -20,22 +20,14 @@ class MarktoneRendererHelper {
     }
 }
 
-class MarktoneRenderer {
-    static create(): marked.Renderer {
-        const renderer = new marked.Renderer();
-
-        renderer.heading = this.heading;
-        renderer.html = this.html;
-        renderer.text = this.text;
-
-        return renderer;
-    }
+class MarktoneRenderer extends Renderer {
+    /* eslint-disable class-methods-use-this */
 
     //
     // Block level renderer methods
     //
 
-    private static heading(text: string, level: number): string {
+    heading(text: string, level: number): string {
         const fontSize = 2.0 - (0.2 * level);
         let style = `font-size: ${fontSize}em; font-weight: bold;`;
         if (level <= 2) {
@@ -45,7 +37,7 @@ class MarktoneRenderer {
         return `<h${level} style="${style}">${text}</h${level}>`;
     }
 
-    private static html(html: string): string {
+    html(html: string): string {
         return MarktoneRendererHelper.convertMentionToHTML(html);
     }
 
@@ -53,9 +45,11 @@ class MarktoneRenderer {
     // Inline level renderer methods
     //
 
-    private static text(text: string): string {
+    text(text: string): string {
         return MarktoneRendererHelper.convertMentionToHTML(text);
     }
+
+    /* eslint-enable class-methods-use-this */
 }
 
 export default MarktoneRenderer;
