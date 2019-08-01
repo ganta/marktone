@@ -79,6 +79,26 @@ class MarktoneRenderer extends Renderer {
         return `<blockquote style="${style}">${quote}</blockquote>`;
     }
 
+    table(header: string, body: string): string {
+        const tableBody = body ? `<tbody>${body}</tbody>` : '';
+        const style = 'border-collapse: collapse; border-spacing: 0; margin: 0 0 16px;';
+        return `<table style="${style}"><thead>${header}</thead>${tableBody}</table>`;
+    }
+
+    tablerow(content: string): string {
+        const style = 'background-color: #fff; border-top: 1px solid #c6cbd1;';
+        return `<tr style="${style}">${content}</tr>`;
+    }
+
+    tablecell(content: string, flags: { header: boolean; align: 'center' | 'left' | 'right' | null }): string {
+        const type = flags.header ? 'th' : 'td';
+        const style = 'border: 1px solid #dfe2e5; padding: 6px 13px;';
+        const tag = flags.align
+            ? `<${type} align="${flags.align}" style="${style}">`
+            : `<${type} style="${style}">`;
+        return `${tag}${content}</${type}>`;
+    }
+
     //
     // Inline level renderer methods
     //
