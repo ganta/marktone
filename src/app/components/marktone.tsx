@@ -3,7 +3,8 @@ import ReactTextareaAutocomplete, { ItemComponentProps } from '@webscopeio/react
 import '@webscopeio/react-textarea-autocomplete/style.css';
 import * as marked from 'marked';
 import MarktoneRenderer from '../markdown/renderer/marktone-renderer';
-import Kintone from '../kintone';
+import KintoneClient from '../kintone/kintone-client';
+import MentionReplacer from '../markdown/replacer/mention-replacer';
 
 interface MarktoneProps {
     originalEditorField: HTMLElement;
@@ -15,13 +16,14 @@ interface MarktoneState {
 
 enum DirectoryEntityType {
     USER = 'user',
-    ORGANIZATION = 'organization',
+    ORGANIZATION = 'org',
     GROUP = 'group',
 }
 
 interface MentionCandidateItem {
     type: DirectoryEntityType;
     id: number;
+    code: string;
     name: string;
     avatar: string;
 }
@@ -29,7 +31,7 @@ interface MentionCandidateItem {
 const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
     const {
         entity: {
-            type, id, name, avatar,
+            type, id, code, name, avatar,
         },
     } = props;
 
@@ -39,6 +41,7 @@ const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
                 <img className="avatar-image" src={avatar} alt={name} />
             </span>
             <span className="name">
+                <span className="code">{code}</span>
                 <span className="display-name">{name}</span>
             </span>
         </span>
@@ -49,24 +52,27 @@ async function dataProvider(token: string) {
     const presetOrganizationImageURL = 'https://static.cybozu.com/contents/k/image/argo/preset/user/organization_48.png';
     const presetGroupImageURL = 'https://static.cybozu.com/contents/k/image/argo/preset/user/group_48.png';
 
-    const rawData = await Kintone.searchDirectory(token);
+    const rawData = await KintoneClient.searchDirectory(token);
     const { result } = rawData;
 
     const users = result.users.map((user): MentionCandidateItem => ({
         type: DirectoryEntityType.USER,
         id: parseInt(user.id, 10),
+        code: user.code,
         name: user.name,
         avatar: user.photo.size_24,
     }));
     const organizations = result.orgs.map((organization): MentionCandidateItem => ({
         type: DirectoryEntityType.ORGANIZATION,
         id: parseInt(organization.id, 10),
+        code: organization.code,
         name: organization.name,
         avatar: presetOrganizationImageURL,
     }));
     const groups = result.groups.map((group): MentionCandidateItem => ({
         type: DirectoryEntityType.GROUP,
         id: parseInt(group.id, 10),
+        code: group.code,
         name: group.name,
         avatar: presetGroupImageURL,
     }));
@@ -74,18 +80,22 @@ async function dataProvider(token: string) {
     return [...users, ...organizations, ...groups];
 }
 
-marked.setOptions({
-    gfm: true, // Enable GitHub Flavored Markdown.
-    breaks: true, // Add 'br' element on a single line break.
-    headerIds: false,
-    renderer: new MarktoneRenderer(),
-});
-
 class Marktone extends React.Component<MarktoneProps, MarktoneState> {
     private textArea: HTMLTextAreaElement | undefined;
 
+    private readonly mentionReplacer: MentionReplacer;
+
     constructor(props: MarktoneProps) {
         super(props);
+        this.mentionReplacer = new MentionReplacer();
+
+        marked.setOptions({
+            gfm: true, // Enable GitHub Flavored Markdown.
+            breaks: true, // Add 'br' element on a single line break.
+            headerIds: false,
+            renderer: new MarktoneRenderer(this.mentionReplacer),
+        });
+
         this.handleChange = this.handleChange.bind(this);
     }
 
@@ -96,10 +106,14 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
         }
     }
 
-    handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-        if (event.currentTarget === null) { return; }
+    async handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+        if (event.currentTarget === null) {
+            return;
+        }
 
         const rawText = event.currentTarget.value;
+
+        await this.mentionReplacer.fetchDirectoryEntityInText(rawText);
 
         const { originalEditorField } = this.props;
         originalEditorField.innerHTML = marked(rawText);
@@ -113,9 +127,12 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
                         '@': {
                             dataProvider,
                             component: MentionCandidate,
-                            output: ({ type, name, id }) => {
-                                const replacedName = name.replace(' ', '_');
-                                return `@${type}:${id}/${replacedName}`;
+                            output: ({ type, code }) => {
+                                const escapedCode = MentionReplacer.escapeCode(code);
+                                if (type === DirectoryEntityType.USER) {
+                                    return `@${escapedCode}`;
+                                }
+                                return `@${type}/${escapedCode}`;
                             },
                         },
                     }}

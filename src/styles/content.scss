@@ -60,9 +60,14 @@
 
           .name {
             margin-left: 8px;
+            white-space: nowrap;
+
+            .code {
+              font-weight: 700;
+            }
 
             .display-name {
-              font-weight: 700;
+              margin-left: 8px;
             }
           }
         }

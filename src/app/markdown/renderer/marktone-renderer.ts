@@ -1,28 +1,7 @@
-/* eslint-disable import/no-duplicates */
-import * as marked from 'marked';
 import { MarkedOptions, Renderer } from 'marked';
-
-/* eslint-enable import/no-duplicates */
+import MentionReplacer from '../replacer/mention-replacer';
 
 class MarktoneRendererHelper {
-    static convertMentionToHTML(str: string): string {
-        const regexp = /@(user|organization|group):(\d+)\/([^\s]+)/g;
-        const idAttributeNames: { [key: string]: string } = {
-            user: 'mention-id',
-            organization: 'org-mention-id',
-            group: 'group-mention-id',
-        };
-        const className = 'ocean-ui-plugin-mention-user ocean-ui-plugin-linkbubble-no';
-        const style = '-webkit-user-modify: read-only;';
-
-        const replacer = (match: string, type: string, id: string, name: string): string => {
-            const attrName = idAttributeNames[type];
-            return `<a class="${className}" href="#" data-${attrName}="${id}" tabindex="-1" style="${style}">@${name}</a>`;
-        };
-
-        return str.replace(regexp, replacer);
-    }
-
     static escapeHTML(html: string): string {
         const escapeTest = /[&<>"']/;
         const escapeReplace = /[&<>"']/g;
@@ -46,8 +25,14 @@ interface Render {
     options: MarkedOptions;
 }
 
+/* eslint-disable class-methods-use-this */
 class MarktoneRenderer extends Renderer {
-    /* eslint-disable class-methods-use-this */
+    private mentionReplacer: MentionReplacer;
+
+    constructor(mentionReplacer: MentionReplacer, options?: MarkedOptions) {
+        super(options);
+        this.mentionReplacer = mentionReplacer;
+    }
 
     //
     // Block level renderer methods
@@ -64,7 +49,7 @@ class MarktoneRenderer extends Renderer {
     }
 
     html(html: string): string {
-        return MarktoneRendererHelper.convertMentionToHTML(html);
+        return this.mentionReplacer.replaceMention(html);
     }
 
     code(code: string, language: string, isEscaped: boolean): string {
@@ -104,15 +89,14 @@ class MarktoneRenderer extends Renderer {
     //
 
     text(text: string): string {
-        return MarktoneRendererHelper.convertMentionToHTML(text);
+        return this.mentionReplacer.replaceMention(text);
     }
 
     codespan(code: string): string {
         const style = 'background-color: rgba(27,31,35,.05); border-radius: 3px; margin: 0 1px; padding: .2em .4em;';
         return `<code style="${style}">${code}</code>`;
     }
-
-    /* eslint-enable class-methods-use-this */
 }
+/* eslint-enable class-methods-use-this */
 
 export default MarktoneRenderer;
