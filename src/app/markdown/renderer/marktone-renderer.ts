@@ -87,6 +87,11 @@ class MarktoneRenderer extends Renderer {
         return MarktoneRendererHelper.convertMentionToHTML(text);
     }
 
+    codespan(code: string): string {
+        const style = 'background-color: rgba(27,31,35,.05); border-radius: 3px; margin: 0 1px; padding: .2em .4em;';
+        return `<code style="${style}">${code}</code>`;
+    }
+
     /* eslint-enable class-methods-use-this */
 }
 
