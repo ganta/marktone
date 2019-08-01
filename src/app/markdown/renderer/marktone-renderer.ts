@@ -74,6 +74,11 @@ class MarktoneRenderer extends Renderer {
         return `<pre style="${style}"><code>${escapedCode}</code></pre>`;
     }
 
+    blockquote(quote: string): string {
+        const style = 'border-left: .25em solid #dfe2e5; color: #6a737d; margin: 0; padding: 0 1em;';
+        return `<blockquote style="${style}">${quote}</blockquote>`;
+    }
+
     //
     // Inline level renderer methods
     //
