@@ -29,6 +29,9 @@
     overflow-x: hidden;
     overflow-y: auto;
     max-height: 200px;
+    z-index: 100;
+
+    font-size: 14px;
 
     .marktone-autocomplete-list {
       border: none;
@@ -36,7 +39,6 @@
 
       .marktone-autocomplete-item {
         border: none;
-        font-size: 14px;
 
         .mention-candidate {
           display: flex;
