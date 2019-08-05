@@ -1,10 +1,13 @@
 import * as React from 'react';
-import ReactTextareaAutocomplete, { ItemComponentProps } from '@webscopeio/react-textarea-autocomplete';
-import '@webscopeio/react-textarea-autocomplete/style.css';
 import * as marked from 'marked';
+import ReactTextareaAutocomplete, { ItemComponentProps } from '@webscopeio/react-textarea-autocomplete';
+
 import MarktoneRenderer from '../markdown/renderer/marktone-renderer';
 import KintoneClient from '../kintone/kintone-client';
 import MentionReplacer from '../markdown/replacer/mention-replacer';
+import { DirectoryEntityType } from '../kintone/directory-entity';
+
+import '@webscopeio/react-textarea-autocomplete/style.css';
 
 interface MarktoneProps {
     originalEditorField: HTMLElement;
@@ -12,12 +15,6 @@ interface MarktoneProps {
 
 interface MarktoneState {
     rawText: string;
-}
-
-enum DirectoryEntityType {
-    USER = 'user',
-    ORGANIZATION = 'org',
-    GROUP = 'group',
 }
 
 interface MentionCandidateItem {
@@ -49,35 +46,8 @@ const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
 };
 
 async function dataProvider(token: string) {
-    const presetOrganizationImageURL = 'https://static.cybozu.com/contents/k/image/argo/preset/user/organization_48.png';
-    const presetGroupImageURL = 'https://static.cybozu.com/contents/k/image/argo/preset/user/group_48.png';
-
-    const rawData = await KintoneClient.searchDirectory(token);
-    const { result } = rawData;
-
-    const users = result.users.map((user): MentionCandidateItem => ({
-        type: DirectoryEntityType.USER,
-        id: parseInt(user.id, 10),
-        code: user.code,
-        name: user.name,
-        avatar: user.photo.size_24,
-    }));
-    const organizations = result.orgs.map((organization): MentionCandidateItem => ({
-        type: DirectoryEntityType.ORGANIZATION,
-        id: parseInt(organization.id, 10),
-        code: organization.code,
-        name: organization.name,
-        avatar: presetOrganizationImageURL,
-    }));
-    const groups = result.groups.map((group): MentionCandidateItem => ({
-        type: DirectoryEntityType.GROUP,
-        id: parseInt(group.id, 10),
-        code: group.code,
-        name: group.name,
-        avatar: presetGroupImageURL,
-    }));
-
-    return [...users, ...organizations, ...groups];
+    const collection = await KintoneClient.searchDirectory(token);
+    return collection.flat();
 }
 
 class Marktone extends React.Component<MarktoneProps, MarktoneState> {

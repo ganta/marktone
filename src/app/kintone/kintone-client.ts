@@ -33,6 +33,30 @@ interface SearchDirectoryResponse {
     };
 }
 
+class DirectoryEntityCollection {
+    users: DirectoryEntity[];
+
+    orgs: DirectoryEntity[];
+
+    groups: DirectoryEntity[];
+
+    constructor(args: {
+        users: DirectoryEntity[]; orgs: DirectoryEntity[]; groups: DirectoryEntity[];
+    }) {
+        this.users = args.users;
+        this.orgs = args.orgs;
+        this.groups = args.groups;
+    }
+
+    flat(): DirectoryEntity[] {
+        const entities: DirectoryEntity[] = [];
+        entities.push(...this.users);
+        entities.push(...this.orgs);
+        entities.push(...this.groups);
+        return entities;
+    }
+}
+
 export class KintoneClient {
     private static presetOrganizationImageURL = 'https://static.cybozu.com/contents/k/image/argo/preset/user/organization_48.png';
 
@@ -46,64 +70,57 @@ export class KintoneClient {
         this.cache = cache || new DirectoryEntityCache();
     }
 
-    static async searchDirectory(term: string): Promise<SearchDirectoryResponse> {
+    static async searchDirectory(term: string): Promise<DirectoryEntityCollection> {
         const requestBody = { term };
 
-        const response = await fetch(KintoneClient.searchAPI, {
+        const rawResponse = await fetch(KintoneClient.searchAPI, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json; charset=utf-8' },
             body: JSON.stringify(requestBody),
         });
+        const response = await rawResponse.json() as SearchDirectoryResponse;
 
-        return response.json();
+        const users = response.result.users.map<DirectoryEntity>(u => ({
+            type: DirectoryEntityType.USER,
+            id: parseInt(u.id, 10),
+            code: u.code,
+            name: u.name,
+            avatar: u.photo.size_24,
+        }));
+        const orgs = response.result.orgs.map<DirectoryEntity>(o => ({
+            type: DirectoryEntityType.ORGANIZATION,
+            id: parseInt(o.id, 10),
+            code: o.code,
+            name: o.name,
+            avatar: this.presetOrganizationImageURL,
+        }));
+        const groups = response.result.orgs.map<DirectoryEntity>(g => ({
+            type: DirectoryEntityType.GROUP,
+            id: parseInt(g.id, 10),
+            code: g.code,
+            name: g.name,
+            avatar: this.presetGroupImageURL,
+        }));
+
+        return new DirectoryEntityCollection({ users, orgs, groups });
     }
 
     static async findUserByCode(code: string): Promise<DirectoryEntity | null> {
-        const response = await KintoneClient.searchDirectory(code);
-        const userResp = response.result.users.find(u => u.code === code);
-        if (!userResp) {
-            return null;
-        }
-
-        return {
-            type: DirectoryEntityType.USER,
-            id: parseInt(userResp.id, 10),
-            code: userResp.code,
-            name: userResp.name,
-            avatar: userResp.photo.size_24,
-        };
+        const collection = await KintoneClient.searchDirectory(code);
+        const user = collection.users.find(entity => entity.code === code);
+        return user || null;
     }
 
     static async findOrganizationByCode(code: string): Promise<DirectoryEntity | null> {
-        const response = await KintoneClient.searchDirectory(code);
-        const orgResp = response.result.orgs.find(o => o.code === code);
-        if (!orgResp) {
-            return null;
-        }
-
-        return {
-            type: DirectoryEntityType.USER,
-            id: parseInt(orgResp.id, 10),
-            code: orgResp.code,
-            name: orgResp.name,
-            avatar: this.presetOrganizationImageURL,
-        };
+        const collection = await KintoneClient.searchDirectory(code);
+        const organization = collection.orgs.find(entity => entity.code === code);
+        return organization || null;
     }
 
     static async findGroupByCode(code: string): Promise<DirectoryEntity | null> {
-        const response = await KintoneClient.searchDirectory(code);
-        const groupResp = response.result.groups.find(g => g.code === code);
-        if (!groupResp) {
-            return null;
-        }
-
-        return {
-            type: DirectoryEntityType.USER,
-            id: parseInt(groupResp.id, 10),
-            code: groupResp.code,
-            name: groupResp.name,
-            avatar: this.presetGroupImageURL,
-        };
+        const collection = await KintoneClient.searchDirectory(code);
+        const group = collection.groups.find(entity => entity.code === code);
+        return group || null;
     }
 }
 
