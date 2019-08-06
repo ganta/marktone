@@ -110,6 +110,8 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
                     className="marktone-textarea"
                     innerRef={(textArea) => { this.textArea = textArea; }}
                     onChange={this.handleChange}
+                    // The `onChange` callback is not called when an autocomplete item is selected
+                    onSelect={this.handleChange}
 
                     containerClassName="marktone-autocomplete-container"
                     dropdownClassName="marktone-autocomplete-dropdown"
