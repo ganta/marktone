@@ -59,6 +59,8 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
         super(props);
         this.mentionReplacer = new MentionReplacer();
 
+        this.state = { rawText: '' };
+
         marked.setOptions({
             gfm: true, // Enable GitHub Flavored Markdown.
             breaks: true, // Add 'br' element on a single line break.
@@ -77,11 +79,8 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
     }
 
     async handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-        if (event.currentTarget === null) {
-            return;
-        }
-
-        const rawText = event.currentTarget.value;
+        const rawText = event.target.value;
+        this.setState({ rawText });
 
         await this.mentionReplacer.fetchDirectoryEntityInText(rawText);
 
@@ -90,9 +89,12 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
     }
 
     render() {
+        const { rawText } = this.state;
+
         return (
             <div className="marktone">
                 <ReactTextareaAutocomplete
+                    value={rawText}
                     trigger={{
                         '@': {
                             dataProvider,
@@ -110,8 +112,6 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
                     className="marktone-textarea"
                     innerRef={(textArea) => { this.textArea = textArea; }}
                     onChange={this.handleChange}
-                    // The `onChange` callback is not called when an autocomplete item is selected
-                    onSelect={this.handleChange}
 
                     containerClassName="marktone-autocomplete-container"
                     dropdownClassName="marktone-autocomplete-dropdown"
