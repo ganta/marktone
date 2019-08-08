@@ -3,7 +3,8 @@ import '../styles/content.scss';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import Marktone from './components/marktone';
+import Marktone, { ReplyMention } from './components/marktone';
+import { DirectoryEntityType } from './kintone/directory-entity';
 
 function delegateEvent(
     element: Document | HTMLElement,
@@ -20,7 +21,7 @@ function delegateEvent(
     });
 }
 
-function addMarktone(event: Event, formElement: HTMLElement): void {
+function addMarktone(event: Event, formElement: HTMLElement, replyMentions: ReplyMention[] = []): void {
     let marktoneContainer = formElement.querySelector('div.marktone-container') as HTMLElement;
     if (marktoneContainer !== null) { return; } // Do nothing if the container already exists.
 
@@ -32,7 +33,13 @@ function addMarktone(event: Event, formElement: HTMLElement): void {
     formElement.prepend(marktoneContainer);
 
     // First rendering.
-    ReactDOM.render(<Marktone originalEditorField={originalEditorField} />, marktoneContainer);
+    const marktoneComponent = (
+        <Marktone
+            originalEditorField={originalEditorField}
+            replayMentions={replyMentions}
+        />
+    );
+    ReactDOM.render(marktoneComponent, marktoneContainer);
 
     // Toggle opening and closing of Marktone according to the expansion state of the original form.
     const formExpandedObserver = new MutationObserver(() => {
@@ -40,15 +47,21 @@ function addMarktone(event: Event, formElement: HTMLElement): void {
         const isOriginalFormExpanded = (originalCommentContainer.getAttribute('aria-expanded') === 'true');
 
         if (isOriginalFormExpanded) {
-            ReactDOM.render(
-                <Marktone originalEditorField={originalEditorField} />,
-                marktoneContainer,
-            );
+            ReactDOM.render(marktoneComponent, marktoneContainer);
         } else {
             ReactDOM.unmountComponentAtNode(marktoneContainer);
         }
     });
-    formExpandedObserver.observe(formElement.parentElement as Node, { attributes: true, attributeFilter: ['aria-expanded'] });
+    formExpandedObserver.observe(
+        formElement.parentElement as Node,
+        { attributes: true, attributeFilter: ['aria-expanded'] },
+    );
+}
+
+function convertHTMLAnchorElementToReplyMention(element: HTMLAnchorElement): ReplyMention {
+    const type = DirectoryEntityType.USER;
+    const code = element.href.split('/').slice(-1)[0]; // '/k/#people/user/{code}'
+    return { type, code };
 }
 
 function addMarktoneWhenReply(event: Event, replyButton: HTMLElement): void {
@@ -58,7 +71,12 @@ function addMarktoneWhenReply(event: Event, replyButton: HTMLElement): void {
     }
     const formElement = commentsWrapper.querySelector('form.ocean-ui-comments-commentform-form') as HTMLElement;
 
-    addMarktone(event, formElement);
+    const commentBaseBody = replyButton.closest('div.ocean-ui-comments-commentbase-body') as HTMLElement;
+    const commentBaseUser = commentBaseBody.querySelector('a.ocean-ui-comments-commentbase-user') as HTMLAnchorElement;
+    const replayMentions: ReplyMention[] = [];
+    replayMentions.push(convertHTMLAnchorElementToReplyMention(commentBaseUser));
+
+    addMarktone(event, formElement, replayMentions);
 }
 
 // for the first comment

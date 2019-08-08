@@ -9,8 +9,14 @@ import { DirectoryEntityType } from '../kintone/directory-entity';
 
 import '@webscopeio/react-textarea-autocomplete/style.css';
 
+export interface ReplyMention {
+    type: DirectoryEntityType;
+    code: string;
+}
+
 interface MarktoneProps {
     originalEditorField: HTMLElement;
+    replayMentions: ReplyMention[];
 }
 
 interface MarktoneState {
@@ -51,6 +57,11 @@ async function dataProvider(token: string) {
 }
 
 class Marktone extends React.Component<MarktoneProps, MarktoneState> {
+    private static convertReplyMentionsToText(replyMentions: ReplyMention[]): string {
+        const mentions = replyMentions.map(replyMention => `@${replyMention.code}`);
+        return mentions.join(' ');
+    }
+
     private textArea: HTMLTextAreaElement | undefined;
 
     private readonly mentionReplacer: MentionReplacer;
@@ -59,7 +70,9 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
         super(props);
         this.mentionReplacer = new MentionReplacer();
 
-        this.state = { rawText: '' };
+        this.state = {
+            rawText: '',
+        };
 
         marked.setOptions({
             gfm: true, // Enable GitHub Flavored Markdown.
@@ -72,9 +85,14 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
     }
 
     componentDidMount(): void {
-        const { textArea } = this;
+        const { textArea, props } = this;
         if (textArea) {
             textArea.focus();
+
+            // Setting the value to `rawText` should be done in the constructor,
+            // but in order to perform Markdown rendering, run it in `componentDidMount()`.
+            const replayMentionsText = Marktone.convertReplyMentionsToText(props.replayMentions);
+            this.setState({ rawText: replayMentionsText === '' ? '' : `${replayMentionsText} ` });
         }
     }
 
