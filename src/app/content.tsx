@@ -6,6 +6,14 @@ import * as ReactDOM from 'react-dom';
 import Marktone, { ReplyMention } from './components/marktone';
 import { DirectoryEntityType } from './kintone/directory-entity';
 
+// Pass the login user information to DOM.
+// Because `window.kintone` cannot be referred directly from Chrome extension.
+const initializationScript = document.createElement('script');
+initializationScript.text = `
+    document.body.dataset.LoginUser = JSON.stringify(kintone.getLoginUser());
+`;
+document.body.appendChild(initializationScript);
+
 function delegateEvent(
     element: Document | HTMLElement,
     eventName: string,

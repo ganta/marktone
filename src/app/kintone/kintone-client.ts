@@ -57,6 +57,21 @@ class DirectoryEntityCollection {
     }
 }
 
+interface LoginUser {
+    id: string;
+    code: string;
+    name: string;
+    email: string;
+    url: string;
+    employeeNumber: string;
+    phone: string;
+    mobilePhone: string;
+    extensionNumber: string;
+    timezone: string;
+    isGuest: boolean;
+    language: string;
+}
+
 export class KintoneClient {
     private static presetOrganizationImageURL = 'https://static.cybozu.com/contents/k/image/argo/preset/user/organization_48.png';
 
@@ -68,6 +83,10 @@ export class KintoneClient {
 
     constructor(cache: DirectoryEntityCache) {
         this.cache = cache || new DirectoryEntityCache();
+    }
+
+    static getLoginUser(): LoginUser {
+        return JSON.parse(document.body.dataset.LoginUser as string);
     }
 
     static async searchDirectory(term: string): Promise<DirectoryEntityCollection> {

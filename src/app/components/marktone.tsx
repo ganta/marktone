@@ -58,7 +58,12 @@ async function dataProvider(token: string) {
 
 class Marktone extends React.Component<MarktoneProps, MarktoneState> {
     private static convertReplyMentionsToText(replyMentions: ReplyMention[]): string {
-        const mentions = replyMentions.map(replyMention => `@${replyMention.code}`);
+        const currentUser = KintoneClient.getLoginUser();
+        const normalizedMentions = replyMentions.filter((replyMention) => {
+            if (replyMention.type !== DirectoryEntityType.USER) return true;
+            return replyMention.code !== currentUser.code;
+        });
+        const mentions = normalizedMentions.map(replyMention => `@${replyMention.code}`);
         return mentions.join(' ');
     }
 
