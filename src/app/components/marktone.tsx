@@ -63,7 +63,7 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
             if (replyMention.type !== DirectoryEntityType.USER) return true;
             return replyMention.code !== currentUser.code;
         });
-        const mentions = normalizedMentions.map(replyMention => `@${replyMention.code}`);
+        const mentions = normalizedMentions.map(replyMention => MentionReplacer.createMention(replyMention.type, replyMention.code));
         return mentions.join(' ');
     }
 
@@ -130,13 +130,7 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
                         '@': {
                             dataProvider,
                             component: MentionCandidate,
-                            output: ({ type, code }) => {
-                                const escapedCode = MentionReplacer.escapeCode(code);
-                                if (type === DirectoryEntityType.USER) {
-                                    return `@${escapedCode}`;
-                                }
-                                return `@${type}/${escapedCode}`;
-                            },
+                            output: ({ type, code }) => MentionReplacer.createMention(type, code),
                         },
                     }}
                     loadingComponent={() => <span>Loading</span>}

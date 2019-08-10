@@ -32,6 +32,14 @@ class MentionReplacer {
         });
     }
 
+    static createMention(type: DirectoryEntityType, code: string): string {
+        const escapedCode = MentionReplacer.escapeCode(code);
+        if (type === DirectoryEntityType.USER) {
+            return `@${escapedCode}`;
+        }
+        return `@${type}/${escapedCode}`;
+    }
+
     async fetchDirectoryEntityInText(text: string): Promise<void> {
         // TODO: Use `String.prototype.matchAll` when it becomes ES2020
         let matched;
