@@ -87,7 +87,8 @@ class MentionReplacer {
 
             const attrName = type ? `${type}-mention-id` : 'mention-id';
             const href = type ? '#' : `/k/#/people/user/${code}`;
-            return `<a class="${className}" href="${href}" data-${attrName}="${entity.id}" tabindex="-1" style="${style}">@${entity.name}</a>`;
+            // LRO/RLO may be included in `name`. Therefore, it is surrounded by bdi element.
+            return `<a class="${className}" href="${href}" data-${attrName}="${entity.id}" tabindex="-1" style="${style}">@<bdi>${entity.name}</bdi></a>`;
         };
         return text.replace(MentionReplacer.mentionRegExp, replacer);
     }
