@@ -1,4 +1,4 @@
-import { DirectoryEntity, DirectoryEntityType } from './directory-entity';
+import { DirectoryEntity, DirectoryEntityType, DirectoryEntityTypeUtil } from './directory-entity';
 import DirectoryEntityCache from './directory-entity-cache';
 
 interface SearchDirectoryUserResponse {
@@ -31,6 +31,18 @@ interface SearchDirectoryResponse {
         orgs: SearchDirectoryOrganizationResponse[];
         groups: SearchDirectoryGroupResponse[];
     };
+}
+
+interface ListDirectoryEntityResponse {
+    result: {
+        entities: {
+            entityType: string;
+            id: string;
+            code: string;
+            name: string;
+        }[];
+    };
+    success: boolean;
 }
 
 class DirectoryEntityCollection {
@@ -79,6 +91,8 @@ export class KintoneClient {
 
     private static searchAPI = '/k/api/directory/search.json';
 
+    private static listDirectoryEntityByIdAndType = '/k/api/directory/listByIdAndType.json';
+
     private cache: DirectoryEntityCache;
 
     constructor(cache: DirectoryEntityCache) {
@@ -87,6 +101,31 @@ export class KintoneClient {
 
     static getLoginUser(): LoginUser {
         return JSON.parse(document.body.dataset.LoginUser as string);
+    }
+
+    static async ListDirectoryEntityByIdAndType(idAndTypes: { id: string; type: string }[]): Promise<DirectoryEntity[]> {
+        const requestBody = { idAndTypes };
+        const params = new URLSearchParams();
+        params.append('_lc', KintoneClient.getLoginUser().language);
+
+        const url = `${KintoneClient.listDirectoryEntityByIdAndType}?${params.toString()}`;
+
+        const rawResponse = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(requestBody),
+        });
+        const response = await rawResponse.json() as ListDirectoryEntityResponse;
+
+        return response.result.entities.map((entity) => {
+            return ({
+                type: DirectoryEntityTypeUtil.valueOf(entity.entityType),
+                id: parseInt(entity.id, 10),
+                code: entity.code,
+                name: entity.name,
+                avatar: '',
+            });
+        });
     }
 
     static async searchDirectory(term: string): Promise<DirectoryEntityCollection> {

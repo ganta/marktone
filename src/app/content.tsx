@@ -5,6 +5,7 @@ import * as ReactDOM from 'react-dom';
 
 import Marktone, { ReplyMention } from './components/marktone';
 import { DirectoryEntityType } from './kintone/directory-entity';
+import KintoneClient from './kintone/kintone-client';
 
 // Pass the login user information to DOM.
 // Because `window.kintone` cannot be referred directly from Chrome extension.
@@ -80,7 +81,26 @@ function convertHTMLAnchorElementToReplyMention(element: HTMLAnchorElement): Rep
     return { type, code };
 }
 
-function addMarktoneWhenReply(event: Event, replyButton: HTMLElement): void {
+async function extractReplyMentions(commentBaseText: HTMLElement): Promise<ReplyMention[]> {
+    const idAndTypes = Array.from<HTMLAnchorElement, { type: string; id: string }>(
+        commentBaseText.querySelectorAll('a.ocean-ui-plugin-mention-user'),
+        (anchor) => {
+            if (anchor.hasAttribute('data-org-mention-id')) {
+                return { type: 'ORGANIZATION', id: anchor.dataset.orgMentionId as string };
+            }
+            if (anchor.hasAttribute('data-group-mention-id')) {
+                return { type: 'GROUP', id: anchor.dataset.groupMentionId as string };
+            }
+            return { type: 'USER', id: anchor.dataset.mentionId as string };
+        },
+    );
+    const entities = await KintoneClient.ListDirectoryEntityByIdAndType(idAndTypes);
+    return entities.map((entity) => {
+        return { type: entity.type, code: entity.code };
+    });
+}
+
+async function addMarktoneWhenReply(event: Event, replyButton: HTMLElement): Promise<void> {
     let commentsWrapper = replyButton.closest('div.ocean-ui-comments-post-wrapper') as HTMLElement | null;
     if (commentsWrapper === null) { // The first comment has not wrapper.
         commentsWrapper = replyButton.closest('div.ocean-ui-comments-commentbase') as HTMLElement;
@@ -89,10 +109,16 @@ function addMarktoneWhenReply(event: Event, replyButton: HTMLElement): void {
 
     const commentBaseBody = replyButton.closest('div.ocean-ui-comments-commentbase-body') as HTMLElement;
     const commentBaseUser = commentBaseBody.querySelector('a.ocean-ui-comments-commentbase-user') as HTMLAnchorElement;
-    const replayMentions: ReplyMention[] = [];
-    replayMentions.push(convertHTMLAnchorElementToReplyMention(commentBaseUser));
+    const replyMentions: ReplyMention[] = [];
+    replyMentions.push(convertHTMLAnchorElementToReplyMention(commentBaseUser));
 
-    addMarktone(event, formElement, replayMentions);
+    if (replyButton.classList.contains('ocean-ui-comments-commentbase-commentall')) {
+        const commentBaseText = commentBaseBody.querySelector('span.ocean-ui-comments-commentbase-text') as HTMLElement;
+        const mentions = await extractReplyMentions(commentBaseText);
+        replyMentions.push(...mentions);
+    }
+
+    addMarktone(event, formElement, replyMentions);
 }
 
 // for the first comment
