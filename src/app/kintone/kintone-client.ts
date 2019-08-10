@@ -113,7 +113,7 @@ export class KintoneClient {
             name: o.name,
             avatar: this.presetOrganizationImageURL,
         }));
-        const groups = response.result.orgs.map<DirectoryEntity>(g => ({
+        const groups = response.result.groups.map<DirectoryEntity>(g => ({
             type: DirectoryEntityType.GROUP,
             id: parseInt(g.id, 10),
             code: g.code,
