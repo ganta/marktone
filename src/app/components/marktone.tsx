@@ -15,7 +15,7 @@ export interface ReplyMention {
 }
 
 interface MarktoneProps {
-    originalEditorField: HTMLElement;
+    originalForm: HTMLFormElement;
     replayMentions: ReplyMention[];
 }
 
@@ -69,10 +69,14 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
 
     private textArea: HTMLTextAreaElement | undefined;
 
+    private readonly originalForm: HTMLFormElement;
+
     private readonly mentionReplacer: MentionReplacer;
 
     constructor(props: MarktoneProps) {
         super(props);
+        this.originalForm = props.originalForm;
+
         this.mentionReplacer = new MentionReplacer();
 
         this.state = {
@@ -107,8 +111,12 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
 
         await this.mentionReplacer.fetchDirectoryEntityInText(rawText);
 
-        const { originalEditorField } = this.props;
+        const originalEditorField = this.originalEditorField();
         originalEditorField.innerHTML = marked(rawText);
+    }
+
+    private originalEditorField(): HTMLElement {
+        return this.originalForm.querySelector('div.ocean-ui-editor-field[role="textbox"]') as HTMLElement;
     }
 
     render() {

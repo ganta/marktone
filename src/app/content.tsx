@@ -33,21 +33,29 @@ function addMarktone(event: Event, formElement: HTMLElement, replyMentions: Repl
     let marktoneContainer = formElement.querySelector('div.marktone-container') as HTMLElement;
     if (marktoneContainer !== null) { return; } // Do nothing if the container already exists.
 
-    const originalEditorField = formElement.querySelector('div.ocean-ui-editor-field[role="textbox"]') as HTMLElement;
-
     // Create Marktone Container.
     marktoneContainer = document.createElement('div');
     marktoneContainer.classList.add('marktone-container');
     formElement.prepend(marktoneContainer);
 
-    // First rendering.
     const marktoneComponent = (
         <Marktone
-            originalEditorField={originalEditorField}
+            originalForm={formElement as HTMLFormElement}
             replayMentions={replyMentions}
         />
     );
-    ReactDOM.render(marktoneComponent, marktoneContainer);
+
+    // First rendering.
+    const commentFormEditor = formElement.querySelector('div.ocean-ui-comments-commentform-editor') as HTMLElement;
+    if (commentFormEditor.childElementCount > 0) {
+        ReactDOM.render(marktoneComponent, marktoneContainer);
+    } else {
+        // When "Reply to all", wait for the original editor area to be inserted.
+        const formEditorInsertedObserver = new MutationObserver(() => {
+            ReactDOM.render(marktoneComponent, marktoneContainer);
+        });
+        formEditorInsertedObserver.observe(commentFormEditor as Node, { childList: true });
+    }
 
     // Toggle opening and closing of Marktone according to the expansion state of the original form.
     const formExpandedObserver = new MutationObserver(() => {
