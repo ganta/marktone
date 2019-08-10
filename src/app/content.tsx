@@ -81,7 +81,7 @@ function convertHTMLAnchorElementToReplyMention(element: HTMLAnchorElement): Rep
 }
 
 function addMarktoneWhenReply(event: Event, replyButton: HTMLElement): void {
-    let commentsWrapper = replyButton.closest('div.ocean-ui-comments-post-wrapper') as HTMLElement;
+    let commentsWrapper = replyButton.closest('div.ocean-ui-comments-post-wrapper') as HTMLElement | null;
     if (commentsWrapper === null) { // The first comment has not wrapper.
         commentsWrapper = replyButton.closest('div.ocean-ui-comments-commentbase') as HTMLElement;
     }
