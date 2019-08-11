@@ -77,3 +77,10 @@
     }
   }
 }
+
+// Not supported for apps.
+.container-gaia {
+  .marktone {
+    display: none;
+  }
+}
