@@ -51,25 +51,31 @@ function renderMarktone(marktoneContainer: HTMLElement, originalForm: HTMLFormEl
 }
 
 function addMarktone(event: Event, formElement: HTMLElement, replyMentions: ReplyMention[] = []): void {
-    let marktoneContainer = formElement.querySelector('div.marktone-container') as HTMLElement;
-    if (marktoneContainer !== null) { return; } // Do nothing if the container already exists.
+    let isFirstRendering = false;
+    let marktoneContainer = formElement.querySelector<HTMLElement>('div.marktone-container');
+    const eventTarget = event.target as HTMLElement;
+    if (marktoneContainer === null) {
+        isFirstRendering = true;
+        // Create Marktone Container.
+        marktoneContainer = document.createElement('div');
+        marktoneContainer.classList.add('marktone-container');
+        formElement.prepend(marktoneContainer);
 
-    // Create Marktone Container.
-    marktoneContainer = document.createElement('div');
-    marktoneContainer.classList.add('marktone-container');
-    formElement.prepend(marktoneContainer);
+        renderMarktone(marktoneContainer, formElement as HTMLFormElement, replyMentions);
+    } else if (replyMentions.length !== 0) {
+        // When replying, the mentions must be overwritten.
+        renderMarktone(marktoneContainer, formElement as HTMLFormElement, replyMentions);
+    }
 
-    renderMarktone(marktoneContainer, formElement as HTMLFormElement, replyMentions);
+    if (!isFirstRendering) return;
 
     // Toggle opening and closing of Marktone according to the expansion state of the original form.
     const formExpandedObserver = new MutationObserver(() => {
         const originalCommentContainer = formElement.parentElement as HTMLElement;
         const isOriginalFormExpanded = (originalCommentContainer.getAttribute('aria-expanded') === 'true');
 
-        if (isOriginalFormExpanded) {
-            renderMarktone(marktoneContainer, formElement as HTMLFormElement, replyMentions);
-        } else {
-            ReactDOM.unmountComponentAtNode(marktoneContainer);
+        if (!isOriginalFormExpanded) {
+            ReactDOM.unmountComponentAtNode(marktoneContainer as HTMLElement);
         }
     });
     formExpandedObserver.observe(
