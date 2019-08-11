@@ -6,6 +6,7 @@ import * as ReactDOM from 'react-dom';
 import Marktone, { ReplyMention } from './components/marktone';
 import { DirectoryEntityType } from './kintone/directory-entity';
 import KintoneClient from './kintone/kintone-client';
+import HTML = marked.Tokens.HTML;
 
 // Pass the login user information to DOM.
 // Because `window.kintone` cannot be referred directly from Chrome extension.
@@ -76,6 +77,9 @@ function addMarktone(event: Event, formElement: HTMLElement, replyMentions: Repl
 
         if (!isOriginalFormExpanded) {
             ReactDOM.unmountComponentAtNode(marktoneContainer as HTMLElement);
+        } else if (replyMentions.length === 0) {
+            // If it is not a reply, it must be re-rendered.
+            renderMarktone(marktoneContainer as HTMLElement, formElement as HTMLFormElement, replyMentions);
         }
     });
     formExpandedObserver.observe(
