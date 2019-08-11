@@ -18,16 +18,19 @@ class MentionReplacer {
     }
 
     static escapeCode(code: string): string {
-        const replacer = (ch: string): string => `%${ch.charCodeAt(0)}`;
+        const replacer = (ch: string): string => {
+            const charCodeHex = `0${ch.charCodeAt(0).toString(16)}`.substr(-2); // `substr` for zero padding
+            return `%${charCodeHex}`;
+        };
         return code
-            .replace(/[ @%]/g, replacer)
+            .replace(/[ @%&'"<>*]/g, replacer)
             // Escape Markdown syntax characters following a multi-bytes character.
-            .replace(/(?<!\w)[ _*[\]|\\-]/g, replacer);
+            .replace(/(?<!\w)[ _~![\]|\\-]/g, replacer);
     }
 
     static unescapeCode(code: string): string {
-        return code.replace(/%(\d\d)/g, (match, charCodeStr) => {
-            const charCode = parseInt(charCodeStr, 10);
+        return code.replace(/%([0-9a-z]{2})/g, (match, charCodeStr) => {
+            const charCode = parseInt(charCodeStr, 16);
             return String.fromCharCode(charCode);
         });
     }
