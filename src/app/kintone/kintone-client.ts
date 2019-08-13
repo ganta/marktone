@@ -114,6 +114,7 @@ export class KintoneClient {
         const requestBody = { idAndTypes };
         const params = new URLSearchParams();
         params.append('_lc', this.loginUser.language);
+        params.append('_ref', encodeURI(window.location.href));
 
         const url = `${KintoneClient.listDirectoryEntityByIdAndType}?${params.toString()}`;
 
@@ -144,6 +145,7 @@ export class KintoneClient {
         };
         const params = new URLSearchParams();
         params.append('_lc', this.loginUser.language);
+        params.append('_ref', encodeURI(window.location.href));
 
         const url = `${KintoneClient.searchAPI}?${params.toString()}`;
 
