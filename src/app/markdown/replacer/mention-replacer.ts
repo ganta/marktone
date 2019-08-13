@@ -5,13 +5,16 @@ import KintoneClient from '../../kintone/kintone-client';
 class MentionReplacer {
     private static mentionRegExp = /@(?:(org|group)\/)?([^\s]+)/g;
 
+    private readonly kintoneClient: KintoneClient;
+
     private readonly userCache: DirectoryEntityCache;
 
     private readonly organizationCache: DirectoryEntityCache;
 
     private readonly groupCache: DirectoryEntityCache;
 
-    constructor() {
+    constructor(kintoneClient: KintoneClient) {
+        this.kintoneClient = kintoneClient;
         this.userCache = new DirectoryEntityCache();
         this.organizationCache = new DirectoryEntityCache();
         this.groupCache = new DirectoryEntityCache();
@@ -100,7 +103,7 @@ class MentionReplacer {
         let user = this.getUserFromCache(code);
         if (user) return null;
 
-        user = await KintoneClient.findUserByCode(code);
+        user = await this.kintoneClient.findUserByCode(code);
         this.userCache.set(code, user);
 
         return user;
@@ -114,7 +117,7 @@ class MentionReplacer {
         let organization = this.getOrganizationFromCache(code);
         if (organization) return null;
 
-        organization = await KintoneClient.findOrganizationByCode(code);
+        organization = await this.kintoneClient.findOrganizationByCode(code);
         this.organizationCache.set(code, organization);
 
         return organization;
@@ -128,7 +131,7 @@ class MentionReplacer {
         let group = this.getGroupFromCache(code);
         if (group) return null;
 
-        group = await KintoneClient.findGroupByCode(code);
+        group = await this.kintoneClient.findGroupByCode(code);
         this.groupCache.set(code, group);
 
         return group;

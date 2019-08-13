@@ -6,7 +6,6 @@ import * as ReactDOM from 'react-dom';
 import Marktone, { ReplyMention } from './components/marktone';
 import { DirectoryEntityType } from './kintone/directory-entity';
 import KintoneClient from './kintone/kintone-client';
-import HTML = marked.Tokens.HTML;
 
 // Pass the login user information to DOM.
 // Because `window.kintone` cannot be referred directly from Chrome extension.
@@ -107,7 +106,8 @@ async function extractReplyMentions(commentBaseText: HTMLElement): Promise<Reply
             return { type: 'USER', id: anchor.dataset.mentionId as string };
         },
     );
-    const entities = await KintoneClient.ListDirectoryEntityByIdAndType(idAndTypes);
+    const client = new KintoneClient();
+    const entities = await client.ListDirectoryEntityByIdAndType(idAndTypes);
     return entities.map((entity) => {
         return { type: entity.type, code: entity.code };
     });

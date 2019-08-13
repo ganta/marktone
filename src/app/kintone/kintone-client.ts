@@ -1,5 +1,4 @@
 import { DirectoryEntity, DirectoryEntityType, DirectoryEntityTypeUtil } from './directory-entity';
-import DirectoryEntityCache from './directory-entity-cache';
 
 interface SearchDirectoryUserResponse {
     entityType: string;
@@ -93,20 +92,28 @@ export class KintoneClient {
 
     private static listDirectoryEntityByIdAndType = '/k/api/directory/listByIdAndType.json';
 
-    private cache: DirectoryEntityCache;
+    private readonly loginUser: LoginUser;
 
-    constructor(cache: DirectoryEntityCache) {
-        this.cache = cache || new DirectoryEntityCache();
+    private readonly spaceId: number | null;
+
+    constructor() {
+        this.loginUser = KintoneClient.getLoginUser();
+        this.spaceId = KintoneClient.getSpaceId();
     }
 
     static getLoginUser(): LoginUser {
         return JSON.parse(document.body.dataset.LoginUser as string);
     }
 
-    static async ListDirectoryEntityByIdAndType(idAndTypes: { id: string; type: string }[]): Promise<DirectoryEntity[]> {
+    static getSpaceId(): number | null {
+        const match = window.location.hash.match(/\/space\/(\d+)\//);
+        return match ? parseInt(match[1], 10) : null;
+    }
+
+    async ListDirectoryEntityByIdAndType(idAndTypes: { id: string; type: string }[]): Promise<DirectoryEntity[]> {
         const requestBody = { idAndTypes };
         const params = new URLSearchParams();
-        params.append('_lc', KintoneClient.getLoginUser().language);
+        params.append('_lc', this.loginUser.language);
 
         const url = `${KintoneClient.listDirectoryEntityByIdAndType}?${params.toString()}`;
 
@@ -128,10 +135,19 @@ export class KintoneClient {
         });
     }
 
-    static async searchDirectory(term: string): Promise<DirectoryEntityCollection> {
-        const requestBody = { term };
+    async searchDirectory(term: string): Promise<DirectoryEntityCollection> {
+        const requestBody = {
+            term,
+            appId: null,
+            recordId: null,
+            spaceId: this.spaceId,
+        };
+        const params = new URLSearchParams();
+        params.append('_lc', this.loginUser.language);
 
-        const rawResponse = await fetch(KintoneClient.searchAPI, {
+        const url = `${KintoneClient.searchAPI}?${params.toString()}`;
+
+        const rawResponse = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json; charset=utf-8' },
             body: JSON.stringify(requestBody),
@@ -150,33 +166,33 @@ export class KintoneClient {
             id: parseInt(o.id, 10),
             code: o.code,
             name: o.name,
-            avatar: this.presetOrganizationImageURL,
+            avatar: KintoneClient.presetOrganizationImageURL,
         }));
         const groups = response.result.groups.map<DirectoryEntity>(g => ({
             type: DirectoryEntityType.GROUP,
             id: parseInt(g.id, 10),
             code: g.code,
             name: g.name,
-            avatar: this.presetGroupImageURL,
+            avatar: KintoneClient.presetGroupImageURL,
         }));
 
         return new DirectoryEntityCollection({ users, orgs, groups });
     }
 
-    static async findUserByCode(code: string): Promise<DirectoryEntity | null> {
-        const collection = await KintoneClient.searchDirectory(code);
+    async findUserByCode(code: string): Promise<DirectoryEntity | null> {
+        const collection = await this.searchDirectory(code);
         const user = collection.users.find(entity => entity.code === code);
         return user || null;
     }
 
-    static async findOrganizationByCode(code: string): Promise<DirectoryEntity | null> {
-        const collection = await KintoneClient.searchDirectory(code);
+    async findOrganizationByCode(code: string): Promise<DirectoryEntity | null> {
+        const collection = await this.searchDirectory(code);
         const organization = collection.orgs.find(entity => entity.code === code);
         return organization || null;
     }
 
-    static async findGroupByCode(code: string): Promise<DirectoryEntity | null> {
-        const collection = await KintoneClient.searchDirectory(code);
+    async findGroupByCode(code: string): Promise<DirectoryEntity | null> {
+        const collection = await this.searchDirectory(code);
         const group = collection.groups.find(entity => entity.code === code);
         return group || null;
     }

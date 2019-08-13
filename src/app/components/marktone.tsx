@@ -51,10 +51,6 @@ const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
     );
 };
 
-async function dataProvider(token: string) {
-    const collection = await KintoneClient.searchDirectory(token);
-    return collection.flat();
-}
 
 class Marktone extends React.Component<MarktoneProps, MarktoneState> {
     private static convertReplyMentionsToText(replyMentions: ReplyMention[]): string {
@@ -67,6 +63,8 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
         return mentions.join(' ');
     }
 
+    private readonly kintoneClient: KintoneClient;
+
     private textArea: HTMLTextAreaElement | undefined;
 
     private readonly originalForm: HTMLFormElement;
@@ -77,7 +75,8 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
         super(props);
         this.originalForm = props.originalForm;
 
-        this.mentionReplacer = new MentionReplacer();
+        this.kintoneClient = new KintoneClient();
+        this.mentionReplacer = new MentionReplacer(this.kintoneClient);
 
         this.state = {
             rawText: '',
@@ -91,6 +90,7 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
         });
 
         this.handleChange = this.handleChange.bind(this);
+        this.kintoneDirectoryProvider = this.kintoneDirectoryProvider.bind(this);
     }
 
     componentDidMount(): void {
@@ -119,6 +119,11 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
         return this.originalForm.querySelector('div.ocean-ui-editor-field[role="textbox"]') as HTMLElement;
     }
 
+    private async kintoneDirectoryProvider(token: string) {
+        const collection = await this.kintoneClient.searchDirectory(token);
+        return collection.flat();
+    }
+
     render() {
         const { rawText } = this.state;
 
@@ -128,7 +133,7 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
                     value={rawText}
                     trigger={{
                         '@': {
-                            dataProvider,
+                            dataProvider: this.kintoneDirectoryProvider,
                             component: MentionCandidate,
                             output: ({ type, code }) => MentionReplacer.createMention(type, code),
                         },

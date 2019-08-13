@@ -9,6 +9,7 @@
   ],
   "globals": {
     "document": true,
+    "window": true,
     "MutationObserver": true,
     "fetch": true
   },
