@@ -78,6 +78,20 @@
   }
 }
 
+.marktone-disabled {
+  .marktone {
+    display: none;
+  }
+}
+
+/* TODO: Uncomment the comment after implementing the preview.
+body:not(.marktone-disabled) {
+  .ocean-ui-comments-commentform-editor {
+    display: none;
+  }
+}
+*/
+
 // Not supported for apps.
 .container-gaia {
   .marktone {
