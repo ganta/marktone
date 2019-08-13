@@ -112,18 +112,7 @@ export class KintoneClient {
 
     async ListDirectoryEntityByIdAndType(idAndTypes: { id: string; type: string }[]): Promise<DirectoryEntity[]> {
         const requestBody = { idAndTypes };
-        const params = new URLSearchParams();
-        params.append('_lc', this.loginUser.language);
-        params.append('_ref', encodeURI(window.location.href));
-
-        const url = `${KintoneClient.listDirectoryEntityByIdAndType}?${params.toString()}`;
-
-        const rawResponse = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json; charset=utf-8' },
-            body: JSON.stringify(requestBody),
-        });
-        const response = await rawResponse.json() as ListDirectoryEntityResponse;
+        const response = await this.postToAPI<ListDirectoryEntityResponse>(KintoneClient.listDirectoryEntityByIdAndType, requestBody);
 
         return response.result.entities.map((entity) => {
             return ({
@@ -143,18 +132,7 @@ export class KintoneClient {
             recordId: null,
             spaceId: this.spaceId,
         };
-        const params = new URLSearchParams();
-        params.append('_lc', this.loginUser.language);
-        params.append('_ref', encodeURI(window.location.href));
-
-        const url = `${KintoneClient.searchAPI}?${params.toString()}`;
-
-        const rawResponse = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json; charset=utf-8' },
-            body: JSON.stringify(requestBody),
-        });
-        const response = await rawResponse.json() as SearchDirectoryResponse;
+        const response = await this.postToAPI<SearchDirectoryResponse>(KintoneClient.searchAPI, requestBody);
 
         const users = response.result.users.map<DirectoryEntity>(u => ({
             type: DirectoryEntityType.USER,
@@ -197,6 +175,21 @@ export class KintoneClient {
         const collection = await this.searchDirectory(code);
         const group = collection.groups.find(entity => entity.code === code);
         return group || null;
+    }
+
+    private async postToAPI<T>(path: string, requestBody: {}): Promise<T> {
+        const params = new URLSearchParams();
+        params.append('_lc', this.loginUser.language);
+        params.append('_ref', encodeURI(window.location.href));
+
+        const url = `${path}?${params.toString()}`;
+
+        const rawResponse = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(requestBody),
+        });
+        return await rawResponse.json() as T;
     }
 }
 
