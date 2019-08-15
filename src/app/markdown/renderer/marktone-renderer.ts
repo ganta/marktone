@@ -40,7 +40,9 @@ class MarktoneRenderer extends Renderer {
 
     heading(text: string, level: number): string {
         const fontSize = 2.0 - (0.2 * level);
-        let style = `font-size: ${fontSize}em; font-weight: bold;`;
+        const lineHeight = 1.6 - (0.05 * level);
+        const margin = 12 - level;
+        let style = `font-size: ${fontSize}em; font-weight: bold; line-height: ${lineHeight}em; margin: ${margin}px 0;`;
         if (level <= 2) {
             style += ' border-bottom: 1px solid #ddd;';
         }
@@ -62,6 +64,11 @@ class MarktoneRenderer extends Renderer {
     blockquote(quote: string): string {
         const style = 'border-left: .25em solid #dfe2e5; color: #6a737d; margin: 0; padding: 0 1em;';
         return `<blockquote style="${style}">${quote}</blockquote>`;
+    }
+
+    paragraph(text: string): string {
+        const style = 'margin: 0 0 6px;';
+        return `<p style="${style}">${text}</p>`;
     }
 
     table(header: string, body: string): string {
