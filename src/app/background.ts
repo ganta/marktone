@@ -4,7 +4,25 @@ function isKintoneURL(url: string | undefined) {
     return !!url.match(/https:\/\/[^.]+\.cybozu(?:-dev)?\.com\/k\/#\/(?:space|people)\//);
 }
 
-chrome.browserAction.onClicked.addListener((activeTab) => {
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
+        chrome.declarativeContent.onPageChanged.addRules([
+            {
+                conditions: [
+                    new chrome.declarativeContent.PageStateMatcher({
+                        pageUrl: { urlMatches: 'https://[^.]+\\.cybozu\\.com/k/.*' },
+                    }),
+                    new chrome.declarativeContent.PageStateMatcher({
+                        pageUrl: { urlMatches: 'https://[^.]+\\.cybozu-dev\\.com/k/.*' },
+                    }), // continue with more urls if needed
+                ],
+                actions: [new chrome.declarativeContent.ShowPageAction()],
+            },
+        ]);
+    });
+});
+
+chrome.pageAction.onClicked.addListener((activeTab) => {
     if (!isKintoneURL(activeTab.url)) {
         return;
     }
@@ -16,8 +34,8 @@ chrome.browserAction.onClicked.addListener((activeTab) => {
         if (typeof result === 'undefined' || typeof result[0] === 'undefined') return;
 
         const marktoneDisabled = result[0];
-        chrome.browserAction.setIcon({
-            tabId: activeTab.id,
+        chrome.pageAction.setIcon({
+            tabId: activeTab.id as number,
             path: marktoneDisabled ? 'icons/disabled-icon48.png' : 'icons/icon48.png',
         });
     });

@@ -9,7 +9,7 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "browser_action": {
+  "page_action": {
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -19,6 +19,8 @@
   },
   "permissions": [
     "clipboardRead",
+    "declarativeContent",
+    "tabs",
     "activeTab",
     "https://*.cybozu.com/k/*",
     "https://*.cybozu-dev.com/k/*"
