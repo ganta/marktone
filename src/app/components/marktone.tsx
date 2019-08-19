@@ -21,6 +21,8 @@ interface MarktoneProps {
 
 interface MarktoneState {
     rawText: string;
+    renderedHTML: string;
+    previewHeight: number;
 }
 
 interface MentionCandidateItem {
@@ -80,6 +82,8 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
 
         this.state = {
             rawText: '',
+            renderedHTML: '',
+            previewHeight: 0,
         };
 
         marked.setOptions({
@@ -91,6 +95,9 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
 
         this.handleChange = this.handleChange.bind(this);
         this.kintoneDirectoryProvider = this.kintoneDirectoryProvider.bind(this);
+        this.getTextAreaHeight = this.getTextAreaHeight.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.setMouseDownEvent = this.setMouseDownEvent.bind(this);
     }
 
     componentDidMount(): void {
@@ -98,11 +105,27 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
         if (textArea) {
             textArea.focus();
 
+            textArea.addEventListener('mousedown', this.setMouseDownEvent);
+
+            this.setState({ previewHeight: textArea.offsetHeight });
+
             // Setting the value to `rawText` should be done in the constructor,
             // but in order to perform Markdown rendering, run it in `componentDidMount()`.
             const replayMentionsText = Marktone.convertReplyMentionsToText(props.replayMentions);
             this.setState({ rawText: replayMentionsText === '' ? '' : `${replayMentionsText} ` });
         }
+    }
+
+    setMouseDownEvent() {
+        this.handleClick();
+    }
+
+    getTextAreaHeight() {
+        const { textArea } = this;
+        if (textArea) {
+            this.setState({ previewHeight: textArea.offsetHeight });
+        }
+        document.removeEventListener('mouseup', this.getTextAreaHeight);
     }
 
     async handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -112,7 +135,13 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
         await this.mentionReplacer.fetchDirectoryEntityInText(rawText);
 
         const originalEditorField = this.originalEditorField();
-        originalEditorField.innerHTML = marked(rawText);
+        const renderedHTML = marked(rawText);
+        originalEditorField.innerHTML = renderedHTML;
+        this.setState({ renderedHTML });
+    }
+
+    handleClick() {
+        document.addEventListener('mouseup', this.getTextAreaHeight);
     }
 
     private originalEditorField(): HTMLElement {
@@ -125,30 +154,35 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
     }
 
     render() {
-        const { rawText } = this.state;
+        const { rawText, renderedHTML, previewHeight } = this.state;
 
         return (
             <div className="marktone">
-                <ReactTextareaAutocomplete
-                    value={rawText}
-                    trigger={{
-                        '@': {
-                            dataProvider: this.kintoneDirectoryProvider,
-                            component: MentionCandidate,
-                            output: ({ type, code }) => MentionReplacer.createMention(type, code),
-                        },
-                    }}
-                    loadingComponent={() => <span>Loading</span>}
-                    className="marktone-textarea"
-                    innerRef={(textArea) => { this.textArea = textArea; }}
-                    onChange={this.handleChange}
+                <div className="editor-area">
+                    <ReactTextareaAutocomplete
+                        value={rawText}
+                        trigger={{
+                            '@': {
+                                dataProvider: this.kintoneDirectoryProvider,
+                                component: MentionCandidate,
+                                output: ({ type, code }) => MentionReplacer.createMention(type, code),
+                            },
+                        }}
+                        loadingComponent={() => <span>Loading</span>}
+                        innerRef={(textArea) => { this.textArea = textArea; }}
+                        onChange={this.handleChange}
 
-                    containerClassName="marktone-autocomplete-container"
-                    dropdownClassName="marktone-autocomplete-dropdown"
-                    listClassName="marktone-autocomplete-list"
-                    itemClassName="marktone-autocomplete-item"
-                    loaderClassName="marktone-autocomplete-loader"
-                />
+                        containerClassName="autocomplete-container"
+                        dropdownClassName="autocomplete-dropdown"
+                        listClassName="autocomplete-list"
+                        itemClassName="autocomplete-item"
+                        loaderClassName="autocomplete-loader"
+                    />
+                    <div className="preview-wrapper" style={{ height: previewHeight }}>
+                        {/* eslint-disable-next-line react/no-danger */}
+                        <div className="preview" dangerouslySetInnerHTML={{ __html: renderedHTML }} />
+                    </div>
+                </div>
             </div>
         );
     }
