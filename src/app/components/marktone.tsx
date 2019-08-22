@@ -11,20 +11,18 @@ import { DirectoryEntityType } from "../kintone/directory-entity";
 
 import "@webscopeio/react-textarea-autocomplete/style.css";
 
+const { useState, useEffect } = React;
+
 export interface ReplyMention {
   type: DirectoryEntityType;
   code: string;
 }
 
 interface MarktoneProps {
-  originalForm: HTMLFormElement;
+  originalFormEl: HTMLFormElement;
   replayMentions: ReplyMention[];
-}
-
-interface MarktoneState {
-  rawText: string;
-  renderedHTML: string;
-  previewHeight: number;
+  kintoneClient: KintoneClient;
+  mentionReplacer: MentionReplacer;
 }
 
 interface MentionCandidateItem {
@@ -53,18 +51,23 @@ const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
   );
 };
 
-class Marktone extends React.Component<MarktoneProps, MarktoneState> {
-  private readonly kintoneClient: KintoneClient;
+const Marktone = (props: MarktoneProps) => {
+  const { originalFormEl, kintoneClient, mentionReplacer } = props;
 
-  private textArea: HTMLTextAreaElement | undefined;
+  marked.setOptions({
+    gfm: true, // Enable GitHub Flavored Markdown.
+    breaks: true, // Add 'br' element on a single line break.
+    headerIds: false,
+    renderer: new MarktoneRenderer(mentionReplacer)
+  });
 
-  private readonly originalForm: HTMLFormElement;
+  const [rawText, setRawText] = useState("");
+  const [renderedHTML, setRenderedHTML] = useState("");
+  const [previewHeight, setPreviewHeight] = useState(0);
 
-  private readonly mentionReplacer: MentionReplacer;
-
-  private static convertReplyMentionsToText(
+  const convertReplyMentionsToText = (
     replyMentions: ReplyMention[]
-  ): string {
+  ): string => {
     const currentUser = KintoneClient.getLoginUser();
     const normalizedMentions = replyMentions.filter(replyMention => {
       if (replyMention.type !== DirectoryEntityType.USER) return true;
@@ -74,136 +77,89 @@ class Marktone extends React.Component<MarktoneProps, MarktoneState> {
       MentionReplacer.createMention(replyMention.type, replyMention.code)
     );
     return mentions.join(" ");
-  }
+  };
 
-  constructor(props: MarktoneProps) {
-    super(props);
-    this.originalForm = props.originalForm;
+  useEffect(() => {
+    const replayMentionsText = convertReplyMentionsToText(props.replayMentions);
+    setRawText(replayMentionsText === "" ? "" : `${replayMentionsText} `);
+  }, [props.replayMentions]);
 
-    this.kintoneClient = new KintoneClient();
-    this.mentionReplacer = new MentionReplacer(this.kintoneClient);
+  const originalEditorFieldEl = originalFormEl.querySelector(
+    'div.ocean-ui-editor-field[role="textbox"]'
+  ) as HTMLElement;
 
-    this.state = {
-      rawText: "",
-      renderedHTML: "",
-      previewHeight: 0
-    };
+  useEffect(() => {
+    originalEditorFieldEl.innerHTML = renderedHTML;
+  }, [renderedHTML, originalEditorFieldEl]);
 
-    marked.setOptions({
-      gfm: true, // Enable GitHub Flavored Markdown.
-      breaks: true, // Add 'br' element on a single line break.
-      headerIds: false,
-      renderer: new MarktoneRenderer(this.mentionReplacer)
+  const handleChangeMarkdownTextArea = async (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const markdownText = event.target.value;
+    setRawText(markdownText);
+
+    await mentionReplacer.fetchDirectoryEntityInText(markdownText);
+
+    setRenderedHTML(marked(markdownText));
+  };
+
+  const handleResizeTextArea = (textAreaEl: HTMLTextAreaElement) => {
+    const resizeObserver = new MutationObserver((records, observer) => {
+      setPreviewHeight(textAreaEl.offsetHeight);
     });
 
-    this.handleChange = this.handleChange.bind(this);
-    this.kintoneDirectoryProvider = this.kintoneDirectoryProvider.bind(this);
-    this.getTextAreaHeight = this.getTextAreaHeight.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.setMouseDownEvent = this.setMouseDownEvent.bind(this);
-  }
+    resizeObserver.observe(textAreaEl, {
+      attributes: true,
+      attributeFilter: ["style"]
+    });
 
-  componentDidMount(): void {
-    const { textArea, props } = this;
-    if (textArea) {
-      textArea.focus();
+    setPreviewHeight(textAreaEl.offsetHeight);
+  };
 
-      textArea.addEventListener("mousedown", this.setMouseDownEvent);
-
-      // FIXME: Do not use setState in componentDidMount.
-      // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({ previewHeight: textArea.offsetHeight });
-
-      // Setting the value to `rawText` should be done in the constructor,
-      // but in order to perform Markdown rendering, run it in `componentDidMount()`.
-      const replayMentionsText = Marktone.convertReplyMentionsToText(
-        props.replayMentions
-      );
-      // FIXME: Do not use setState in componentDidMount.
-      // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({
-        rawText: replayMentionsText === "" ? "" : `${replayMentionsText} `
-      });
-    }
-  }
-
-  setMouseDownEvent() {
-    this.handleClick();
-  }
-
-  getTextAreaHeight() {
-    const { textArea } = this;
-    if (textArea) {
-      this.setState({ previewHeight: textArea.offsetHeight });
-    }
-    document.removeEventListener("mouseup", this.getTextAreaHeight);
-  }
-
-  async handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    const rawText = event.target.value;
-    this.setState({ rawText });
-
-    await this.mentionReplacer.fetchDirectoryEntityInText(rawText);
-
-    const originalEditorField = this.originalEditorField();
-    const renderedHTML = marked(rawText);
-    originalEditorField.innerHTML = renderedHTML;
-    this.setState({ renderedHTML });
-  }
-
-  handleClick() {
-    document.addEventListener("mouseup", this.getTextAreaHeight);
-  }
-
-  private originalEditorField(): HTMLElement {
-    return this.originalForm.querySelector(
-      'div.ocean-ui-editor-field[role="textbox"]'
-    ) as HTMLElement;
-  }
-
-  private async kintoneDirectoryProvider(token: string) {
-    const collection = await this.kintoneClient.searchDirectory(token);
+  const kintoneDirectoryProvider = async (token: string) => {
+    const collection = await kintoneClient.searchDirectory(token);
     return collection.flat();
-  }
+  };
 
-  render() {
-    const { rawText, renderedHTML, previewHeight } = this.state;
-
-    return (
-      <div className="marktone">
-        <div className="editor-area">
-          <ReactTextareaAutocomplete
-            value={rawText}
-            trigger={{
-              "@": {
-                dataProvider: this.kintoneDirectoryProvider,
-                component: MentionCandidate,
-                output: ({ type, code }) =>
-                  MentionReplacer.createMention(type, code)
+  return (
+    <div className="marktone">
+      <div className="editor-area">
+        <ReactTextareaAutocomplete
+          value={rawText}
+          trigger={{
+            "@": {
+              dataProvider: kintoneDirectoryProvider,
+              component: MentionCandidate,
+              output: ({ type, code }) => {
+                return MentionReplacer.createMention(type, code);
               }
-            }}
-            loadingComponent={() => <span>Loading</span>}
-            innerRef={textArea => {
-              this.textArea = textArea;
-            }}
-            onChange={this.handleChange}
-            containerClassName="autocomplete-container"
-            dropdownClassName="autocomplete-dropdown"
-            listClassName="autocomplete-list"
-            itemClassName="autocomplete-item"
-            loaderClassName="autocomplete-loader"
+            }
+          }}
+          loadingComponent={() => <span>Loading</span>}
+          onChange={handleChangeMarkdownTextArea}
+          innerRef={textAreaEl => {
+            if (textAreaEl) {
+              textAreaEl.focus();
+
+              handleResizeTextArea(textAreaEl);
+            }
+          }}
+          containerClassName="autocomplete-container"
+          dropdownClassName="autocomplete-dropdown"
+          listClassName="autocomplete-list"
+          itemClassName="autocomplete-item"
+          loaderClassName="autocomplete-loader"
+        />
+        <div className="preview-wrapper" style={{ height: previewHeight }}>
+          {/* eslint-disable-next-line react/no-danger */}
+          <div
+            className="preview"
+            dangerouslySetInnerHTML={{ __html: renderedHTML }}
           />
-          <div className="preview-wrapper" style={{ height: previewHeight }}>
-            {/* eslint-disable-next-line react/no-danger */}
-            <div
-              className="preview"
-              dangerouslySetInnerHTML={{ __html: renderedHTML }}
-            />
-          </div>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default Marktone;

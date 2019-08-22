@@ -111,7 +111,7 @@ export class KintoneClient {
   }
 
   static getLoginUser(): LoginUser {
-    return JSON.parse(document.body.dataset.LoginUser as string);
+    return JSON.parse(document.body.dataset.loginUser as string);
   }
 
   static getSpaceId(): number | null {

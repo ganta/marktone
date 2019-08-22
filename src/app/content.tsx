@@ -6,12 +6,13 @@ import * as ReactDOM from "react-dom";
 import Marktone, { ReplyMention } from "./components/marktone";
 import { DirectoryEntityType } from "./kintone/directory-entity";
 import KintoneClient from "./kintone/kintone-client";
+import MentionReplacer from "./markdown/replacer/mention-replacer";
 
 // Pass the login user information to DOM.
 // Because `window.kintone` cannot be referred directly from Chrome extension.
 const initializationScript = document.createElement("script");
 initializationScript.text = `
-    document.body.dataset.LoginUser = JSON.stringify(kintone.getLoginUser());
+    document.body.dataset.loginUser = JSON.stringify(kintone.getLoginUser());
 `;
 document.body.appendChild(initializationScript);
 
@@ -35,8 +36,15 @@ function renderMarktone(
   originalForm: HTMLFormElement,
   replyMentions: ReplyMention[]
 ): void {
+  const kintoneClient = new KintoneClient();
+  const mentionReplacer = new MentionReplacer(kintoneClient);
   const marktoneComponent = (
-    <Marktone originalForm={originalForm} replayMentions={replyMentions} />
+    <Marktone
+      originalFormEl={originalForm}
+      replayMentions={replyMentions}
+      kintoneClient={kintoneClient}
+      mentionReplacer={mentionReplacer}
+    />
   );
 
   const commentFormEditor = originalForm.querySelector(
