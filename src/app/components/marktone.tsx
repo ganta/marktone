@@ -92,6 +92,19 @@ const Marktone = (props: MarktoneProps) => {
     originalEditorFieldEl.innerHTML = renderedHTML;
   }, [renderedHTML, originalEditorFieldEl]);
 
+  useEffect(() => {
+    // Show the confirm dialog before leave the page.
+    const showConfirmDialog = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", showConfirmDialog);
+
+    return () => {
+      window.removeEventListener("beforeunload", showConfirmDialog);
+    };
+  }, []);
+
   const handleChangeMarkdownTextArea = async (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
