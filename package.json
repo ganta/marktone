@@ -4,8 +4,10 @@
   "description": "Change a Rich Text input area to Markdown input area on kintone",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint --ext .ts,.tsx src && prettier --check 'src/**/*.{ts,tsx,scss}'",
-    "lint:fix": "eslint --ext .ts,.tsx --fix src && prettier --write 'src/**/*.{ts,tsx,scss}'",
+    "eslint": "eslint --ext .ts,.tsx src",
+    "prettier": "prettier --check 'src/**/*.{ts,tsx,scss}'",
+    "lint": "npm run eslint && npm run prettier",
+    "lint:fix": "npm run eslint -- --fix src && npm run prettier -- --write",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

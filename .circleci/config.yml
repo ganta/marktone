@@ -1,39 +1,64 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@1.0.1
+#
+# Constant definitions
+#
+constants:
+  - &node-version 10.16.3
 
+#
+# Import orbs
+#
+orbs:
+  node: circleci/node@1.1.4
+
+#
+# Workflow definitions
+#
 workflows:
   main:
     jobs:
       - lint
       - pack
 
+#
+# Jobs
+#
 jobs:
   lint:
     executor:
       name: node/default
-      tag: 10.16.0
+      tag: *node-version
     steps:
       - checkout
-      - node/with-cache:
-          steps:
-            - run:
-                name: Execute ESLint
-                command: npx eslint --ext .ts,.tsx . --format junit --output-file ./test-reports/eslint/results.xml
+      - install-node-modules
+      - run:
+          name: EsLint
+          command: npm run eslint -- --format junit --output-file ./test-reports/eslint/results.xml
+      - run:
+          name: Prettier
+          command: npm run prettier
       - store_test_results:
           path: ./test-reports
   pack:
     executor:
       name: node/default
-      tag: 10.16.0
+      tag: *node-version
     steps:
       - checkout
+      - install-node-modules
+      - run:
+          name: Execute Webpack
+          command: npx webpack
+
+#
+# Commands
+#
+commands:
+  install-node-modules:
+    steps:
       - node/with-cache:
           steps:
             - run:
                 name: Install Node modules
-                command: npm install
-      - run:
-          name: Execute Webpack
-          command: npx webpack
+                command: npm ci
