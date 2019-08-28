@@ -40,11 +40,13 @@
     "webpack-cli": "3.3.7"
   },
   "dependencies": {
+    "@types/dompurify": "0.0.33",
     "@types/marked": "0.6.5",
     "@types/react": "16.9.2",
     "@types/react-dom": "16.9.0",
     "@types/webscopeio__react-textarea-autocomplete": "2.3.0",
     "@webscopeio/react-textarea-autocomplete": "4.6.1",
+    "dompurify": "1.0.11",
     "marked": "0.7.0",
     "react": "16.9.0",
     "react-dom": "16.9.0"
