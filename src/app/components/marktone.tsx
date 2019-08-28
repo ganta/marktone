@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as marked from "marked";
+import * as DOMPurify from "dompurify";
 import ReactTextareaAutocomplete, {
   ItemComponentProps
 } from "@webscopeio/react-textarea-autocomplete";
@@ -113,7 +114,9 @@ const Marktone = (props: MarktoneProps) => {
 
     await mentionReplacer.fetchDirectoryEntityInText(markdownText);
 
-    setRenderedHTML(marked(markdownText));
+    const htmlString = marked(markdownText);
+    const sanitizedHTML = DOMPurify.sanitize(htmlString);
+    setRenderedHTML(sanitizedHTML);
   };
 
   const handleResizeTextArea = (textAreaEl: HTMLTextAreaElement) => {
