@@ -151,7 +151,7 @@ const Marktone = (props: MarktoneProps) => {
               }
             }
           }}
-          loadingComponent={() => <span>Loading</span>}
+          loadingComponent={() => <span>Loading...</span>}
           onChange={handleChangeMarkdownTextArea}
           innerRef={textAreaEl => {
             if (textAreaEl) {
