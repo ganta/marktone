@@ -171,6 +171,7 @@ const Marktone = (props: MarktoneProps) => {
           {/* eslint-disable-next-line react/no-danger */}
           <div
             className="preview"
+            onClick={event => event.preventDefault()}
             dangerouslySetInnerHTML={{ __html: renderedHTML }}
           />
         </div>
