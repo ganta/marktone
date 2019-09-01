@@ -71,7 +71,7 @@ class MarktoneRenderer extends Renderer {
   }
 
   paragraph(text: string): string {
-    const style = "margin: 0 0 6px;";
+    const style = "margin: 0 0 16px;";
     return `<p style="${style}">${text}</p>`;
   }
 
