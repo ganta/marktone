@@ -99,6 +99,15 @@ class MarktoneRenderer extends Renderer {
     return `${tag}${content}</${type}>`;
   }
 
+  // @ts-ignore Because the inheritance source argument is omitted.
+  listitem(text: string, isTask: boolean): string {
+    let style = "";
+    if (isTask) {
+      style = "list-style-type: none; margin-left: -20px;";
+    }
+    return `<li style="${style}">${text}</li>`;
+  }
+
   //
   // Inline level renderer methods
   //

@@ -59,6 +59,7 @@ const Marktone = (props: MarktoneProps) => {
     gfm: true, // Enable GitHub Flavored Markdown.
     breaks: true, // Add 'br' element on a single line break.
     headerIds: false,
+    // @ts-ignore for `listitem()`
     renderer: new MarktoneRenderer(mentionReplacer)
   });
 
