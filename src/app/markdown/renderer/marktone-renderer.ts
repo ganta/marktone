@@ -1,5 +1,6 @@
 import { MarkedOptions, Renderer } from "marked";
 import MentionReplacer from "../replacer/mention-replacer";
+import KintoneClient from "../../kintone/kintone-client";
 
 class MarktoneRendererHelper {
   static escapeHTML(html: string): string {
@@ -120,6 +121,47 @@ class MarktoneRenderer extends Renderer {
     const style =
       "background-color: rgba(27,31,35,.05); border-radius: 3px; margin: 0 1px; padding: .2em .4em;";
     return `<code style="${style}">${code}</code>`;
+  }
+
+  image(href: string, title: string | null, text: string): string {
+    // For later sanitization with DOMPurify, skip the `href` sanitization here.
+
+    if (href === null) {
+      return text;
+    }
+
+    const additionalAttributes: { [key: string]: string } = {};
+    let imageURL = href;
+
+    if (title != null && title.startsWith("=")) {
+      additionalAttributes.width = title.slice(1);
+    }
+
+    if (href.startsWith("tmp:")) {
+      const fileKey = href.split(":")[1];
+      const referer = encodeURI(window.location.href);
+
+      additionalAttributes.class = "cybozu-tmp-file";
+      additionalAttributes["data-original"] = imageURL; // This URL must not include width.
+      additionalAttributes["data-file"] = fileKey;
+
+      const params = new URLSearchParams();
+      params.append("fileKey", fileKey);
+      params.append("_lc", KintoneClient.getLoginUser().language);
+      params.append("_ref", referer);
+
+      if (typeof additionalAttributes.width !== "undefined") {
+        params.append("w", additionalAttributes.width);
+      }
+
+      imageURL = `${KintoneClient.downloadAPI}?${params.toString()}`;
+    }
+
+    const additionalAttributesString = Object.keys(additionalAttributes)
+      .map<string>(key => `${key}="${additionalAttributes[key]}"`)
+      .join(" ");
+
+    return `<img src="${imageURL}" alt="${text}" ${additionalAttributesString}>`;
   }
 }
 /* eslint-enable class-methods-use-this */

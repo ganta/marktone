@@ -48,6 +48,18 @@ interface ListDirectoryEntityResponse {
   success: boolean;
 }
 
+interface UploadResponse {
+  result: {
+    fileKey: string;
+    fileType: string;
+    image: boolean;
+    text: boolean;
+    application: boolean;
+    thumbnailable: boolean;
+  };
+  success: boolean;
+}
+
 class DirectoryEntityCollection {
   users: DirectoryEntity[];
 
@@ -90,6 +102,10 @@ interface LoginUser {
 }
 
 export class KintoneClient {
+  static defaultThumbnailWidth = 250;
+
+  static downloadAPI = "/k/api/blob/download.do";
+
   private static presetOrganizationImageURL =
     "https://static.cybozu.com/contents/k/image/argo/preset/user/organization_48.png";
 
@@ -98,6 +114,8 @@ export class KintoneClient {
 
   private static searchAPI = "/k/api/directory/search.json";
 
+  private static uploadAPI = "/k/api/blob/upload.json";
+
   private static listDirectoryEntityByIdAndType =
     "/k/api/directory/listByIdAndType.json";
 
@@ -105,9 +123,12 @@ export class KintoneClient {
 
   private readonly spaceId: number | null;
 
+  private readonly requestToken: string;
+
   constructor() {
     this.loginUser = KintoneClient.getLoginUser();
     this.spaceId = KintoneClient.getSpaceId();
+    this.requestToken = KintoneClient.getRequestToken();
   }
 
   static getLoginUser(): LoginUser {
@@ -117,6 +138,23 @@ export class KintoneClient {
   static getSpaceId(): number | null {
     const match = window.location.hash.match(/\/space\/(\d+)\//);
     return match ? parseInt(match[1], 10) : null;
+  }
+
+  static getRequestToken(): string {
+    return document.body.dataset.requestToken!;
+  }
+
+  static isSpacePage(): boolean {
+    return window.location.hash.startsWith("#/space/");
+  }
+
+  static isPeoplePage(): boolean {
+    return window.location.hash.startsWith("#/people/");
+  }
+
+  static isAppRecordPage(): boolean {
+    const pathname = window.location.pathname;
+    return pathname.startsWith("/k/") && pathname.endsWith("/show");
   }
 
   async listDirectoryEntityByIdAndType(
@@ -192,6 +230,27 @@ export class KintoneClient {
     const collection = await this.searchDirectory(code);
     const group = collection.groups.find(entity => entity.code === code);
     return group || null;
+  }
+
+  async uploadFile(file: File): Promise<UploadResponse> {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const params = new URLSearchParams();
+    params.append("checkThumbnail", "true");
+    params.append("w", KintoneClient.defaultThumbnailWidth.toString());
+    params.append("_lc", this.loginUser.language);
+    params.append("_ref", encodeURI(window.location.href));
+
+    const url = `${KintoneClient.uploadAPI}?${params.toString()}`;
+    const rawResponse = await fetch(url, {
+      method: "POST",
+      headers: {
+        "X-Cybozu-RequestToken": this.requestToken
+      },
+      body: formData
+    });
+    return (await rawResponse.json()) as UploadResponse;
   }
 
   private async postToAPI<T>(path: string, requestBody: {}): Promise<T> {

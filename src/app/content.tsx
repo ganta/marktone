@@ -13,6 +13,7 @@ import MentionReplacer from "./markdown/replacer/mention-replacer";
 const initializationScript = document.createElement("script");
 initializationScript.text = `
     document.body.dataset.loginUser = JSON.stringify(kintone.getLoginUser());
+    document.body.dataset.requestToken = kintone.getRequestToken();
 `;
 document.body.appendChild(initializationScript);
 

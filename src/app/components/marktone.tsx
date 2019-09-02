@@ -12,7 +12,7 @@ import { DirectoryEntityType } from "../kintone/directory-entity";
 
 import "@webscopeio/react-textarea-autocomplete/style.css";
 
-const { useState, useEffect } = React;
+const { useState, useEffect, useRef } = React;
 
 export interface ReplyMention {
   type: DirectoryEntityType;
@@ -109,7 +109,7 @@ const Marktone = (props: MarktoneProps) => {
 
   const handleChangeMarkdownTextArea = async (
     event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  ): Promise<void> => {
     const markdownText = event.target.value;
     setRawText(markdownText);
 
@@ -120,7 +120,7 @@ const Marktone = (props: MarktoneProps) => {
     setRenderedHTML(sanitizedHTML);
   };
 
-  const handleResizeTextArea = (textAreaEl: HTMLTextAreaElement) => {
+  const handleResizeTextArea = (textAreaEl: HTMLTextAreaElement): void => {
     const resizeObserver = new MutationObserver((records, observer) => {
       setPreviewHeight(textAreaEl.offsetHeight);
     });
@@ -138,9 +138,80 @@ const Marktone = (props: MarktoneProps) => {
     return collection.flat();
   };
 
+  const [isDragging, setDragging] = useState(false);
+  const handleDragEnter = (): void => {
+    setDragging(true);
+  };
+  const handleDragLeave = (): void => {
+    setDragging(false);
+  };
+
+  const getCaretPosition = (): number => {
+    if (reactTextAreaAutocompleteRef.current === null) return 0;
+    return reactTextAreaAutocompleteRef.current.getCaretPosition();
+  };
+
+  const setCaretPosition = (position: number): void => {
+    if (reactTextAreaAutocompleteRef.current === null) return;
+    reactTextAreaAutocompleteRef.current.setCaretPosition(position);
+  };
+
+  const isSupportedFileUploading = (): boolean => {
+    return KintoneClient.isPeoplePage() || KintoneClient.isSpacePage();
+  };
+
+  const handleDropFile = async (
+    event: React.DragEvent<HTMLTextAreaElement>
+  ): Promise<void> => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    setDragging(false);
+
+    const files = Array.from<File>(event.dataTransfer.files);
+
+    let caretPosition = getCaretPosition();
+    let currentRawText = rawText;
+
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) continue;
+
+      const uploadingText = `![](Uploading... ${file.name})`;
+
+      currentRawText = `${currentRawText.slice(
+        0,
+        caretPosition
+      )}${uploadingText}\n${currentRawText.slice(caretPosition)}`;
+
+      caretPosition += uploadingText.length + 1;
+
+      setRawText(currentRawText);
+      setCaretPosition(caretPosition);
+
+      const response = await kintoneClient.uploadFile(file);
+
+      const uploadedText = `![${file.name}](tmp:${response.result.fileKey} "=${KintoneClient.defaultThumbnailWidth}")`;
+
+      currentRawText = currentRawText.replace(uploadingText, uploadedText);
+      setRawText(currentRawText);
+
+      caretPosition += uploadedText.length - uploadingText.length;
+      setCaretPosition(caretPosition);
+    }
+  };
+
+  const reactTextAreaAutocompleteRef = useRef<
+    ReactTextareaAutocomplete<MentionCandidateItem>
+  >(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const doNothing = () => {};
+
   return (
     <div className="marktone">
       <div className="editor-area">
+        {/*
+          // @ts-ignore for some attributes */}
         <ReactTextareaAutocomplete
           value={rawText}
           trigger={{
@@ -154,13 +225,20 @@ const Marktone = (props: MarktoneProps) => {
           }}
           loadingComponent={() => <span>Loading...</span>}
           onChange={handleChangeMarkdownTextArea}
+          onDragEnter={isSupportedFileUploading() ? handleDragEnter : doNothing}
+          onDragLeave={isSupportedFileUploading() ? handleDragLeave : doNothing}
+          onDrop={isSupportedFileUploading() ? handleDropFile : doNothing}
+          ref={reactTextAreaAutocompleteRef}
           innerRef={textAreaEl => {
+            // @ts-ignore
+            textAreaRef.current = textAreaEl;
             if (textAreaEl) {
               textAreaEl.focus();
 
               handleResizeTextArea(textAreaEl);
             }
           }}
+          className={isDragging ? "dragging" : ""}
           containerClassName="autocomplete-container"
           dropdownClassName="autocomplete-dropdown"
           listClassName="autocomplete-list"
