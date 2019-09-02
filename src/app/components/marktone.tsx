@@ -172,6 +172,9 @@ const Marktone = (props: MarktoneProps) => {
           <div
             className="preview"
             onClick={event => event.preventDefault()}
+            onKeyDown={event => event.preventDefault()}
+            onKeyUp={event => event.preventDefault()}
+            onKeyPress={event => event.preventDefault()}
             dangerouslySetInnerHTML={{ __html: renderedHTML }}
           />
         </div>
