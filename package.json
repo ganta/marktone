@@ -1,6 +1,6 @@
 {
   "name": "chrome-extension-marktone",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Change a Rich Text input area to Markdown input area on kintone",
   "main": "index.js",
   "scripts": {
