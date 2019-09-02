@@ -168,7 +168,8 @@ const Marktone = (props: MarktoneProps) => {
           loaderClassName="autocomplete-loader"
         />
         <div className="preview-wrapper" style={{ height: previewHeight }}>
-          {/* eslint-disable-next-line react/no-danger */}
+          {/* Exclude the jsx-a11y/no-static-element-interactions rule because no suitable role exists. */}
+          {/* eslint-disable-next-line react/no-danger,jsx-a11y/no-static-element-interactions */}
           <div
             className="preview"
             onClick={event => event.preventDefault()}
