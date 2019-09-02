@@ -64,6 +64,10 @@ function renderMarktone(
   }
 }
 
+function isRecordComment() {
+  return document.getElementById("record-gaia") !== null;
+}
+
 function addMarktone(
   event: Event,
   formElement: HTMLElement,
@@ -105,12 +109,12 @@ function addMarktone(
 
     if (!isOriginalFormExpanded) {
       ReactDOM.unmountComponentAtNode(marktoneContainer as HTMLElement);
-    } else if (replyMentions.length === 0) {
+    } else if (replyMentions.length === 0 || isRecordComment()) {
       // If it is not a reply, it must be re-rendered.
       renderMarktone(
         marktoneContainer as HTMLElement,
         formElement as HTMLFormElement,
-        replyMentions
+        []
       );
     }
   });
@@ -195,6 +199,37 @@ async function addMarktoneWhenReply(
   addMarktone(event, formElement, replyMentions);
 }
 
+async function addMarktoneWhenRecordCommentReply(
+  event: Event,
+  replyButton: HTMLElement
+): Promise<void> {
+  const sidebarList = document.getElementById(
+    "sidebar-list-gaia"
+  ) as HTMLElement;
+  const formElement = (sidebarList.parentElement as HTMLElement).querySelector(
+    "form.ocean-ui-comments-commentform-form"
+  ) as HTMLElement;
+
+  const itemListItem = replyButton.closest(
+    "li.itemlist-item-gaia"
+  ) as HTMLElement;
+  const commentListBody = itemListItem.querySelector(
+    "div.commentlist-body-gaia"
+  ) as HTMLElement;
+  const commentBaseUser = itemListItem.querySelector(
+    ".itemlist-user-gaia > a"
+  ) as HTMLAnchorElement;
+  const replyMentions: ReplyMention[] = [];
+  replyMentions.push(convertHTMLAnchorElementToReplyMention(commentBaseUser));
+
+  if (replyButton.classList.contains("commentlist-footer-replyall-gaia")) {
+    const mentions = await extractReplyMentions(commentListBody);
+    replyMentions.push(...mentions);
+  }
+
+  addMarktone(event, formElement, replyMentions);
+}
+
 // for the first comment
 delegateEvent(
   document,
@@ -215,4 +250,18 @@ delegateEvent(
   "click",
   "a.ocean-ui-comments-commentbase-commentall",
   addMarktoneWhenReply
+);
+// for the record reply comment
+delegateEvent(
+  document,
+  "click",
+  "a.commentlist-footer-reply-gaia",
+  addMarktoneWhenRecordCommentReply
+);
+// for the record reply all comment
+delegateEvent(
+  document,
+  "click",
+  "a.commentlist-footer-replyall-gaia",
+  addMarktoneWhenRecordCommentReply
 );

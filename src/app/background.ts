@@ -2,7 +2,7 @@ function isKintoneURL(url: string | undefined) {
   if (!url) return false;
 
   return !!url.match(
-    /https:\/\/[^.]+\.cybozu(?:-dev)?\.com\/k\/#\/(?:space|people)\//
+    /https:\/\/[^.]+\.cybozu(?:-dev)?\.com\/k\/(?:#\/(?:space|people)\/|\d+\/show#)/
   );
 }
 
