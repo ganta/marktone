@@ -47,9 +47,10 @@ function renderMarktone(
     />
   );
 
-  const commentFormEditor = originalForm.querySelector(
+  const commentFormEditor = originalForm.querySelector<HTMLElement>(
     "div.ocean-ui-comments-commentform-editor"
   ) as HTMLElement;
+
   if (commentFormEditor.childElementCount > 0) {
     // Does the original editor area exist?
     ReactDOM.render(marktoneComponent, marktoneContainer);
@@ -58,14 +59,10 @@ function renderMarktone(
     const formEditorInsertedObserver = new MutationObserver(() => {
       ReactDOM.render(marktoneComponent, marktoneContainer);
     });
-    formEditorInsertedObserver.observe(commentFormEditor as Node, {
+    formEditorInsertedObserver.observe(commentFormEditor, {
       childList: true
     });
   }
-}
-
-function isRecordComment() {
-  return document.getElementById("record-gaia") !== null;
 }
 
 function addMarktone(
@@ -73,49 +70,37 @@ function addMarktone(
   formElement: HTMLElement,
   replyMentions: ReplyMention[] = []
 ): void {
-  let isFirstRendering = false;
+  const originalCommentContainer = formElement.parentElement as HTMLElement;
+
+  const isOriginalFormExpanded = () => {
+    return originalCommentContainer.getAttribute("aria-expanded") === "true";
+  };
+
+  if (!isOriginalFormExpanded()) return;
+
   let marktoneContainer = formElement.querySelector<HTMLElement>(
     "div.marktone-container"
   );
 
-  if (marktoneContainer === null) {
-    isFirstRendering = true;
-    // Create Marktone Container.
-    marktoneContainer = document.createElement("div");
-    marktoneContainer.classList.add("marktone-container");
-    formElement.prepend(marktoneContainer);
+  if (marktoneContainer !== null) return;
 
-    renderMarktone(
-      marktoneContainer,
-      formElement as HTMLFormElement,
-      replyMentions
-    );
-  } else if (replyMentions.length !== 0) {
-    // When replying, the mentions must be overwritten.
-    renderMarktone(
-      marktoneContainer,
-      formElement as HTMLFormElement,
-      replyMentions
-    );
-  }
+  // Create Marktone Container.
+  marktoneContainer = document.createElement("div");
+  marktoneContainer.classList.add("marktone-container");
+  formElement.prepend(marktoneContainer);
 
-  if (!isFirstRendering) return;
+  renderMarktone(
+    marktoneContainer,
+    formElement as HTMLFormElement,
+    replyMentions
+  );
 
-  // Toggle opening and closing of Marktone according to the expansion state of the original form.
-  const formExpandedObserver = new MutationObserver(() => {
-    const originalCommentContainer = formElement.parentElement as HTMLElement;
-    const isOriginalFormExpanded =
-      originalCommentContainer.getAttribute("aria-expanded") === "true";
-
-    if (!isOriginalFormExpanded) {
-      ReactDOM.unmountComponentAtNode(marktoneContainer as HTMLElement);
-    } else if (replyMentions.length === 0 || isRecordComment()) {
-      // If it is not a reply, it must be re-rendered.
-      renderMarktone(
-        marktoneContainer as HTMLElement,
-        formElement as HTMLFormElement,
-        []
-      );
+  // Close Marktone according to the expansion state of the original form.
+  const formExpandedObserver = new MutationObserver((mutations, observer) => {
+    if (!isOriginalFormExpanded()) {
+      ReactDOM.unmountComponentAtNode(marktoneContainer as Element);
+      observer.disconnect();
+      formElement.removeChild(marktoneContainer as Node);
     }
   });
   formExpandedObserver.observe(formElement.parentElement as Node, {
@@ -160,36 +145,33 @@ async function extractReplyMentions(
   });
 }
 
-async function addMarktoneWhenReply(
+async function addMarktoneWhenSpaceCommentReply(
   event: Event,
   replyButton: HTMLElement
 ): Promise<void> {
-  let commentsWrapper = replyButton.closest(
+  // Get the comment form element
+  const commentsWrapper = (replyButton.closest(
     "div.ocean-ui-comments-post-wrapper"
-  ) as HTMLElement | null;
-  if (commentsWrapper === null) {
-    // The first comment has not wrapper.
-    commentsWrapper = replyButton.closest(
-      "div.ocean-ui-comments-commentbase"
-    ) as HTMLElement;
-  }
-  const formElement = commentsWrapper.querySelector(
+  ) || replyButton.closest("div.ocean-ui-comments-commentbase")) as HTMLElement;
+  const formElement = commentsWrapper.querySelector<HTMLFormElement>(
     "form.ocean-ui-comments-commentform-form"
-  ) as HTMLElement;
+  ) as HTMLFormElement;
 
+  // Collect the reply mentions
   const commentBaseBody = replyButton.closest(
     "div.ocean-ui-comments-commentbase-body"
   ) as HTMLElement;
-  const commentBaseUser = commentBaseBody.querySelector(
+  const commentBaseUser = commentBaseBody.querySelector<HTMLAnchorElement>(
     "a.ocean-ui-comments-commentbase-user"
   ) as HTMLAnchorElement;
+
   const replyMentions: ReplyMention[] = [];
   replyMentions.push(convertHTMLAnchorElementToReplyMention(commentBaseUser));
 
   if (
     replyButton.classList.contains("ocean-ui-comments-commentbase-commentall")
   ) {
-    const commentBaseText = commentBaseBody.querySelector(
+    const commentBaseText = commentBaseBody.querySelector<HTMLElement>(
       "span.ocean-ui-comments-commentbase-text"
     ) as HTMLElement;
     const mentions = await extractReplyMentions(commentBaseText);
@@ -203,22 +185,25 @@ async function addMarktoneWhenRecordCommentReply(
   event: Event,
   replyButton: HTMLElement
 ): Promise<void> {
+  // Get the comment form element
   const sidebarList = document.getElementById(
     "sidebar-list-gaia"
   ) as HTMLElement;
-  const formElement = (sidebarList.parentElement as HTMLElement).querySelector(
-    "form.ocean-ui-comments-commentform-form"
-  ) as HTMLElement;
+  const formElement = (sidebarList.parentElement as HTMLElement).querySelector<
+    HTMLFormElement
+  >("form.ocean-ui-comments-commentform-form") as HTMLFormElement;
 
+  // Collect the reply mentions
   const itemListItem = replyButton.closest(
     "li.itemlist-item-gaia"
-  ) as HTMLElement;
-  const commentListBody = itemListItem.querySelector(
+  ) as HTMLLIElement;
+  const commentListBody = itemListItem.querySelector<HTMLElement>(
     "div.commentlist-body-gaia"
   ) as HTMLElement;
-  const commentBaseUser = itemListItem.querySelector(
+  const commentBaseUser = itemListItem.querySelector<HTMLAnchorElement>(
     ".itemlist-user-gaia > a"
   ) as HTMLAnchorElement;
+
   const replyMentions: ReplyMention[] = [];
   replyMentions.push(convertHTMLAnchorElementToReplyMention(commentBaseUser));
 
@@ -237,20 +222,23 @@ delegateEvent(
   "form.ocean-ui-comments-commentform-form",
   addMarktone
 );
+
 // for the reply comment
 delegateEvent(
   document,
   "click",
   "a.ocean-ui-comments-commentbase-comment",
-  addMarktoneWhenReply
+  addMarktoneWhenSpaceCommentReply
 );
+
 // for the replay all comment
 delegateEvent(
   document,
   "click",
   "a.ocean-ui-comments-commentbase-commentall",
-  addMarktoneWhenReply
+  addMarktoneWhenSpaceCommentReply
 );
+
 // for the record reply comment
 delegateEvent(
   document,
@@ -258,6 +246,7 @@ delegateEvent(
   "a.commentlist-footer-reply-gaia",
   addMarktoneWhenRecordCommentReply
 );
+
 // for the record reply all comment
 delegateEvent(
   document,
