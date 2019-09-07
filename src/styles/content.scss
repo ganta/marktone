@@ -1,5 +1,13 @@
+$default-border: 1px solid #ccc;
+
+$editor-area-border-radius: 4px;
+
 .marktone {
   .editor-area {
+    border: $default-border;
+    border-radius: $editor-area-border-radius;
+    margin: 16px 16px 0;
+
     display: flex;
     flex-direction: row;
     align-items: stretch;
@@ -26,8 +34,17 @@
 
         resize: vertical;
 
-        border: 1px solid #e3e7e8;
-        box-shadow: 4px 4px 12px #f5f5f5 inset, -4px -4px 12px #f5f5f5 inset;
+        border: none;
+        border-top-left-radius: $editor-area-border-radius;
+        border-bottom-left-radius: $editor-area-border-radius;
+
+        background-color: #fafafa;
+        box-shadow: 4px 4px 12px #eee inset, -4px -4px 12px #eee inset;
+
+        &:focus {
+          background-color: #fff;
+          box-shadow: 4px 4px 12px #f5f5f5 inset, -4px -4px 12px #f5f5f5 inset;
+        }
 
         &.dragging {
           border: 1px solid #94d3a2;
@@ -37,6 +54,9 @@
 
     .preview-wrapper {
       background-color: #fff;
+      border-left: $default-border;
+      border-top-right-radius: $editor-area-border-radius;
+      border-bottom-right-radius: $editor-area-border-radius;
 
       flex-grow: 1;
       flex-basis: 50%;
@@ -44,7 +64,7 @@
       overflow: scroll;
 
       .preview {
-        padding: 4px 14px;
+        padding: 8px 14px;
         font-size: 14px;
 
         .ocean-ui-plugin-mention-user:before {
@@ -131,5 +151,45 @@
 body:not(.marktone-disabled) {
   .ocean-ui-comments-commentform-editor {
     display: none;
+  }
+
+  form.ocean-ui-comments-commentform-form {
+    button {
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 4px;
+      box-shadow: none;
+
+      padding: 0;
+      margin-top: 12px;
+      min-width: 120px;
+      height: 36px;
+
+      line-height: normal;
+
+      span {
+        line-height: normal;
+      }
+    }
+
+    button.ocean-ui-comments-commentform-submit {
+      border: 1px solid #1d6fa5;
+      margin-left: 8px;
+
+      &:hover {
+        border-color: rgb(33, 93, 134);
+      }
+    }
+
+    button.ocean-ui-comments-commentform-cancel {
+      color: #666;
+      border: $default-border;
+      margin-right: 0;
+
+      &:hover {
+        background-color: #eee;
+        border-color: #bbb;
+      }
+    }
   }
 }
