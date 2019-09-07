@@ -36,11 +36,11 @@ interface MentionCandidateItem {
 
 const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
   const {
-    entity: { type, id, code, name, avatar }
+    entity: { code, name, avatar }
   } = props;
 
   return (
-    <span className="mention-candidate" data-type={type} data-id={id}>
+    <span className="mention-candidate">
       <span className="avatar">
         <img className="avatar-image" src={avatar} alt={name} />
       </span>
