@@ -50,7 +50,7 @@ function renderMarktone(
 
   const commentFormEditor = originalForm.querySelector<HTMLElement>(
     "div.ocean-ui-comments-commentform-editor"
-  ) as HTMLElement;
+  )!;
 
   if (commentFormEditor.childElementCount > 0) {
     // Does the original editor area exist?
@@ -71,7 +71,7 @@ function addMarktone(
   formElement: HTMLElement,
   replyMentions: ReplyMention[] = []
 ): void {
-  const originalCommentContainer = formElement.parentElement as HTMLElement;
+  const originalCommentContainer = formElement.parentElement!;
 
   const isOriginalFormExpanded = () => {
     return originalCommentContainer.getAttribute("aria-expanded") === "true";
@@ -151,20 +151,20 @@ async function addMarktoneWhenSpaceCommentReply(
   replyButton: HTMLElement
 ): Promise<void> {
   // Get the comment form element
-  const commentsWrapper = (replyButton.closest(
-    "div.ocean-ui-comments-post-wrapper"
-  ) || replyButton.closest("div.ocean-ui-comments-commentbase")) as HTMLElement;
+  const commentsWrapper =
+    replyButton.closest("div.ocean-ui-comments-post-wrapper") ||
+    replyButton.closest("div.ocean-ui-comments-commentbase")!;
   const formElement = commentsWrapper.querySelector<HTMLFormElement>(
     "form.ocean-ui-comments-commentform-form"
-  ) as HTMLFormElement;
+  )!;
 
   // Collect the reply mentions
   const commentBaseBody = replyButton.closest(
     "div.ocean-ui-comments-commentbase-body"
-  ) as HTMLElement;
+  )!;
   const commentBaseUser = commentBaseBody.querySelector<HTMLAnchorElement>(
     "a.ocean-ui-comments-commentbase-user"
-  ) as HTMLAnchorElement;
+  )!;
 
   const replyMentions: ReplyMention[] = [];
   replyMentions.push(convertHTMLAnchorElementToReplyMention(commentBaseUser));
@@ -174,7 +174,7 @@ async function addMarktoneWhenSpaceCommentReply(
   ) {
     const commentBaseText = commentBaseBody.querySelector<HTMLElement>(
       "span.ocean-ui-comments-commentbase-text"
-    ) as HTMLElement;
+    )!;
     const mentions = await extractReplyMentions(commentBaseText);
     replyMentions.push(...mentions);
   }
@@ -187,23 +187,19 @@ async function addMarktoneWhenRecordCommentReply(
   replyButton: HTMLElement
 ): Promise<void> {
   // Get the comment form element
-  const sidebarList = document.getElementById(
-    "sidebar-list-gaia"
-  ) as HTMLElement;
-  const formElement = (sidebarList.parentElement as HTMLElement).querySelector<
-    HTMLFormElement
-  >("form.ocean-ui-comments-commentform-form") as HTMLFormElement;
+  const sidebarList = document.getElementById("sidebar-list-gaia")!;
+  const formElement = sidebarList.parentElement!.querySelector<HTMLFormElement>(
+    "form.ocean-ui-comments-commentform-form"
+  )!;
 
   // Collect the reply mentions
-  const itemListItem = replyButton.closest(
-    "li.itemlist-item-gaia"
-  ) as HTMLLIElement;
+  const itemListItem = replyButton.closest("li.itemlist-item-gaia")!;
   const commentListBody = itemListItem.querySelector<HTMLElement>(
     "div.commentlist-body-gaia"
-  ) as HTMLElement;
+  )!;
   const commentBaseUser = itemListItem.querySelector<HTMLAnchorElement>(
     ".itemlist-user-gaia > a"
-  ) as HTMLAnchorElement;
+  )!;
 
   const replyMentions: ReplyMention[] = [];
   replyMentions.push(convertHTMLAnchorElementToReplyMention(commentBaseUser));

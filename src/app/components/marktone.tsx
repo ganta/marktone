@@ -86,9 +86,9 @@ const Marktone = (props: MarktoneProps) => {
     setRawText(replayMentionsText === "" ? "" : `${replayMentionsText} `);
   }, [props.replayMentions]);
 
-  const originalEditorFieldEl = originalFormEl.querySelector(
+  const originalEditorFieldEl = originalFormEl.querySelector<HTMLElement>(
     'div.ocean-ui-editor-field[role="textbox"]'
-  ) as HTMLElement;
+  )!;
 
   useEffect(() => {
     originalEditorFieldEl.innerHTML = renderedHTML;
