@@ -34,6 +34,9 @@ interface MentionCandidateItem {
   avatar: string;
 }
 
+/**
+ * The mention candidate component.
+ */
 const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
   const {
     entity: { code, name, avatar }
@@ -52,9 +55,13 @@ const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
   );
 };
 
+/**
+ * Marktone component.
+ */
 const Marktone = (props: MarktoneProps) => {
   const { originalFormEl, kintoneClient, mentionReplacer } = props;
 
+  // Setup Marked.js
   marked.setOptions({
     gfm: true, // Enable GitHub Flavored Markdown.
     breaks: true, // Add 'br' element on a single line break.
@@ -63,10 +70,12 @@ const Marktone = (props: MarktoneProps) => {
     renderer: new MarktoneRenderer(mentionReplacer)
   });
 
-  const [rawText, setRawText] = useState("");
-  const [renderedHTML, setRenderedHTML] = useState("");
-  const [previewHeight, setPreviewHeight] = useState(0);
-
+  /**
+   * Converts the reply mention objects to the mentions text.
+   *
+   * @param replyMentions - The reply mention objects
+   * @return The string with mentions separated by spaces
+   */
   const convertReplyMentionsToText = (
     replyMentions: ReplyMention[]
   ): string => {
@@ -81,22 +90,31 @@ const Marktone = (props: MarktoneProps) => {
     return mentions.join(" ");
   };
 
+  // The Markdown raw text
+  const [rawText, setRawText] = useState("");
+
+  // Inserts the mentions string to the raw text when the reply mentions were set.
   useEffect(() => {
     const replayMentionsText = convertReplyMentionsToText(props.replayMentions);
     setRawText(replayMentionsText === "" ? "" : `${replayMentionsText} `);
   }, [props.replayMentions]);
 
+  // The HTML with Markdown rendered
+  const [renderedHTML, setRenderedHTML] = useState("");
+
+  // The original editor field HTML element of kintone
   const originalEditorFieldEl = originalFormEl.querySelector<HTMLElement>(
     'div.ocean-ui-editor-field[role="textbox"]'
   )!;
 
+  // Updates the kintone original editor field with the rendered HTML.
   useEffect(() => {
     originalEditorFieldEl.innerHTML = renderedHTML;
   }, [renderedHTML, originalEditorFieldEl]);
 
+  // Shows the confirm dialog before leave the page.
   useEffect(() => {
-    // Show the confirm dialog before leave the page.
-    const showConfirmDialog = (event: BeforeUnloadEvent) => {
+    const showConfirmDialog = (event: BeforeUnloadEvent): void => {
       event.preventDefault();
       event.returnValue = "";
     };
@@ -107,6 +125,9 @@ const Marktone = (props: MarktoneProps) => {
     };
   }, []);
 
+  /**
+   * Handles the event when the Markdown textarea is updated.
+   */
   const handleChangeMarkdownTextArea = async (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ): Promise<void> => {
@@ -120,6 +141,12 @@ const Marktone = (props: MarktoneProps) => {
     setRenderedHTML(sanitizedHTML);
   };
 
+  // The preview area height
+  const [previewHeight, setPreviewHeight] = useState(0);
+
+  /**
+   * Handles the behavior when the Markdown text area is resized.
+   */
   const handleResizeTextArea = (textAreaEl: HTMLTextAreaElement): void => {
     const resizeObserver = new MutationObserver((records, observer) => {
       setPreviewHeight(textAreaEl.offsetHeight);
@@ -133,33 +160,57 @@ const Marktone = (props: MarktoneProps) => {
     setPreviewHeight(textAreaEl.offsetHeight);
   };
 
+  /**
+   * Returns the kintone users, organizations and groups that matches the specified token.
+   */
   const kintoneDirectoryProvider = async (token: string) => {
     const collection = await kintoneClient.searchDirectory(token);
     return collection.flat();
   };
 
+  // Whether the file is being dragged
   const [isDragging, setDragging] = useState(false);
+
+  /**
+   * Handles the event when the dragged file enters the element.
+   */
   const handleDragEnter = (): void => {
     setDragging(true);
   };
+
+  /**
+   * Handles the event when the dragged file leaves the element.
+   */
   const handleDragLeave = (): void => {
     setDragging(false);
   };
 
+  /**
+   * Gets the caret position of the Markdown text area.
+   */
   const getCaretPosition = (): number => {
     if (reactTextAreaAutocompleteRef.current === null) return 0;
     return reactTextAreaAutocompleteRef.current.getCaretPosition();
   };
 
+  /**
+   * Moves the caret position of the Markdown text area.
+   */
   const setCaretPosition = (position: number): void => {
     if (reactTextAreaAutocompleteRef.current === null) return;
     reactTextAreaAutocompleteRef.current.setCaretPosition(position);
   };
 
+  /**
+   * Returns whether file upload is supported.
+   */
   const isSupportedFileUploading = (): boolean => {
     return KintoneClient.isPeoplePage() || KintoneClient.isSpacePage();
   };
 
+  /**
+   * Handles the event when the file is dropped to the Markdown text area.
+   */
   const handleDropFile = async (
     event: React.DragEvent<HTMLTextAreaElement>
   ): Promise<void> => {
@@ -200,11 +251,17 @@ const Marktone = (props: MarktoneProps) => {
     }
   };
 
+  // The reference of ReactTextAreaAutocomplete component
   const reactTextAreaAutocompleteRef = useRef<
     ReactTextareaAutocomplete<MentionCandidateItem>
   >(null);
+
+  // The reference of the Markdown text area
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
+  /**
+   * Do nothing.
+   */
   const doNothing = () => {};
 
   return (
