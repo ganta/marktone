@@ -3,7 +3,9 @@
     "target": "ES2015",
     "module": "commonjs",
     "jsx": "react",
-    "strict": true
+    "strict": true,
+    "typeRoots": [
+      "./types", "node_modules/@types"]
   },
   "exclude": [
     "node_modules"

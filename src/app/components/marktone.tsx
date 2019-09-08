@@ -125,6 +125,25 @@ const Marktone = (props: MarktoneProps) => {
     };
   }, []);
 
+  // The reference of Marktone
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const tabModeThresholdWidth = 600;
+    const marktoneEl = ref.current!;
+
+    const resizeObserver = new ResizeObserver(entries => {
+      entries.forEach((entry: ResizeObserverEntry) => {
+        if (entry.contentRect.width < tabModeThresholdWidth) {
+          marktoneEl.classList.add("tab-mode");
+        } else {
+          marktoneEl.classList.remove("tab-mode");
+        }
+      });
+    });
+    resizeObserver.observe(marktoneEl, { box: "border-box" });
+  }, []);
+
   /**
    * Handles the event when the Markdown textarea is updated.
    */
@@ -259,49 +278,72 @@ const Marktone = (props: MarktoneProps) => {
   // The reference of the Markdown text area
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
+  const handleEditorTabClicked = (): void => {
+    ref.current!.classList.remove("preview-active");
+    textAreaRef.current!.focus();
+  };
+
+  const handlePreviewTabClicked = (): void => {
+    ref.current!.classList.add("preview-active");
+  };
+
   /**
    * Do nothing.
    */
   const doNothing = () => {};
 
   return (
-    <div className="marktone">
+    <div ref={ref} className="marktone">
+      <div className="tabs">
+        <div className="tab edit-tab" onClick={handleEditorTabClicked}>
+          Edit
+        </div>
+        <div className="tab preview-tab" onClick={handlePreviewTabClicked}>
+          Preview
+        </div>
+      </div>
       <div className="editor-area">
-        {/*
+        <div className="textarea-wrapper">
+          {/*
           // @ts-ignore for some attributes */}
-        <ReactTextareaAutocomplete
-          value={rawText}
-          trigger={{
-            "@": {
-              dataProvider: kintoneDirectoryProvider,
-              component: MentionCandidate,
-              output: ({ type, code }) => {
-                return MentionReplacer.createMention(type, code);
+          <ReactTextareaAutocomplete
+            value={rawText}
+            trigger={{
+              "@": {
+                dataProvider: kintoneDirectoryProvider,
+                component: MentionCandidate,
+                output: ({ type, code }) => {
+                  return MentionReplacer.createMention(type, code);
+                }
               }
+            }}
+            loadingComponent={() => <span>Loading...</span>}
+            onChange={handleChangeMarkdownTextArea}
+            onDragEnter={
+              isSupportedFileUploading() ? handleDragEnter : doNothing
             }
-          }}
-          loadingComponent={() => <span>Loading...</span>}
-          onChange={handleChangeMarkdownTextArea}
-          onDragEnter={isSupportedFileUploading() ? handleDragEnter : doNothing}
-          onDragLeave={isSupportedFileUploading() ? handleDragLeave : doNothing}
-          onDrop={isSupportedFileUploading() ? handleDropFile : doNothing}
-          ref={reactTextAreaAutocompleteRef}
-          innerRef={textAreaEl => {
-            // @ts-ignore
-            textAreaRef.current = textAreaEl;
-            if (textAreaEl) {
-              textAreaEl.focus();
+            onDragLeave={
+              isSupportedFileUploading() ? handleDragLeave : doNothing
+            }
+            onDrop={isSupportedFileUploading() ? handleDropFile : doNothing}
+            ref={reactTextAreaAutocompleteRef}
+            innerRef={textAreaEl => {
+              // @ts-ignore
+              textAreaRef.current = textAreaEl;
+              if (textAreaEl) {
+                textAreaEl.focus();
 
-              handleResizeTextArea(textAreaEl);
-            }
-          }}
-          className={isDragging ? "dragging" : ""}
-          containerClassName="autocomplete-container"
-          dropdownClassName="autocomplete-dropdown"
-          listClassName="autocomplete-list"
-          itemClassName="autocomplete-item"
-          loaderClassName="autocomplete-loader"
-        />
+                handleResizeTextArea(textAreaEl);
+              }
+            }}
+            className={isDragging ? "dragging" : ""}
+            containerClassName="autocomplete-container"
+            dropdownClassName="autocomplete-dropdown"
+            listClassName="autocomplete-list"
+            itemClassName="autocomplete-item"
+            loaderClassName="autocomplete-loader"
+          />
+        </div>
         <div className="preview-wrapper" style={{ height: previewHeight }}>
           {/* Exclude the jsx-a11y/no-static-element-interactions rule because no suitable role exists. */}
           {/* eslint-disable-next-line react/no-danger,jsx-a11y/no-static-element-interactions */}
