@@ -17,21 +17,6 @@ initializationScript.text = `
 `;
 document.body.appendChild(initializationScript);
 
-function delegateEvent(
-  element: Document | HTMLElement,
-  eventName: string,
-  selector: string,
-  callback: (evt: Event, elem: HTMLElement) => void
-): void {
-  element.addEventListener(eventName, (event: Event): void => {
-    const targetElement = event.target as HTMLElement;
-    const specifiedElement = targetElement.closest(selector) as HTMLElement;
-    if (specifiedElement) {
-      callback(event, specifiedElement);
-    }
-  });
-}
-
 function renderMarktone(
   marktoneContainer: HTMLElement,
   originalForm: HTMLFormElement,
@@ -67,7 +52,6 @@ function renderMarktone(
 }
 
 function addMarktone(
-  event: Event,
   formElement: HTMLElement,
   replyMentions: ReplyMention[] = []
 ): void {
@@ -110,6 +94,13 @@ function addMarktone(
   });
 }
 
+function addMarktoneForSpaceThread(element: HTMLElement) {
+  const formElement = element.querySelector<HTMLElement>(
+    "form.ocean-ui-comments-commentform-form"
+  )!;
+  addMarktone(formElement);
+}
+
 function convertHTMLAnchorElementToReplyMention(
   element: HTMLAnchorElement
 ): ReplyMention {
@@ -147,7 +138,6 @@ async function extractReplyMentions(
 }
 
 async function addMarktoneWhenSpaceCommentReply(
-  event: Event,
   replyButton: HTMLElement
 ): Promise<void> {
   // Get the comment form element
@@ -179,11 +169,10 @@ async function addMarktoneWhenSpaceCommentReply(
     replyMentions.push(...mentions);
   }
 
-  addMarktone(event, formElement, replyMentions);
+  addMarktone(formElement, replyMentions);
 }
 
 async function addMarktoneWhenRecordCommentReply(
-  event: Event,
   replyButton: HTMLElement
 ): Promise<void> {
   // Get the comment form element
@@ -209,45 +198,46 @@ async function addMarktoneWhenRecordCommentReply(
     replyMentions.push(...mentions);
   }
 
-  addMarktone(event, formElement, replyMentions);
+  addMarktone(formElement, replyMentions);
 }
 
-// for the first comment
-delegateEvent(
-  document,
-  "click",
-  "form.ocean-ui-comments-commentform-form",
-  addMarktone
-);
+function delegateClickEvent(
+  selector: string,
+  callback: (elem: HTMLElement) => void
+): void {
+  document.addEventListener("click", event => {
+    const targetElement = event.target as HTMLElement;
+    const specifiedElement = targetElement.closest<HTMLElement>(selector);
+    if (specifiedElement !== null) {
+      callback(specifiedElement);
+    }
+  });
+}
 
-// for the reply comment
-delegateEvent(
-  document,
-  "click",
+// for the first comment of space or people
+delegateClickEvent("form.ocean-ui-comments-commentform-form", addMarktone);
+delegateClickEvent("div.ocean-space-thread", addMarktoneForSpaceThread);
+
+// for the reply comment of space or people
+delegateClickEvent(
   "a.ocean-ui-comments-commentbase-comment",
   addMarktoneWhenSpaceCommentReply
 );
 
-// for the replay all comment
-delegateEvent(
-  document,
-  "click",
+// for the replay all comment of space or people
+delegateClickEvent(
   "a.ocean-ui-comments-commentbase-commentall",
   addMarktoneWhenSpaceCommentReply
 );
 
-// for the record reply comment
-delegateEvent(
-  document,
-  "click",
+// for the reply comment of record
+delegateClickEvent(
   "a.commentlist-footer-reply-gaia",
   addMarktoneWhenRecordCommentReply
 );
 
-// for the record reply all comment
-delegateEvent(
-  document,
-  "click",
+// for the reply all comment of record
+delegateClickEvent(
   "a.commentlist-footer-replyall-gaia",
   addMarktoneWhenRecordCommentReply
 );
