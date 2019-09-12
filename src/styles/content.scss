@@ -249,6 +249,11 @@ $editor-area-border-radius: 4px;
 }
 
 body:not(.marktone-disabled) {
+  .ocean-people-userthread {
+    background-color: #fff;
+    margin-top: -16px;
+  }
+
   .ocean-ui-comments-commentform-editor {
     display: none;
   }
