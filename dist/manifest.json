@@ -18,7 +18,6 @@
     "default_title": "Marktone"
   },
   "permissions": [
-    "clipboardRead",
     "declarativeContent",
     "tabs",
     "activeTab",
