@@ -118,7 +118,9 @@ const Marktone = (props: MarktoneProps) => {
     const showConfirmDialogOnBeforeUnload = (
       event: BeforeUnloadEvent
     ): void => {
-      if (textAreaRef.current!.value === "") return;
+      if (textAreaRef.current !== null && textAreaRef.current.value === "") {
+        return;
+      }
 
       event.preventDefault();
       event.returnValue = "";
@@ -136,6 +138,7 @@ const Marktone = (props: MarktoneProps) => {
       if (hashChangeAnchorEl === null) return;
 
       if (
+        textAreaRef.current === null ||
         textAreaRef.current!.value === "" ||
         confirm("Changes you made may not be saved.")
       ) {
