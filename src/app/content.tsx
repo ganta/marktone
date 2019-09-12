@@ -217,6 +217,7 @@ function delegateClickEvent(
 // for the first comment of space or people
 delegateClickEvent("form.ocean-ui-comments-commentform-form", addMarktone);
 delegateClickEvent("div.ocean-space-thread", addMarktoneForSpaceThread);
+delegateClickEvent("div.ocean-people-userthread", addMarktoneForSpaceThread);
 
 // for the reply comment of space or people
 delegateClickEvent(
