@@ -11,6 +11,7 @@ import MentionReplacer from "../markdown/replacer/mention-replacer";
 import { DirectoryEntityType } from "../kintone/directory-entity";
 
 import "@webscopeio/react-textarea-autocomplete/style.css";
+import HTML = marked.Tokens.HTML;
 
 const { useState, useEffect, useRef } = React;
 
@@ -114,14 +115,56 @@ const Marktone = (props: MarktoneProps) => {
 
   // Shows the confirm dialog before leave the page.
   useEffect(() => {
-    const showConfirmDialog = (event: BeforeUnloadEvent): void => {
+    const showConfirmDialogOnBeforeUnload = (
+      event: BeforeUnloadEvent
+    ): void => {
+      if (textAreaRef.current!.value === "") return;
+
       event.preventDefault();
       event.returnValue = "";
     };
-    window.addEventListener("beforeunload", showConfirmDialog);
+    window.addEventListener("beforeunload", showConfirmDialogOnBeforeUnload);
+
+    const showConfirmDialogOnHashChangeAnchorClicked = (event: Event): void => {
+      const currentPathname = window.location.pathname;
+      const currentHash = window.location.hash;
+      const targetEl = event.target as HTMLElement;
+      const hashChangeAnchorEl = targetEl.closest<HTMLAnchorElement>(
+        `a[href^="${currentPathname}#"]:not([href="${currentPathname}${currentHash}"])`
+      );
+
+      if (hashChangeAnchorEl === null) return;
+
+      if (
+        textAreaRef.current!.value === "" ||
+        confirm("Changes you made may not be saved.")
+      ) {
+        window.removeEventListener(
+          "beforeunload",
+          showConfirmDialogOnBeforeUnload
+        );
+        document.removeEventListener(
+          "click",
+          showConfirmDialogOnHashChangeAnchorClicked
+        );
+      } else {
+        event.preventDefault();
+      }
+    };
+    document.addEventListener(
+      "click",
+      showConfirmDialogOnHashChangeAnchorClicked
+    );
 
     return () => {
-      window.removeEventListener("beforeunload", showConfirmDialog);
+      window.removeEventListener(
+        "beforeunload",
+        showConfirmDialogOnBeforeUnload
+      );
+      document.removeEventListener(
+        "hashchange",
+        showConfirmDialogOnHashChangeAnchorClicked
+      );
     };
   }, []);
 
