@@ -6,11 +6,20 @@ $default-border: $default-border-width $default-border-style
 
 $editor-area-border-radius: 4px;
 
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .marktone {
   .editor-area {
     border: $default-border;
     border-radius: $editor-area-border-radius;
-    margin: 16px;
+    margin: 0 16px 16px;
 
     display: flex;
     flex-direction: row;
@@ -91,7 +100,7 @@ $editor-area-border-radius: 4px;
       border-style: $default-border-style;
       border-color: $default-border-color;
       border-radius: 4px 4px 0 0;
-      margin: 16px 16px -1px 16px;
+      margin: 0 16px -1px 16px;
       padding: 4px 16px 0;
 
       .tab {
@@ -111,7 +120,6 @@ $editor-area-border-radius: 4px;
     }
 
     .editor-area {
-      margin-top: 0;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
 
@@ -172,6 +180,12 @@ $editor-area-border-radius: 4px;
         }
       }
     }
+  }
+}
+
+.gaia-argoui-app-show-sidebar-content {
+  .marktone {
+    margin-top: 16px;
   }
 }
 
@@ -251,7 +265,12 @@ $editor-area-border-radius: 4px;
 body:not(.marktone-disabled) {
   .ocean-people-userthread {
     background-color: #fff;
-    margin-top: -16px;
+  }
+
+  .ocean-ui-comments-commentform.ocean-ui-comments-commentform-open {
+    animation-name: fade-in;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in;
   }
 
   .ocean-ui-comments-commentform-editor {
