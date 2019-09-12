@@ -1,8 +1,8 @@
-function isKintoneURL(url: string | undefined) {
+function shouldBeEnabledMarktone(url: string | undefined) {
   if (!url) return false;
 
   return !!url.match(
-    /https:\/\/[^.]+\.cybozu(?:-dev)?\.com\/k\/(?:#\/(?:space|people)\/|\d+\/show#)/
+    /https:\/\/[^.]+\.cybozu(?:-dev)?\.com\/k\/(?:#\/(?:space|people)\/|\d+\/show#|#\/ntf\/)/
   );
 }
 
@@ -16,7 +16,7 @@ chrome.runtime.onInstalled.addListener(() => {
           }),
           new chrome.declarativeContent.PageStateMatcher({
             pageUrl: { urlMatches: "https://[^.]+\\.cybozu-dev\\.com/k/.*" }
-          }) // continue with more urls if needed
+          })
         ],
         actions: [new chrome.declarativeContent.ShowPageAction()]
       }
@@ -25,14 +25,21 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.pageAction.onClicked.addListener(activeTab => {
-  if (!isKintoneURL(activeTab.url)) {
+  if (!shouldBeEnabledMarktone(activeTab.url)) {
     return;
   }
 
   chrome.tabs.executeScript(
     {
       // Use `code` because `file` cannot pass a return value to the callback function.
-      code: 'document.body.classList.toggle("marktone-disabled");'
+      code: `
+        // Do not add a const declaration because a predefined error occurs.
+        notificationIframeEl = document.getElementById("notification-iframe-gaia");
+        if (notificationIframeEl !== null) {
+          notificationIframeEl.contentDocument.documentElement.querySelector("body").classList.toggle("marktone-disabled")
+        }
+        document.body.classList.toggle("marktone-disabled");
+      `
     },
     result => {
       if (typeof result === "undefined" || typeof result[0] === "undefined")
