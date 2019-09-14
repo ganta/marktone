@@ -16,6 +16,8 @@ $editor-area-border-radius: 4px;
 }
 
 .marktone {
+  padding: 16px 0 0;
+
   .editor-area {
     border: $default-border;
     border-radius: $editor-area-border-radius;
@@ -183,12 +185,6 @@ $editor-area-border-radius: 4px;
   }
 }
 
-.gaia-argoui-app-show-sidebar-content {
-  .marktone {
-    margin-top: 16px;
-  }
-}
-
 //
 // autocomplete
 //
@@ -284,7 +280,7 @@ body:not(.marktone-disabled) {
       border-radius: 4px;
       box-shadow: none;
 
-      padding: 0;
+      padding: 1px 0 0;
       margin-top: 0;
       min-width: 120px;
       height: 36px;
