@@ -17,6 +17,11 @@ initializationScript.text = `
 `;
 document.body.appendChild(initializationScript);
 
+function isOriginalFormExpanded(formEl: HTMLElement): boolean {
+  const originalCommentContainer = formEl.parentElement as HTMLElement;
+  return originalCommentContainer.getAttribute("aria-expanded") === "true";
+}
+
 function renderMarktone(
   marktoneContainer: HTMLElement,
   originalForm: HTMLFormElement,
@@ -55,13 +60,7 @@ function addMarktone(
   formElement: HTMLElement,
   replyMentions: ReplyMention[] = []
 ): void {
-  const originalCommentContainer = formElement.parentElement!;
-
-  const isOriginalFormExpanded = () => {
-    return originalCommentContainer.getAttribute("aria-expanded") === "true";
-  };
-
-  if (!isOriginalFormExpanded()) return;
+  if (!isOriginalFormExpanded(formElement)) return;
 
   let marktoneContainer = formElement.querySelector<HTMLElement>(
     "div.marktone-container"
@@ -81,14 +80,16 @@ function addMarktone(
   );
 
   // Close Marktone according to the expansion state of the original form.
-  const formExpandedObserver = new MutationObserver((mutations, observer) => {
-    if (!isOriginalFormExpanded()) {
-      ReactDOM.unmountComponentAtNode(marktoneContainer as Element);
-      observer.disconnect();
-      formElement.removeChild(marktoneContainer as Node);
+  const formDisappearanceObserver = new MutationObserver(
+    (mutations, observer) => {
+      if (!isOriginalFormExpanded(formElement)) {
+        ReactDOM.unmountComponentAtNode(marktoneContainer as Element);
+        observer.disconnect();
+        formElement.removeChild(marktoneContainer as Node);
+      }
     }
-  });
-  formExpandedObserver.observe(formElement.parentElement as Node, {
+  );
+  formDisappearanceObserver.observe(formElement.parentElement as Node, {
     attributes: true,
     attributeFilter: ["aria-expanded"]
   });
@@ -167,6 +168,24 @@ async function addMarktoneWhenSpaceCommentReply(
     )!;
     const mentions = await extractReplyMentions(commentBaseText);
     replyMentions.push(...mentions);
+
+    // When reply to all, wait for the form to be expanded because it is delayed.
+    if (!isOriginalFormExpanded(formElement)) {
+      const formExpansionObserver = new MutationObserver(
+        (mutations, observer) => {
+          if (isOriginalFormExpanded(formElement)) {
+            addMarktone(formElement, replyMentions);
+            observer.disconnect();
+          }
+        }
+      );
+      formExpansionObserver.observe(formElement.parentElement as Node, {
+        attributes: true,
+        attributeFilter: ["aria-expanded"]
+      });
+
+      return;
+    }
   }
 
   addMarktone(formElement, replyMentions);
