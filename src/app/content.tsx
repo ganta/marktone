@@ -191,6 +191,13 @@ async function addMarktoneWhenSpaceCommentReply(
   addMarktone(formElement, replyMentions);
 }
 
+function addMarktoneForRecordComment(element: HTMLElement) {
+  const formElement = element.querySelector<HTMLElement>(
+    "form.ocean-ui-comments-commentform-form"
+  )!;
+  addMarktone(formElement);
+}
+
 async function addMarktoneWhenRecordCommentReply(
   replyButton: HTMLElement
 ): Promise<void> {
@@ -248,6 +255,12 @@ delegateClickEvent(
 delegateClickEvent(
   "a.ocean-ui-comments-commentbase-commentall",
   addMarktoneWhenSpaceCommentReply
+);
+
+// for the first comment of record
+delegateClickEvent(
+  "div.gaia-argoui-app-show-sidebar-content",
+  addMarktoneForRecordComment
 );
 
 // for the reply comment of record
