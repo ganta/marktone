@@ -290,9 +290,9 @@ const Marktone = (props: MarktoneProps) => {
     let currentRawText = rawText;
 
     for (const file of files) {
-      if (!file.type.startsWith("image/")) continue;
-
-      const uploadingText = `![](Uploading... ${file.name})`;
+      const uploadingText = file.type.startsWith("image/")
+        ? `![](Uploading... ${file.name})`
+        : `[](Uploading... ${file.name}]`;
 
       currentRawText = `${currentRawText.slice(
         0,
@@ -306,7 +306,9 @@ const Marktone = (props: MarktoneProps) => {
 
       const response = await kintoneClient.uploadFile(file);
 
-      const uploadedText = `![${file.name}](tmp:${response.result.fileKey} "=${KintoneClient.defaultThumbnailWidth}")`;
+      const uploadedText = response.result.image
+        ? `![${file.name}](tmp:${response.result.fileKey} "=${KintoneClient.defaultThumbnailWidth}")`
+        : `[${file.name}](tmp:${response.result.fileKey})`;
 
       currentRawText = currentRawText.replace(uploadingText, uploadedText);
       setRawText(currentRawText);

@@ -123,6 +123,43 @@ class MarktoneRenderer extends Renderer {
     return `<code style="${style}">${code}</code>`;
   }
 
+  link(href: string, title: string, text: string) {
+    // For later sanitization with DOMPurify, skip the `href` sanitization here.
+
+    if (href === null) return text;
+
+    if (href.startsWith("tmp:")) {
+      const matched = href.match(/tmp:(?<fileKey>[0-9a-z-]+)/);
+      if (!matched || !matched.groups) return text;
+
+      const fileKey = matched.groups.fileKey;
+      const fileURL = KintoneClient.getDownloadURL(fileKey);
+
+      const attributes: { [key: string]: string } = {
+        href: fileURL,
+        class: "cybozu-tmp-file ocean-ui-plugin-linkbubble-no",
+        "data-file": fileKey || ""
+      };
+      const attributesString = Object.entries(attributes)
+        .map(([key, value]) => `${key}="${value}"`)
+        .join(" ");
+
+      const iconURL = KintoneClient.getFileIconURL(text);
+
+      return `<a ${attributesString}><img alt="${text}" src="${iconURL}">${text}</a>`;
+    }
+
+    const attributes: { [key: string]: string } = {
+      href: MarktoneRendererHelper.escapeHTML(href)
+    };
+    if (title) attributes.title = title;
+
+    const attributesString = Object.keys(attributes)
+      .map<string>(key => `${key}="${attributes[key]}"`)
+      .join(" ");
+    return `<a ${attributesString}>${text}</a>`;
+  }
+
   image(href: string, title: string | null, text: string): string {
     // For later sanitization with DOMPurify, skip the `href` sanitization here.
 
@@ -139,22 +176,17 @@ class MarktoneRenderer extends Renderer {
 
     if (href.startsWith("tmp:")) {
       const fileKey = href.split(":")[1];
-      const referer = encodeURI(window.location.href);
 
       additionalAttributes.class = "cybozu-tmp-file";
       additionalAttributes["data-original"] = imageURL; // This URL must not include width.
       additionalAttributes["data-file"] = fileKey;
 
-      const params = new URLSearchParams();
-      params.append("fileKey", fileKey);
-      params.append("_lc", KintoneClient.getLoginUser().language);
-      params.append("_ref", referer);
-
-      if (typeof additionalAttributes.width !== "undefined") {
-        params.append("w", additionalAttributes.width);
+      const additionalParams: { [key: string]: string } = {};
+      if (additionalAttributes.width != null) {
+        additionalParams.w = additionalAttributes.width;
       }
 
-      imageURL = `${KintoneClient.downloadAPI}?${params.toString()}`;
+      imageURL = KintoneClient.getDownloadURL(fileKey, additionalParams);
     }
 
     const additionalAttributesString = Object.keys(additionalAttributes)

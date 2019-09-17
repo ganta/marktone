@@ -104,15 +104,30 @@ interface LoginUser {
 export class KintoneClient {
   static defaultThumbnailWidth = 250;
 
-  static downloadAPI = "/k/api/blob/download.do";
-
   private static presetOrganizationImageURL =
     "https://static.cybozu.com/contents/k/image/argo/preset/user/organization_48.png";
 
   private static presetGroupImageURL =
     "https://static.cybozu.com/contents/k/image/argo/preset/user/group_48.png";
 
+  private static fileIconBaseURL =
+    "https://static.cybozu.com/contents/k/image/file";
+
+  private static fileIconExtensions = [
+    "txt",
+    "doc",
+    "docx",
+    "xls",
+    "xlsx",
+    "ppt",
+    "pptx",
+    "pdf",
+    "zip"
+  ];
+
   private static searchAPI = "/k/api/directory/search.json";
+
+  private static downloadAPI = "/k/api/blob/download.do";
 
   private static uploadAPI = "/k/api/blob/upload.json";
 
@@ -155,6 +170,38 @@ export class KintoneClient {
   static isAppRecordPage(): boolean {
     const pathname = window.location.pathname;
     return pathname.startsWith("/k/") && pathname.endsWith("/show");
+  }
+
+  static getDownloadURL(
+    fileKey: string,
+    additionalParams?: { [key: string]: string }
+  ): string {
+    const params = new URLSearchParams();
+    params.append("fileKey", fileKey);
+    params.append("_lc", KintoneClient.getLoginUser().language);
+    params.append("_ref", encodeURI(window.location.href));
+
+    if (additionalParams) {
+      Object.entries(additionalParams).forEach(([key, value]) => {
+        params.append(key, value);
+      });
+    }
+
+    return `${KintoneClient.downloadAPI}?${params.toString()}`;
+  }
+
+  static getFileIconURL(fileName: string): string {
+    const matched = fileName.toLowerCase().match(/.+\.(?<extension>\w+)$/);
+    let iconName = "other";
+
+    if (matched && matched.groups) {
+      const extension = matched.groups.extension;
+      if (KintoneClient.fileIconExtensions.includes(extension)) {
+        iconName = extension;
+      }
+    }
+
+    return `${KintoneClient.fileIconBaseURL}/${iconName}.png`;
   }
 
   async listDirectoryEntityByIdAndType(
