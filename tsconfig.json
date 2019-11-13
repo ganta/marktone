@@ -5,7 +5,9 @@
     "jsx": "react",
     "strict": true,
     "typeRoots": [
-      "./types", "node_modules/@types"]
+      "./types", "node_modules/@types"
+    ],
+    "esModuleInterop": true
   },
   "exclude": [
     "node_modules"

@@ -1,6 +1,6 @@
-import * as React from "react";
-import * as marked from "marked";
-import * as DOMPurify from "dompurify";
+import React from "react";
+import marked from "marked";
+import DOMPurify from "dompurify";
 import ReactTextareaAutocomplete, {
   ItemComponentProps
 } from "@webscopeio/react-textarea-autocomplete";
