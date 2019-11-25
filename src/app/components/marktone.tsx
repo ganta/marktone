@@ -11,7 +11,6 @@ import MentionReplacer from "../markdown/replacer/mention-replacer";
 import { DirectoryEntityType } from "../kintone/directory-entity";
 
 import "@webscopeio/react-textarea-autocomplete/style.css";
-import HTML = marked.Tokens.HTML;
 
 const { useState, useEffect, useRef } = React;
 
