@@ -4,6 +4,8 @@
   "description": "Change a Rich Text input area to Markdown input area on kintone",
   "main": "index.js",
   "scripts": {
+    "start": "webpack --watch",
+    "build": "webpack",
     "eslint": "eslint --ext .ts,.tsx src",
     "prettier": "prettier --check 'src/**/*.{ts,tsx,scss}'",
     "lint": "npm run eslint && npm run prettier",
