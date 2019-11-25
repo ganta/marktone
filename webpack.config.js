@@ -1,8 +1,10 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const environment = process.env.NODE_ENV || "development";
+
 module.exports = {
-    mode: "development",
+    mode: environment,
     devtool: "inline-source-map",
 
     entry: {
@@ -38,7 +40,7 @@ module.exports = {
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
-                            hmr: process.env.NODE_ENV === "development"
+                            hmr: environment === "development"
                         }
                     },
                     "css-loader",
