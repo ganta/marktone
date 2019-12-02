@@ -1,5 +1,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const environment = process.env.NODE_ENV || "development";
 
@@ -25,7 +26,11 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: "css/[name].css",
             chunkFilename: "css/[id].css"
-        })
+        }),
+        new CopyPlugin([
+            { from: 'src/manifest.json', to: '.' },
+            { from: 'src/icons/', to: 'icons' }
+        ])
     ],
 
     module: {

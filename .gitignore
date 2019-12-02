@@ -2,8 +2,7 @@
 node_modules
 
 # Webpack
-dist/js/
-dist/css/
+dist/
 
 # Package
 *.zip
