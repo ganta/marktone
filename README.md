@@ -7,3 +7,7 @@ You can use Markdown with people, spaces, and record comments on kintone.
 ## LICENSE
 
 [MIT](LICENSE)
+
+## Disclaimer
+
+This OSS is my own personal work and does not have any relationship with Cybozu, Inc. or any other organization which I belong to.
