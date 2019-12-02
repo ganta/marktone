@@ -38,19 +38,17 @@ chrome.pageAction.onClicked.addListener(activeTab => {
         if (notificationIframeEl !== null) {
           notificationIframeEl.contentDocument.documentElement.querySelector("body").classList.toggle("marktone-disabled")
         }
-        document.body.classList.toggle("marktone-disabled");
+        document.body.dataset.marktoneEnabled = !document.body.classList.toggle("marktone-disabled");
       `
     },
     result => {
       if (typeof result === "undefined" || typeof result[0] === "undefined")
         return;
 
-      const marktoneDisabled = result[0];
+      const marktoneEnabled = result[0];
       chrome.pageAction.setIcon({
         tabId: activeTab.id as number,
-        path: marktoneDisabled
-          ? "icons/disabled-icon48.png"
-          : "icons/icon48.png"
+        path: marktoneEnabled ? "icons/icon48.png" : "icons/disabled-icon48.png"
       });
     }
   );

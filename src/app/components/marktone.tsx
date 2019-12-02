@@ -107,9 +107,16 @@ const Marktone = (props: MarktoneProps) => {
     'div.ocean-ui-editor-field[role="textbox"]'
   )!;
 
+  // Get Marktone enabled status.
+  const isMarktoneEnabled = (): boolean => {
+    return !!document.body.dataset.marktoneEnabled;
+  };
+
   // Updates the kintone original editor field with the rendered HTML.
   useEffect(() => {
-    originalEditorFieldEl.innerHTML = renderedHTML;
+    if (isMarktoneEnabled()) {
+      originalEditorFieldEl.innerHTML = renderedHTML;
+    }
   }, [renderedHTML, originalEditorFieldEl]);
 
   // Shows the confirm dialog before leave the page.
