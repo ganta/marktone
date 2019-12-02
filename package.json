@@ -6,6 +6,7 @@
   "scripts": {
     "start": "webpack --watch",
     "build": "webpack",
+    "clean": "rm -rf ./dist",
     "eslint": "eslint --ext .ts,.tsx src",
     "prettier": "prettier --check 'src/**/*.{ts,tsx,scss}'",
     "lint": "npm run eslint && npm run prettier",
