@@ -109,6 +109,10 @@ const Marktone = (props: MarktoneProps) => {
 
   // Get Marktone enabled status.
   const isMarktoneEnabled = (): boolean => {
+    const marktoneEnabled = document.body.dataset.marktoneEnabled;
+
+    if (marktoneEnabled === undefined) return true;
+
     return !!document.body.dataset.marktoneEnabled;
   };
 
