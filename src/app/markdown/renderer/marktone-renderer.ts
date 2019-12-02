@@ -104,9 +104,21 @@ class MarktoneRenderer extends Renderer {
   listitem(text: string, isTask: boolean): string {
     let style = "";
     if (isTask) {
-      style = "list-style-type: none; margin-left: -20px;";
+      style = "list-style-type: none; margin-left: -20px; text-indent: -19px;";
     }
     return `<li style="${style}">${text}</li>`;
+  }
+
+  checkbox(checked: boolean): string {
+    const length = 10;
+
+    const imageURL = checked
+      ? "https://static.cybozu.com/contents/k/image/argo/form/checkbox-checked.png"
+      : "https://static.cybozu.com/contents/k/image/argo/form/checkbox.png";
+    const alternateText = checked ? "checked" : "unchecked";
+    const style = "margin: 0 4px;";
+
+    return `<img width="${length}" height="${length}" src="${imageURL}" alt="${alternateText}" style="${style}">`;
   }
 
   //
