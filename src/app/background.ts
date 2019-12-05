@@ -2,7 +2,7 @@ function shouldBeEnabledMarktone(url: string | undefined) {
   if (!url) return false;
 
   return !!url.match(
-    /https:\/\/[^.]+\.cybozu(?:-dev)?\.com\/k\/(?:#\/(?:space|people)\/|\d+\/show#|#\/ntf\/)/
+    /^https:\/\/[^/]+\.cybozu(?:-dev)?\.com\/k\/(?:#\/(?:space|people)\/|\d+\/show#|#\/ntf\/)/
   );
 }
 
@@ -12,10 +12,10 @@ chrome.runtime.onInstalled.addListener(() => {
       {
         conditions: [
           new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: { urlMatches: "https://[^.]+\\.cybozu\\.com/k/.*" }
+            pageUrl: { urlMatches: "^https://[^/]+\\.cybozu\\.com/k/.*" }
           }),
           new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: { urlMatches: "https://[^.]+\\.cybozu-dev\\.com/k/.*" }
+            pageUrl: { urlMatches: "^https://[^/]+\\.cybozu-dev\\.com/k/.*" }
           })
         ],
         actions: [new chrome.declarativeContent.ShowPageAction()]
