@@ -280,7 +280,11 @@ const Marktone = (props: MarktoneProps) => {
    * Returns whether file upload is supported.
    */
   const isSupportedFileUploading = (): boolean => {
-    return KintoneClient.isPeoplePage() || KintoneClient.isSpacePage();
+    return (
+      KintoneClient.isPeoplePage() ||
+      KintoneClient.isSpacePage() ||
+      KintoneClient.isNotificationPage()
+    );
   };
 
   /**

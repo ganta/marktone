@@ -167,6 +167,10 @@ export class KintoneClient {
     return window.location.hash.startsWith("#/people/");
   }
 
+  static isNotificationPage(): boolean {
+    return window.location.hash.startsWith("#/ntf/");
+  }
+
   static isAppRecordPage(): boolean {
     const pathname = window.location.pathname;
     return pathname.startsWith("/k/") && pathname.endsWith("/show");
