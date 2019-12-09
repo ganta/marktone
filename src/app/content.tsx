@@ -227,17 +227,23 @@ async function addMarktoneWhenRecordCommentReply(
   addMarktone(formElement, replyMentions);
 }
 
+// TODO: Restructure the kintone form insertion observation logic.
 function delegateClickEvent(
   selector: string,
-  callback: (elem: HTMLElement) => void
+  callback: (elem: HTMLElement) => void,
+  useCapture: boolean = false
 ): void {
-  document.addEventListener("click", event => {
-    const targetElement = event.target as HTMLElement;
-    const specifiedElement = targetElement.closest<HTMLElement>(selector);
-    if (specifiedElement !== null) {
-      callback(specifiedElement);
-    }
-  });
+  document.addEventListener(
+    "click",
+    event => {
+      const targetElement = event.target as HTMLElement;
+      const specifiedElement = targetElement.closest<HTMLElement>(selector);
+      if (specifiedElement !== null) {
+        callback(specifiedElement);
+      }
+    },
+    useCapture
+  );
 }
 
 // for the first comment of space or people
@@ -260,7 +266,8 @@ delegateClickEvent(
 // for the first comment of record
 delegateClickEvent(
   "div.gaia-argoui-app-show-sidebar-content",
-  addMarktoneForRecordComment
+  addMarktoneForRecordComment,
+  true // Because the reply button and the element overlap.
 );
 
 // for the reply comment of record
