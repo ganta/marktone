@@ -60,6 +60,11 @@ class MentionReplacer {
       const type = matched[1];
       const escapedCode = matched[2];
       const code = MentionReplacer.unescapeCode(escapedCode);
+      // It is needed to skip fetching an organization, a group or a user by code
+      // because kintone returns 520 error when `code` exceeds 100 characters.
+      if (code.length > 100) {
+        continue;
+      }
 
       switch (type) {
         case DirectoryEntityType.ORGANIZATION:
