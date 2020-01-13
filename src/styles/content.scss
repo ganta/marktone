@@ -313,3 +313,10 @@ body:not(.marktone-disabled) {
     }
   }
 }
+
+// Fix an autocomplete UI is hidden in app record comment.
+.gaia-argoui-app-show-sidebar
+  > .gaia-argoui-app-show-sidebar-dragged
+  > .gaia-argoui-app-show-sidebar-content {
+  overflow-y: visible;
+}
