@@ -125,14 +125,14 @@ export class KintoneClient {
     "zip"
   ];
 
-  private static searchDirectoryAPI = "/k/api/directory/search.json";
+  private static searchDirectoryAPI = "/directory/search.json";
 
   private static listDirectoryByIdAndTypeAPI =
-    "/k/api/directory/listByIdAndType.json";
+    "/directory/listByIdAndType.json";
 
-  private static downloadBlobAPI = "/k/api/blob/download.do";
+  private static downloadBlobAPI = "/blob/download.do";
 
-  private static uploadBlobAPI = "/k/api/blob/upload.json";
+  private static uploadBlobAPI = "/blob/upload.json";
 
   private readonly loginUser: LoginUser;
 
@@ -176,6 +176,10 @@ export class KintoneClient {
     return pathname.startsWith("/k/") && pathname.endsWith("/show");
   }
 
+  static isGuestSpace(): boolean {
+    return window.location.pathname.startsWith("/k/guest/");
+  }
+
   static getDownloadURL(
     fileKey: string,
     additionalParams?: { [key: string]: string }
@@ -191,7 +195,9 @@ export class KintoneClient {
       });
     }
 
-    return `${KintoneClient.downloadBlobAPI}?${params.toString()}`;
+    return `${KintoneClient.getAPIPathPrefix()}${
+      KintoneClient.downloadBlobAPI
+    }?${params.toString()}`;
   }
 
   static getFileIconURL(fileName: string): string {
@@ -206,6 +212,19 @@ export class KintoneClient {
     }
 
     return `${KintoneClient.fileIconBaseURL}/${iconName}.png`;
+  }
+
+  private static getAPIPathPrefix(): string {
+    if (!KintoneClient.isGuestSpace()) return "/k/api";
+
+    const matched = window.location.pathname.match(
+      /^\/k\/guest\/(?<spaceId>\d+)\//
+    );
+    if (matched && matched.groups) {
+      return `/k/guest/${matched.groups.spaceId}/api`;
+    }
+
+    throw new Error(`Unknown pathname: ${window.location.pathname}`);
   }
 
   async listDirectoryEntityByIdAndType(
@@ -293,8 +312,10 @@ export class KintoneClient {
     params.append("_lc", this.loginUser.language);
     params.append("_ref", encodeURI(window.location.href));
 
-    const url = `${KintoneClient.uploadBlobAPI}?${params.toString()}`;
-    const rawResponse = await fetch(url, {
+    const apiPath = `${KintoneClient.getAPIPathPrefix()}${
+      KintoneClient.uploadBlobAPI
+    }?${params.toString()}`;
+    const rawResponse = await fetch(apiPath, {
       method: "POST",
       headers: {
         "X-Cybozu-RequestToken": this.requestToken
@@ -309,9 +330,9 @@ export class KintoneClient {
     params.append("_lc", this.loginUser.language);
     params.append("_ref", encodeURI(window.location.href));
 
-    const url = `${path}?${params.toString()}`;
+    const apiPath = `${KintoneClient.getAPIPathPrefix()}${path}?${params.toString()}`;
 
-    const rawResponse = await fetch(url, {
+    const rawResponse = await fetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json; charset=utf-8" },
       body: JSON.stringify(requestBody)
