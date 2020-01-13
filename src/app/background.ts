@@ -2,7 +2,7 @@ function shouldBeEnabledMarktone(url: string | undefined) {
   if (!url) return false;
 
   return !!url.match(
-    /^https:\/\/[^/]+\.(?:cybozu(?:-dev)?\.com|kintone(?:-dev)?\.com|cybozu(?:-dev)?\.cn)\/k\/(?:#\/(?:space|people|message)\/|\d+\/show#|#\/ntf\/)/
+    /^https:\/\/[^/]+\.(?:cybozu(?:-dev)?\.com|kintone(?:-dev)?\.com|cybozu(?:-dev)?\.cn)\/k\//
   );
 }
 
