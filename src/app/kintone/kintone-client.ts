@@ -125,14 +125,14 @@ export class KintoneClient {
     "zip"
   ];
 
-  private static searchAPI = "/k/api/directory/search.json";
+  private static searchDirectoryAPI = "/k/api/directory/search.json";
 
-  private static downloadAPI = "/k/api/blob/download.do";
-
-  private static uploadAPI = "/k/api/blob/upload.json";
-
-  private static listDirectoryEntityByIdAndType =
+  private static listDirectoryByIdAndTypeAPI =
     "/k/api/directory/listByIdAndType.json";
+
+  private static downloadBlobAPI = "/k/api/blob/download.do";
+
+  private static uploadBlobAPI = "/k/api/blob/upload.json";
 
   private readonly loginUser: LoginUser;
 
@@ -191,7 +191,7 @@ export class KintoneClient {
       });
     }
 
-    return `${KintoneClient.downloadAPI}?${params.toString()}`;
+    return `${KintoneClient.downloadBlobAPI}?${params.toString()}`;
   }
 
   static getFileIconURL(fileName: string): string {
@@ -213,7 +213,7 @@ export class KintoneClient {
   ): Promise<DirectoryEntity[]> {
     const requestBody = { idAndTypes };
     const response = await this.postToAPI<ListDirectoryEntityResponse>(
-      KintoneClient.listDirectoryEntityByIdAndType,
+      KintoneClient.listDirectoryByIdAndTypeAPI,
       requestBody
     );
 
@@ -236,7 +236,7 @@ export class KintoneClient {
       spaceId: this.spaceId
     };
     const response = await this.postToAPI<SearchDirectoryResponse>(
-      KintoneClient.searchAPI,
+      KintoneClient.searchDirectoryAPI,
       requestBody
     );
 
@@ -293,7 +293,7 @@ export class KintoneClient {
     params.append("_lc", this.loginUser.language);
     params.append("_ref", encodeURI(window.location.href));
 
-    const url = `${KintoneClient.uploadAPI}?${params.toString()}`;
+    const url = `${KintoneClient.uploadBlobAPI}?${params.toString()}`;
     const rawResponse = await fetch(url, {
       method: "POST",
       headers: {
