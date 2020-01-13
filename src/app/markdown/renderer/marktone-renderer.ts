@@ -135,6 +135,12 @@ class MarktoneRenderer extends Renderer {
     return `<code style="${style}">${code}</code>`;
   }
 
+  del(text: string): string {
+    // A del element is removed by kintone.
+    // Use `text-decoration` because A `text-decoration-line` is also removed by kintone.
+    return `<span style="text-decoration: line-through;">${text}</span>`;
+  }
+
   link(href: string, title: string, text: string) {
     // For later sanitization with DOMPurify, skip the `href` sanitization here.
 
