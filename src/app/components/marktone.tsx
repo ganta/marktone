@@ -398,6 +398,9 @@ const Marktone = (props: MarktoneProps) => {
                 handleResizeTextArea(textAreaEl);
               }
             }}
+            // kintone sets `overflow-y` to `auto` to scroll the app record sidebar vertically.
+            // Therefore, the overflow part is hidden if the autocomplete element is inside the sidebar element.
+            renderToBody={true}
             className={isDragging ? "dragging" : ""}
             containerClassName="autocomplete-container"
             dropdownClassName="autocomplete-dropdown"
