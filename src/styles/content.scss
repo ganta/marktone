@@ -313,12 +313,3 @@ body:not(.marktone-disabled) {
     }
   }
 }
-
-// Fix an autocomplete UI is hidden in app record comment.
-.gaia-argoui-app-show-sidebar-content {
-  // kintone sets `overflow-y` to `auto` to scroll the sidebar vertically.
-  // However, one of `overflow-x` and `overflow-y` cannot be set to `visible`.
-  // Therefore, set `padding-left` large enough so that autocomplete is not hidden.
-  padding-left: 1000px;
-  margin-left: -1000px;
-}
