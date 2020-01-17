@@ -313,3 +313,13 @@ body:not(.marktone-disabled) {
     }
   }
 }
+
+// kintone sets `overflow-y` to `auto` to scroll the app record sidebar vertically,
+// so the overflow part is hidden if the autocomplete element is inside the sidebar element.
+//
+// The solution is to set `renderToBody` to `true`,
+// but the `renderToBody` option displays an autocomplete UI to an unexpected position.
+// Therefore, fix the vertical position of the autocomplete UI in the app record comment.
+.gaia-argoui-app-show-sidebar .autocomplete-dropdown {
+  left: 0 !important;
+}
