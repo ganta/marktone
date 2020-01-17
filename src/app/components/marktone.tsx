@@ -398,6 +398,7 @@ const Marktone = (props: MarktoneProps) => {
                 handleResizeTextArea(textAreaEl);
               }
             }}
+            movePopupAsYouType={true}
             className={isDragging ? "dragging" : ""}
             containerClassName="autocomplete-container"
             dropdownClassName="autocomplete-dropdown"
