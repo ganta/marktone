@@ -1,55 +1,21 @@
-function shouldBeEnabledMarktone(url: string | undefined) {
-  if (!url) return false;
+import MarktoneConfig from "./marktone-config";
 
-  return !!url.match(
-    /^https:\/\/[^/]+\.(?:cybozu(?:-dev)?\.com|kintone(?:-dev)?\.com|cybozu(?:-dev)?\.cn)\/k\//
-  );
+function setExtensionIcon(enabled: boolean): void {
+  chrome.browserAction.setIcon({
+    path: enabled ? "icons/icon48.png" : "icons/disabled-icon48.png"
+  });
 }
 
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
-    chrome.declarativeContent.onPageChanged.addRules([
-      {
-        conditions: [
-          new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: {
-              urlMatches:
-                "^https://[^/]+\\.(?:cybozu(?:-dev)?\\.com|kintone(?:-dev)?\\.com|cybozu(?:-dev)?\\.cn)/k/.*"
-            }
-          })
-        ],
-        actions: [new chrome.declarativeContent.ShowPageAction()]
-      }
-    ]);
-  });
+MarktoneConfig.loadEnabled(enabled => {
+  setExtensionIcon(enabled);
 });
 
-chrome.pageAction.onClicked.addListener(activeTab => {
-  if (!shouldBeEnabledMarktone(activeTab.url)) {
-    return;
-  }
+chrome.browserAction.onClicked.addListener(tab => {
+  MarktoneConfig.loadEnabled(enabled => {
+    const newEnabled = !enabled;
 
-  chrome.tabs.executeScript(
-    {
-      // Use `code` because `file` cannot pass a return value to the callback function.
-      code: `
-        // Do not add a const declaration because a predefined error occurs.
-        notificationIframeEl = document.getElementById("notification-iframe-gaia");
-        if (notificationIframeEl !== null) {
-          notificationIframeEl.contentDocument.documentElement.querySelector("body").classList.toggle("marktone-disabled")
-        }
-        document.body.dataset.marktoneEnabled = !document.body.classList.toggle("marktone-disabled");
-      `
-    },
-    result => {
-      if (typeof result === "undefined" || typeof result[0] === "undefined")
-        return;
+    setExtensionIcon(newEnabled);
 
-      const marktoneEnabled = result[0];
-      chrome.pageAction.setIcon({
-        tabId: activeTab.id as number,
-        path: marktoneEnabled ? "icons/icon48.png" : "icons/disabled-icon48.png"
-      });
-    }
-  );
+    MarktoneConfig.saveEnabled(newEnabled);
+  });
 });

@@ -4,6 +4,21 @@ import React from "react";
 
 import KintoneClient from "./kintone/kintone-client";
 import MarktoneHandler from "./marktone-handler";
+import MarktoneConfig from "./marktone-config";
+
+function setMarktoneEnabled(enabled: boolean): void {
+  document.body.dataset.marktoneEnabled = enabled.toString();
+
+  if (enabled) {
+    document.body.classList.remove("marktone-disabled");
+  } else {
+    document.body.classList.add("marktone-disabled");
+  }
+}
+
+MarktoneConfig.loadEnabled(setMarktoneEnabled);
+
+MarktoneConfig.onEnabledChanged(setMarktoneEnabled);
 
 // Pass the login user information to DOM.
 // Because `window.kintone` cannot be referred directly from Chrome extension.
