@@ -27,10 +27,7 @@ module.exports = {
       filename: "css/[name].css",
       chunkFilename: "css/[id].css"
     }),
-    new CopyPlugin([
-      { from: "src/manifest.json", to: "." },
-      { from: "src/icons/", to: "icons" }
-    ])
+    new CopyPlugin([{ from: "src/icons/", to: "icons" }])
   ],
 
   module: {
@@ -63,6 +60,25 @@ module.exports = {
           },
           "css-loader"
         ]
+      },
+      {
+        test: /\/manifest\.json$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]"
+            }
+          },
+          "extract-loader",
+          {
+            loader: "chrome-manifest-loader",
+            options: {
+              mapVersion: true
+            }
+          }
+        ],
+        type: "javascript/auto"
       }
     ]
   }

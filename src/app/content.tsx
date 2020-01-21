@@ -1,3 +1,4 @@
+import "../manifest.json";
 import "../styles/content.scss";
 
 import React from "react";
