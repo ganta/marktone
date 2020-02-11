@@ -27,6 +27,7 @@
   "devDependencies": {
     "@cybozu/eslint-config": "8.1.0",
     "@types/chrome": "0.0.91",
+    "@types/dompurify": "2.0.1",
     "@typescript-eslint/eslint-plugin": "2.9.0",
     "@typescript-eslint/parser": "2.9.0",
     "chrome-manifest-loader": "0.2.0",
@@ -48,7 +49,6 @@
     "webpack-cli": "3.3.10"
   },
   "dependencies": {
-    "@types/dompurify": "2.0.0",
     "@types/marked": "0.7.2",
     "@types/react": "16.9.13",
     "@types/react-dom": "16.9.4",
