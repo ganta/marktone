@@ -1,4 +1,4 @@
-import React from "react";
+import React, { KeyboardEvent } from "react";
 import marked from "marked";
 import DOMPurify from "dompurify";
 import ReactTextareaAutocomplete, {
@@ -66,6 +66,7 @@ const Marktone = (props: MarktoneProps) => {
     gfm: true, // Enable GitHub Flavored Markdown.
     breaks: true, // Add 'br' element on a single line break.
     headerIds: false,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore for `listitem()`
     renderer: new MarktoneRenderer(mentionReplacer),
   });
@@ -223,7 +224,7 @@ const Marktone = (props: MarktoneProps) => {
    * Handles the behavior when the Markdown text area is resized.
    */
   const handleResizeTextArea = (textAreaEl: HTMLTextAreaElement): void => {
-    const resizeObserver = new MutationObserver((records, observer) => {
+    const resizeObserver = new MutationObserver((_records, _observer) => {
       setPreviewHeight(textAreaEl.offsetHeight);
     });
 
@@ -340,13 +341,23 @@ const Marktone = (props: MarktoneProps) => {
   // The reference of the Markdown text area
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleEditorTabClicked = (): void => {
+  const handleClickEditorTab = (): void => {
     ref.current!.classList.remove("preview-active");
     textAreaRef.current!.focus();
   };
+  const handleKeyDownEditorTab = (event: KeyboardEvent): void => {
+    if (event.key === "Enter" || event.key === " ") {
+      handleClickEditorTab();
+    }
+  };
 
-  const handlePreviewTabClicked = (): void => {
+  const handleClickPreviewTab = (): void => {
     ref.current!.classList.add("preview-active");
+  };
+  const handleKeyDownPreviewTab = (event: KeyboardEvent): void => {
+    if (event.key === "Enter" || event.key === " ") {
+      handleClickPreviewTab();
+    }
   };
 
   /**
@@ -359,10 +370,22 @@ const Marktone = (props: MarktoneProps) => {
   return (
     <div ref={ref} className="marktone">
       <div className="tabs">
-        <div className="tab edit-tab" onClick={handleEditorTabClicked}>
+        <div
+          className="tab edit-tab"
+          onClick={handleClickEditorTab}
+          onKeyDown={handleKeyDownEditorTab}
+          role="tab"
+          tabIndex={0}
+        >
           Edit
         </div>
-        <div className="tab preview-tab" onClick={handlePreviewTabClicked}>
+        <div
+          className="tab preview-tab"
+          onClick={handleClickPreviewTab}
+          onKeyDown={handleKeyDownPreviewTab}
+          role="tab"
+          tabIndex={0}
+        >
           Preview
         </div>
       </div>
@@ -392,6 +415,7 @@ const Marktone = (props: MarktoneProps) => {
             onDrop={isSupportedFileUploading() ? handleDropFile : doNothing}
             ref={reactTextAreaAutocompleteRef}
             innerRef={(textAreaEl) => {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
               // @ts-ignore
               textAreaRef.current = textAreaEl;
               if (textAreaEl) {

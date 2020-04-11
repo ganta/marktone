@@ -100,6 +100,7 @@ class MarktoneRenderer extends Renderer {
     return `${tag}${content}</${type}>`;
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore Because the inheritance source argument is omitted.
   listitem(text: string, isTask: boolean): string {
     let style = "";
