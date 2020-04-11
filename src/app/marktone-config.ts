@@ -1,6 +1,6 @@
 class MarktoneConfig {
   static loadEnabled(func: (enabled: boolean) => void): void {
-    chrome.storage.sync.get(["marktoneEnabled"], result => {
+    chrome.storage.sync.get(["marktoneEnabled"], (result) => {
       let enabled = result.marktoneEnabled;
 
       if (enabled === undefined) enabled = true;

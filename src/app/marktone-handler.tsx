@@ -37,12 +37,12 @@ class MarktoneHandler {
   }
 
   private observeCommentFormAppearance(): void {
-    const observer = new MutationObserver(records => {
+    const observer = new MutationObserver((records) => {
       const commentFormRecords = records.filter(
         MarktoneHandler.isExpandedStatusChangedCommentFormRecord
       );
 
-      commentFormRecords.forEach(record => {
+      commentFormRecords.forEach((record) => {
         const targetElement = record.target as HTMLElement;
         const isFormExpanded = targetElement.getAttribute("aria-expanded");
         const originalForm = targetElement.querySelector<HTMLFormElement>(
@@ -63,7 +63,7 @@ class MarktoneHandler {
       attributes: true,
       subtree: true,
       attributeOldValue: true,
-      attributeFilter: ["aria-expanded"]
+      attributeFilter: ["aria-expanded"],
     });
   }
 
@@ -102,7 +102,7 @@ class MarktoneHandler {
       idAndTypes
     );
 
-    return entities.map<ReplyMention>(entity => {
+    return entities.map<ReplyMention>((entity) => {
       return { type: entity.type, code: entity.code };
     });
   }

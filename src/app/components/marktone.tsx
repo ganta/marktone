@@ -2,7 +2,7 @@ import React from "react";
 import marked from "marked";
 import DOMPurify from "dompurify";
 import ReactTextareaAutocomplete, {
-  ItemComponentProps
+  ItemComponentProps,
 } from "@webscopeio/react-textarea-autocomplete";
 
 import MarktoneRenderer from "../markdown/renderer/marktone-renderer";
@@ -39,7 +39,7 @@ interface MentionCandidateItem {
  */
 const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
   const {
-    entity: { code, name, avatar }
+    entity: { code, name, avatar },
   } = props;
 
   return (
@@ -67,7 +67,7 @@ const Marktone = (props: MarktoneProps) => {
     breaks: true, // Add 'br' element on a single line break.
     headerIds: false,
     // @ts-ignore for `listitem()`
-    renderer: new MarktoneRenderer(mentionReplacer)
+    renderer: new MarktoneRenderer(mentionReplacer),
   });
 
   /**
@@ -80,11 +80,11 @@ const Marktone = (props: MarktoneProps) => {
     replyMentions: ReplyMention[]
   ): string => {
     const currentUser = KintoneClient.getLoginUser();
-    const normalizedMentions = replyMentions.filter(replyMention => {
+    const normalizedMentions = replyMentions.filter((replyMention) => {
       if (replyMention.type !== DirectoryEntityType.USER) return true;
       return replyMention.code !== currentUser.code;
     });
-    const mentions = normalizedMentions.map(replyMention =>
+    const mentions = normalizedMentions.map((replyMention) =>
       MentionReplacer.createMention(replyMention.type, replyMention.code)
     );
     return mentions.join(" ");
@@ -188,7 +188,7 @@ const Marktone = (props: MarktoneProps) => {
     const tabModeThresholdWidth = 600;
     const marktoneEl = ref.current!;
 
-    const resizeObserver = new ResizeObserver(entries => {
+    const resizeObserver = new ResizeObserver((entries) => {
       entries.forEach((entry: ResizeObserverEntry) => {
         if (entry.contentRect.width < tabModeThresholdWidth) {
           marktoneEl.classList.add("tab-mode");
@@ -229,7 +229,7 @@ const Marktone = (props: MarktoneProps) => {
 
     resizeObserver.observe(textAreaEl, {
       attributes: true,
-      attributeFilter: ["style"]
+      attributeFilter: ["style"],
     });
 
     setPreviewHeight(textAreaEl.offsetHeight);
@@ -352,7 +352,9 @@ const Marktone = (props: MarktoneProps) => {
   /**
    * Do nothing.
    */
-  const doNothing = () => {};
+  const doNothing = () => {
+    // Do nothing.
+  };
 
   return (
     <div ref={ref} className="marktone">
@@ -376,8 +378,8 @@ const Marktone = (props: MarktoneProps) => {
                 component: MentionCandidate,
                 output: ({ type, code }) => {
                   return MentionReplacer.createMention(type, code);
-                }
-              }
+                },
+              },
             }}
             loadingComponent={() => <span>Loading...</span>}
             onChange={handleChangeMarkdownTextArea}
@@ -389,7 +391,7 @@ const Marktone = (props: MarktoneProps) => {
             }
             onDrop={isSupportedFileUploading() ? handleDropFile : doNothing}
             ref={reactTextAreaAutocompleteRef}
-            innerRef={textAreaEl => {
+            innerRef={(textAreaEl) => {
               // @ts-ignore
               textAreaRef.current = textAreaEl;
               if (textAreaEl) {
@@ -398,7 +400,7 @@ const Marktone = (props: MarktoneProps) => {
                 handleResizeTextArea(textAreaEl);
               }
             }}
-            movePopupAsYouType={true}
+            movePopupAsYouType
             className={isDragging ? "dragging" : ""}
             containerClassName="autocomplete-container"
             dropdownClassName="autocomplete-dropdown"
@@ -412,10 +414,10 @@ const Marktone = (props: MarktoneProps) => {
           {/* eslint-disable-next-line react/no-danger,jsx-a11y/no-static-element-interactions */}
           <div
             className="preview"
-            onClick={event => event.preventDefault()}
-            onKeyDown={event => event.preventDefault()}
-            onKeyUp={event => event.preventDefault()}
-            onKeyPress={event => event.preventDefault()}
+            onClick={(event) => event.preventDefault()}
+            onKeyDown={(event) => event.preventDefault()}
+            onKeyUp={(event) => event.preventDefault()}
+            onKeyPress={(event) => event.preventDefault()}
             dangerouslySetInnerHTML={{ __html: renderedHTML }}
           />
         </div>

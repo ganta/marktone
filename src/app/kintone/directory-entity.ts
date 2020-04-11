@@ -1,7 +1,7 @@
 export enum DirectoryEntityType {
   USER = "user",
   ORGANIZATION = "org",
-  GROUP = "group"
+  GROUP = "group",
 }
 
 export class DirectoryEntityTypeUtil {

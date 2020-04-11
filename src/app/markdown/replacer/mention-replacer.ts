@@ -1,7 +1,7 @@
 import DirectoryEntityCache from "../../kintone/directory-entity-cache";
 import {
   DirectoryEntity,
-  DirectoryEntityType
+  DirectoryEntityType,
 } from "../../kintone/directory-entity";
 import KintoneClient from "../../kintone/kintone-client";
 

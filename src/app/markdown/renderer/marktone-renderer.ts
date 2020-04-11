@@ -11,11 +11,11 @@ class MarktoneRendererHelper {
       "<": "&lt;",
       ">": "&gt;",
       '"': "&quot;",
-      "'": "&#39;"
+      "'": "&#39;",
     };
 
     if (escapeTest.test(html)) {
-      return html.replace(escapeReplace, ch => replacements[ch]);
+      return html.replace(escapeReplace, (ch) => replacements[ch]);
     }
 
     return html;
@@ -156,7 +156,7 @@ class MarktoneRenderer extends Renderer {
       const attributes: { [key: string]: string } = {
         href: fileURL,
         class: "cybozu-tmp-file ocean-ui-plugin-linkbubble-no",
-        "data-file": fileKey || ""
+        "data-file": fileKey || "",
       };
       const attributesString = Object.entries(attributes)
         .map(([key, value]) => `${key}="${value}"`)
@@ -168,12 +168,12 @@ class MarktoneRenderer extends Renderer {
     }
 
     const attributes: { [key: string]: string } = {
-      href: MarktoneRendererHelper.escapeHTML(href)
+      href: MarktoneRendererHelper.escapeHTML(href),
     };
     if (title) attributes.title = title;
 
     const attributesString = Object.keys(attributes)
-      .map<string>(key => `${key}="${attributes[key]}"`)
+      .map<string>((key) => `${key}="${attributes[key]}"`)
       .join(" ");
     return `<a ${attributesString}>${text}</a>`;
   }
@@ -208,7 +208,7 @@ class MarktoneRenderer extends Renderer {
     }
 
     const additionalAttributesString = Object.keys(additionalAttributes)
-      .map<string>(key => `${key}="${additionalAttributes[key]}"`)
+      .map<string>((key) => `${key}="${additionalAttributes[key]}"`)
       .join(" ");
 
     return `<img src="${imageURL}" alt="${text}" ${additionalAttributesString}>`;

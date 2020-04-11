@@ -1,7 +1,7 @@
 import {
   DirectoryEntity,
   DirectoryEntityType,
-  DirectoryEntityTypeUtil
+  DirectoryEntityTypeUtil,
 } from "./directory-entity";
 
 interface SearchDirectoryUserResponse {
@@ -122,7 +122,7 @@ export class KintoneClient {
     "ppt",
     "pptx",
     "pdf",
-    "zip"
+    "zip",
   ];
 
   private static searchDirectoryAPI = "/directory/search.json";
@@ -236,13 +236,13 @@ export class KintoneClient {
       requestBody
     );
 
-    return response.result.entities.map(entity => {
+    return response.result.entities.map((entity) => {
       return {
         type: DirectoryEntityTypeUtil.valueOf(entity.entityType),
         id: parseInt(entity.id, 10),
         code: entity.code,
         name: entity.name,
-        avatar: ""
+        avatar: "",
       };
     });
   }
@@ -252,33 +252,33 @@ export class KintoneClient {
       term,
       appId: null,
       recordId: null,
-      spaceId: this.spaceId
+      spaceId: this.spaceId,
     };
     const response = await this.postToAPI<SearchDirectoryResponse>(
       KintoneClient.searchDirectoryAPI,
       requestBody
     );
 
-    const users = response.result.users.map<DirectoryEntity>(u => ({
+    const users = response.result.users.map<DirectoryEntity>((u) => ({
       type: DirectoryEntityType.USER,
       id: parseInt(u.id, 10),
       code: u.code,
       name: u.name,
-      avatar: u.photo.size_24
+      avatar: u.photo.size_24,
     }));
-    const orgs = response.result.orgs.map<DirectoryEntity>(o => ({
+    const orgs = response.result.orgs.map<DirectoryEntity>((o) => ({
       type: DirectoryEntityType.ORGANIZATION,
       id: parseInt(o.id, 10),
       code: o.code,
       name: o.name,
-      avatar: KintoneClient.presetOrganizationImageURL
+      avatar: KintoneClient.presetOrganizationImageURL,
     }));
-    const groups = response.result.groups.map<DirectoryEntity>(g => ({
+    const groups = response.result.groups.map<DirectoryEntity>((g) => ({
       type: DirectoryEntityType.GROUP,
       id: parseInt(g.id, 10),
       code: g.code,
       name: g.name,
-      avatar: KintoneClient.presetGroupImageURL
+      avatar: KintoneClient.presetGroupImageURL,
     }));
 
     return new DirectoryEntityCollection({ users, orgs, groups });
@@ -286,19 +286,19 @@ export class KintoneClient {
 
   async findUserByCode(code: string): Promise<DirectoryEntity | null> {
     const collection = await this.searchDirectory(code);
-    const user = collection.users.find(entity => entity.code === code);
+    const user = collection.users.find((entity) => entity.code === code);
     return user || null;
   }
 
   async findOrganizationByCode(code: string): Promise<DirectoryEntity | null> {
     const collection = await this.searchDirectory(code);
-    const organization = collection.orgs.find(entity => entity.code === code);
+    const organization = collection.orgs.find((entity) => entity.code === code);
     return organization || null;
   }
 
   async findGroupByCode(code: string): Promise<DirectoryEntity | null> {
     const collection = await this.searchDirectory(code);
-    const group = collection.groups.find(entity => entity.code === code);
+    const group = collection.groups.find((entity) => entity.code === code);
     return group || null;
   }
 
@@ -318,9 +318,9 @@ export class KintoneClient {
     const rawResponse = await fetch(apiPath, {
       method: "POST",
       headers: {
-        "X-Cybozu-RequestToken": this.requestToken
+        "X-Cybozu-RequestToken": this.requestToken,
       },
-      body: formData
+      body: formData,
     });
     return (await rawResponse.json()) as UploadResponse;
   }
@@ -335,7 +335,7 @@ export class KintoneClient {
     const rawResponse = await fetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json; charset=utf-8" },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify(requestBody),
     });
     return (await rawResponse.json()) as T;
   }
