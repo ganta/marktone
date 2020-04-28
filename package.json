@@ -55,7 +55,7 @@
     "@types/webscopeio__react-textarea-autocomplete": "4.6.0",
     "@webscopeio/react-textarea-autocomplete": "4.6.3",
     "dompurify": "2.0.10",
-    "marked": "0.8.2",
+    "marked": "1.0.0",
     "react": "16.13.1",
     "react-dom": "16.13.1"
   }
