@@ -26,7 +26,7 @@
   "homepage": "https://github.com/ganta/chrome-extension-marktone#readme",
   "devDependencies": {
     "@cybozu/eslint-config": "10.0.3",
-    "@types/chrome": "0.0.104",
+    "@types/chrome": "0.0.106",
     "@types/dompurify": "2.0.1",
     "@typescript-eslint/eslint-plugin": "2.30.0",
     "@typescript-eslint/parser": "2.30.0",
