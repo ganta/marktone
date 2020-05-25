@@ -17,7 +17,6 @@
     "default_title": "Marktone"
   },
   "permissions": [
-    "declarativeContent",
     "storage",
     "https://*.cybozu.com/k/*",
     "https://*.cybozu-dev.com/k/*",
