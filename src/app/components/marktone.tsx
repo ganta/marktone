@@ -114,7 +114,7 @@ const Marktone = (props: MarktoneProps) => {
 
     if (marktoneEnabled === undefined) return true;
 
-    return !!document.body.dataset.marktoneEnabled;
+    return document.body.dataset.marktoneEnabled === "true";
   };
 
   // Updates the kintone original editor field with the rendered HTML.
