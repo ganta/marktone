@@ -4,6 +4,9 @@
     "config:base"
   ],
   "labels": ["renovate"],
+  "patch": {
+    "automerge": true
+  },
   "packageRules": [
     {
       "depTypeList": ["devDependencies"],
