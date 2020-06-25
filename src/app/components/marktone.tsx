@@ -1,4 +1,4 @@
-import React, { KeyboardEvent } from "react";
+import React, { KeyboardEvent, ReactElement } from "react";
 import marked from "marked";
 import DOMPurify from "dompurify";
 import ReactTextareaAutocomplete, {
@@ -8,7 +8,10 @@ import ReactTextareaAutocomplete, {
 import MarktoneRenderer from "../markdown/renderer/marktone-renderer";
 import KintoneClient from "../kintone/kintone-client";
 import MentionReplacer from "../markdown/replacer/mention-replacer";
-import { DirectoryEntityType } from "../kintone/directory-entity";
+import {
+  DirectoryEntity,
+  DirectoryEntityType,
+} from "../kintone/directory-entity";
 
 import "@webscopeio/react-textarea-autocomplete/style.css";
 
@@ -37,7 +40,9 @@ interface MentionCandidateItem {
 /**
  * The mention candidate component.
  */
-const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
+const MentionCandidate: React.FC<ItemComponentProps<MentionCandidateItem>> = (
+  props: ItemComponentProps<MentionCandidateItem>
+) => {
   const {
     entity: { code, name, avatar },
   } = props;
@@ -58,7 +63,7 @@ const MentionCandidate = (props: ItemComponentProps<MentionCandidateItem>) => {
 /**
  * Marktone component.
  */
-const Marktone = (props: MarktoneProps) => {
+const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
   const { originalFormEl, kintoneClient, mentionReplacer } = props;
 
   // Setup Marked.js
@@ -124,6 +129,9 @@ const Marktone = (props: MarktoneProps) => {
     }
   }, [renderedHTML, originalEditorFieldEl]);
 
+  // The reference of the Markdown text area
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
   // Shows the confirm dialog before leave the page.
   useEffect(() => {
     const showConfirmDialogOnBeforeUnload = (
@@ -170,7 +178,7 @@ const Marktone = (props: MarktoneProps) => {
       showConfirmDialogOnHashChangeAnchorClicked
     );
 
-    return () => {
+    return (): void => {
       window.removeEventListener(
         "beforeunload",
         showConfirmDialogOnBeforeUnload
@@ -239,7 +247,9 @@ const Marktone = (props: MarktoneProps) => {
   /**
    * Returns the kintone users, organizations and groups that matches the specified token.
    */
-  const kintoneDirectoryProvider = async (token: string) => {
+  const kintoneDirectoryProvider = async (
+    token: string
+  ): Promise<DirectoryEntity[]> => {
     const collection = await kintoneClient.searchDirectory(token);
     return collection.flat();
   };
@@ -260,6 +270,11 @@ const Marktone = (props: MarktoneProps) => {
   const handleDragLeave = (): void => {
     setDragging(false);
   };
+
+  // The reference of ReactTextAreaAutocomplete component
+  const reactTextAreaAutocompleteRef = useRef<
+    ReactTextareaAutocomplete<MentionCandidateItem>
+  >(null);
 
   /**
    * Gets the caret position of the Markdown text area.
@@ -333,14 +348,6 @@ const Marktone = (props: MarktoneProps) => {
     }
   };
 
-  // The reference of ReactTextAreaAutocomplete component
-  const reactTextAreaAutocompleteRef = useRef<
-    ReactTextareaAutocomplete<MentionCandidateItem>
-  >(null);
-
-  // The reference of the Markdown text area
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
   const handleClickEditorTab = (): void => {
     ref.current!.classList.remove("preview-active");
     textAreaRef.current!.focus();
@@ -363,7 +370,7 @@ const Marktone = (props: MarktoneProps) => {
   /**
    * Do nothing.
    */
-  const doNothing = () => {
+  const doNothing = (): void => {
     // Do nothing.
   };
 
@@ -399,12 +406,12 @@ const Marktone = (props: MarktoneProps) => {
               "@": {
                 dataProvider: kintoneDirectoryProvider,
                 component: MentionCandidate,
-                output: ({ type, code }) => {
+                output: ({ type, code }): string => {
                   return MentionReplacer.createMention(type, code);
                 },
               },
             }}
-            loadingComponent={() => <span>Loading...</span>}
+            loadingComponent={(): ReactElement => <span>Loading...</span>}
             onChange={handleChangeMarkdownTextArea}
             onDragEnter={
               isSupportedFileUploading() ? handleDragEnter : doNothing
@@ -414,7 +421,7 @@ const Marktone = (props: MarktoneProps) => {
             }
             onDrop={isSupportedFileUploading() ? handleDropFile : doNothing}
             ref={reactTextAreaAutocompleteRef}
-            innerRef={(textAreaEl) => {
+            innerRef={(textAreaEl): void => {
               // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
               // @ts-ignore
               textAreaRef.current = textAreaEl;
@@ -438,10 +445,10 @@ const Marktone = (props: MarktoneProps) => {
           {/* eslint-disable-next-line react/no-danger,jsx-a11y/no-static-element-interactions */}
           <div
             className="preview"
-            onClick={(event) => event.preventDefault()}
-            onKeyDown={(event) => event.preventDefault()}
-            onKeyUp={(event) => event.preventDefault()}
-            onKeyPress={(event) => event.preventDefault()}
+            onClick={(event): void => event.preventDefault()}
+            onKeyDown={(event): void => event.preventDefault()}
+            onKeyUp={(event): void => event.preventDefault()}
+            onKeyPress={(event): void => event.preventDefault()}
             dangerouslySetInnerHTML={{ __html: renderedHTML }}
           />
         </div>
