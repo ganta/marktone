@@ -124,6 +124,9 @@ const Marktone = (props: MarktoneProps) => {
     }
   }, [renderedHTML, originalEditorFieldEl]);
 
+  // The reference of the Markdown text area
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
   // Shows the confirm dialog before leave the page.
   useEffect(() => {
     const showConfirmDialogOnBeforeUnload = (
@@ -261,6 +264,11 @@ const Marktone = (props: MarktoneProps) => {
     setDragging(false);
   };
 
+  // The reference of ReactTextAreaAutocomplete component
+  const reactTextAreaAutocompleteRef = useRef<
+    ReactTextareaAutocomplete<MentionCandidateItem>
+  >(null);
+
   /**
    * Gets the caret position of the Markdown text area.
    */
@@ -332,14 +340,6 @@ const Marktone = (props: MarktoneProps) => {
       setCaretPosition(caretPosition);
     }
   };
-
-  // The reference of ReactTextAreaAutocomplete component
-  const reactTextAreaAutocompleteRef = useRef<
-    ReactTextareaAutocomplete<MentionCandidateItem>
-  >(null);
-
-  // The reference of the Markdown text area
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleClickEditorTab = (): void => {
     ref.current!.classList.remove("preview-active");
