@@ -27,7 +27,7 @@
   "devDependencies": {
     "@cybozu/eslint-config": "10.0.4",
     "@types/chrome": "0.0.117",
-    "@types/dompurify": "2.0.1",
+    "@types/dompurify": "2.0.2",
     "@typescript-eslint/eslint-plugin": "2.30.0",
     "@typescript-eslint/parser": "2.30.0",
     "chrome-manifest-loader": "0.3.0",
@@ -54,7 +54,7 @@
     "@types/react-dom": "16.9.7",
     "@types/webscopeio__react-textarea-autocomplete": "4.6.0",
     "@webscopeio/react-textarea-autocomplete": "4.6.3",
-    "dompurify": "2.0.10",
+    "dompurify": "2.0.12",
     "marked": "1.0.0",
     "react": "16.13.1",
     "react-dom": "16.13.1"
