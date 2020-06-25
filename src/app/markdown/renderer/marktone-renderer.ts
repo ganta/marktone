@@ -142,7 +142,7 @@ class MarktoneRenderer extends Renderer {
     return `<span style="text-decoration: line-through;">${text}</span>`;
   }
 
-  link(href: string, title: string, text: string) {
+  link(href: string, title: string, text: string): string {
     // For later sanitization with DOMPurify, skip the `href` sanitization here.
 
     if (href === null) return text;
