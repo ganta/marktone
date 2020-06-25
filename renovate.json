@@ -3,6 +3,7 @@
   "extends": [
     "config:base"
   ],
+  "labels": ["renovate"],
   "packageRules": [
     {
       "depTypeList": ["devDependencies"],
