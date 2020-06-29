@@ -1,11 +1,13 @@
 import { MarkedOptions, Renderer } from "marked";
 import MentionReplacer from "../replacer/mention-replacer";
 import KintoneClient from "../../kintone/kintone-client";
+import hljs from "highlight.js";
+import { highlightStyles, languageAliases } from "./highlight-settings";
 
 class MarktoneRendererHelper {
   static escapeHTML(html: string): string {
     const escapeTest = /[&<>"']/;
-    const escapeReplace = /[&<>"']/g;
+    const escapeReplace = new RegExp(escapeTest, "g");
     const replacements: { [key: string]: string } = {
       "&": "&amp;",
       "<": "&lt;",
@@ -19,6 +21,43 @@ class MarktoneRendererHelper {
     }
 
     return html;
+  }
+
+  static unescapeHTML(html: string): string {
+    const unescapeTest = /(&(?:lt|amp|gt|quot|#39);)/;
+    const unescapeReplace = new RegExp(unescapeTest, "g");
+    const replacements: { [key: string]: string } = {
+      "&amp;": "&",
+      "&lt;": "<",
+      "&gt;": ">",
+      "&quot;": '"',
+      "&#39;": "'",
+    };
+
+    if (unescapeTest.test(html)) {
+      return html.replace(unescapeReplace, (ch) => replacements[ch]);
+    }
+
+    return html;
+  }
+
+  static highlightCode(code: string, specifiedLanguage: string): string {
+    let language = specifiedLanguage;
+
+    if (!hljs.listLanguages().includes(specifiedLanguage)) {
+      language = languageAliases[specifiedLanguage] || "plaintext";
+    }
+    const highlightedCode = hljs.highlight(language, code).value;
+    const highlightedCodeWithInlineStyle = highlightedCode.replace(
+      /class="([\w-]+)"/g,
+      (matchedString, className) => {
+        const style = highlightStyles[className];
+        if (style === undefined) return matchedString;
+        return `style="${style}"`;
+      }
+    );
+
+    return highlightedCodeWithInlineStyle;
   }
 }
 
@@ -67,15 +106,20 @@ class MarktoneRenderer extends Renderer {
   }
 
   code(code: string, language: string, isEscaped: boolean): string {
-    const escapedCode = isEscaped
-      ? code
-      : MarktoneRendererHelper.escapeHTML(code);
+    const unescapedCode = isEscaped
+      ? MarktoneRendererHelper.unescapeHTML(code)
+      : code;
+    const escapedCodeWithHighlight = MarktoneRendererHelper.highlightCode(
+      unescapedCode,
+      language
+    );
+
     const preStyle =
       "background-color: #f6f8fa; border-radius: 3px; padding: 8px 16px;";
     const codeStyle = `font-family: ${this.monospaceFontFamiliesString};`;
     console.log(codeStyle);
 
-    return `<pre style="${preStyle}"><code style="${codeStyle}">${escapedCode}</code></pre>`;
+    return `<pre style="${preStyle}"><code style="${codeStyle}">${escapedCodeWithHighlight}</code></pre>`;
   }
 
   blockquote(quote: string): string {
