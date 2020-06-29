@@ -29,10 +29,21 @@ interface Render {
 /* eslint-disable class-methods-use-this */
 class MarktoneRenderer extends Renderer {
   private mentionReplacer: MentionReplacer;
+  private static MONOSPACE_FONT_FAMILIES: readonly string[] = [
+    "SFMono-Regular",
+    "Consolas",
+    "Liberation Mono",
+    "Menlo",
+    "monospace",
+  ];
+  private monospaceFontFamiliesString: string;
 
   constructor(mentionReplacer: MentionReplacer, options?: MarkedOptions) {
     super(options);
     this.mentionReplacer = mentionReplacer;
+    this.monospaceFontFamiliesString = MarktoneRenderer.MONOSPACE_FONT_FAMILIES.map(
+      (familyName) => `'${familyName}'`
+    ).join(", ");
   }
 
   //
@@ -59,10 +70,12 @@ class MarktoneRenderer extends Renderer {
     const escapedCode = isEscaped
       ? code
       : MarktoneRendererHelper.escapeHTML(code);
-    const style =
+    const preStyle =
       "background-color: #f6f8fa; border-radius: 3px; padding: 8px 16px;";
+    const codeStyle = `font-family: ${this.monospaceFontFamiliesString};`;
+    console.log(codeStyle);
 
-    return `<pre style="${style}"><code>${escapedCode}</code></pre>`;
+    return `<pre style="${preStyle}"><code style="${codeStyle}">${escapedCode}</code></pre>`;
   }
 
   blockquote(quote: string): string {
@@ -131,8 +144,7 @@ class MarktoneRenderer extends Renderer {
   }
 
   codespan(code: string): string {
-    const style =
-      "background-color: rgba(27,31,35,.05); border-radius: 3px; margin: 0 1px; padding: .2em .4em;";
+    const style = `background-color: rgba(27,31,35,.05); border-radius: 3px; margin: 0 1px; padding: .2em .4em; font-family: ${this.monospaceFontFamiliesString};`;
     return `<code style="${style}">${code}</code>`;
   }
 
