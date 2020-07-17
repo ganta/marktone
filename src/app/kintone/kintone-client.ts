@@ -325,7 +325,7 @@ export class KintoneClient {
     return (await rawResponse.json()) as UploadResponse;
   }
 
-  private async postToAPI<T>(path: string, requestBody: {}): Promise<T> {
+  private async postToAPI<T>(path: string, requestBody: unknown): Promise<T> {
     const params = new URLSearchParams();
     params.append("_lc", this.loginUser.language);
     params.append("_ref", encodeURI(window.location.href));
