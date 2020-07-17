@@ -10,31 +10,31 @@ module.exports = {
 
   entry: {
     content: "./src/app/content.tsx",
-    background: "./src/app/background.ts"
+    background: "./src/app/background.ts",
   },
 
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "js/[name].js"
+    filename: "js/[name].js",
   },
 
   resolve: {
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: [".ts", ".tsx", ".js"],
   },
 
   plugins: [
     new MiniCssExtractPlugin({
       filename: "css/[name].css",
-      chunkFilename: "css/[id].css"
+      chunkFilename: "css/[id].css",
     }),
-    new CopyPlugin([{ from: "src/icons/", to: "icons" }])
+    new CopyPlugin({ patterns: [{ from: "src/icons/", to: "icons" }] }),
   ],
 
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader"
+        loader: "ts-loader",
       },
       {
         test: /\.scss$/,
@@ -42,12 +42,12 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              hmr: environment === "development"
-            }
+              hmr: environment === "development",
+            },
           },
           "css-loader",
-          "sass-loader"
-        ]
+          "sass-loader",
+        ],
       },
       {
         test: /\.css$/,
@@ -55,11 +55,11 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              hmr: process.env.NODE_ENV === "development"
-            }
+              hmr: process.env.NODE_ENV === "development",
+            },
           },
-          "css-loader"
-        ]
+          "css-loader",
+        ],
       },
       {
         test: /\/manifest\.json$/,
@@ -67,19 +67,19 @@ module.exports = {
           {
             loader: "file-loader",
             options: {
-              name: "[name].[ext]"
-            }
+              name: "[name].[ext]",
+            },
           },
           "extract-loader",
           {
             loader: "chrome-manifest-loader",
             options: {
-              mapVersion: true
-            }
-          }
+              mapVersion: true,
+            },
+          },
         ],
-        type: "javascript/auto"
-      }
-    ]
-  }
+        type: "javascript/auto",
+      },
+    ],
+  },
 };
