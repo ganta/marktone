@@ -24,6 +24,6 @@
     }
   },
   "rules": {
-    "@typescript-eslint/ban-ts-ignore": "warn"
+    "@typescript-eslint/ban-ts-comment": "warn"
   }
 }

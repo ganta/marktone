@@ -71,7 +71,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
     gfm: true, // Enable GitHub Flavored Markdown.
     breaks: true, // Add 'br' element on a single line break.
     headerIds: false,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore for `listitem()`
     renderer: new MarktoneRenderer(mentionReplacer),
   });
@@ -422,7 +422,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
             onDrop={isSupportedFileUploading() ? handleDropFile : doNothing}
             ref={reactTextAreaAutocompleteRef}
             innerRef={(textAreaEl): void => {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               textAreaRef.current = textAreaEl;
               if (textAreaEl) {
