@@ -10,7 +10,7 @@ constants:
 # Import orbs
 #
 orbs:
-  node: circleci/node@1.1.6
+  node: circleci/node@3.0.1
 
 #
 # Workflow definitions
@@ -31,7 +31,7 @@ jobs:
       tag: *node-version
     steps:
       - checkout
-      - install-node-modules
+      - node/install-packages
       - run:
           name: EsLint
           command: npm run eslint -- --format junit --output-file ./test-reports/eslint/results.xml
@@ -46,19 +46,7 @@ jobs:
       tag: *node-version
     steps:
       - checkout
-      - install-node-modules
+      - node/install-packages
       - run:
           name: Execute Webpack
           command: npx webpack
-
-#
-# Commands
-#
-commands:
-  install-node-modules:
-    steps:
-      - node/with-cache:
-          steps:
-            - run:
-                name: Install Node modules
-                command: npm ci
