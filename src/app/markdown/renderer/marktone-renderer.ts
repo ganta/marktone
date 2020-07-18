@@ -117,7 +117,6 @@ class MarktoneRenderer extends Renderer {
     const preStyle =
       "background-color: #f6f8fa; border-radius: 3px; padding: 8px 16px;";
     const codeStyle = `font-family: ${this.monospaceFontFamiliesString};`;
-    console.log(codeStyle);
 
     return `<pre style="${preStyle}"><code style="${codeStyle}">${escapedCodeWithHighlight}</code></pre>`;
   }

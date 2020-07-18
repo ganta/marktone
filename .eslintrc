@@ -1,8 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": [
-    "@cybozu/eslint-config/presets/react-typescript-prettier"
-  ],
+  "extends": ["@cybozu/eslint-config/presets/react-typescript-prettier"],
   "env": {
     "webextensions": true
   },
@@ -24,6 +22,12 @@
     }
   },
   "rules": {
-    "@typescript-eslint/ban-ts-comment": "warn"
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "no-console": [
+      "error",
+      {
+        "allow": ["warn", "error"]
+      }
+    ]
   }
 }
