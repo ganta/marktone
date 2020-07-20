@@ -28,6 +28,10 @@
     "@cybozu/eslint-config": "11.0.0",
     "@types/chrome": "0.0.121",
     "@types/dompurify": "2.0.2",
+    "@types/marked": "1.1.0",
+    "@types/react": "16.9.43",
+    "@types/react-dom": "16.9.8",
+    "@types/webscopeio__react-textarea-autocomplete": "4.6.1",
     "@typescript-eslint/eslint-plugin": "3.6.1",
     "@typescript-eslint/parser": "3.6.1",
     "chrome-manifest-loader": "0.3.0",
@@ -49,10 +53,6 @@
     "webpack-cli": "3.3.12"
   },
   "dependencies": {
-    "@types/marked": "1.1.0",
-    "@types/react": "16.9.43",
-    "@types/react-dom": "16.9.8",
-    "@types/webscopeio__react-textarea-autocomplete": "4.6.1",
     "@webscopeio/react-textarea-autocomplete": "4.7.0",
     "dompurify": "2.0.12",
     "highlight.js": "10.1.1",
