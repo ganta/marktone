@@ -11,6 +11,10 @@
     {
       "depTypeList": ["devDependencies"],
       "automerge": true
+    },
+    {
+      "managers": ["orb"],
+      "automerge": true
     }
   ]
 }
