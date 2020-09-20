@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@webscopeio/react-textarea-autocomplete": "4.7.2",
-    "dompurify": "2.0.16",
+    "dompurify": "2.0.17",
     "highlight.js": "10.1.2",
     "marked": "1.1.1",
     "react": "16.13.1",
