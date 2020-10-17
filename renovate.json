@@ -4,6 +4,7 @@
     "config:base"
   ],
   "labels": ["renovate"],
+  "automergeType": "branch",
   "patch": {
     "automerge": true
   },
