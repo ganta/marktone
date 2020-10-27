@@ -30,7 +30,7 @@
     "@types/dompurify": "2.0.4",
     "@types/marked": "1.1.0",
     "@types/react": "16.9.53",
-    "@types/react-dom": "16.9.8",
+    "@types/react-dom": "16.9.9",
     "@types/webscopeio__react-textarea-autocomplete": "4.6.3",
     "@typescript-eslint/eslint-plugin": "3.10.1",
     "@typescript-eslint/parser": "3.10.1",
