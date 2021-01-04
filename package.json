@@ -53,7 +53,7 @@
     "webpack-cli": "4.3.1"
   },
   "dependencies": {
-    "@webscopeio/react-textarea-autocomplete": "4.7.2",
+    "@webscopeio/react-textarea-autocomplete": "4.7.3",
     "dompurify": "2.0.17",
     "highlight.js": "10.1.2",
     "marked": "1.1.2",
