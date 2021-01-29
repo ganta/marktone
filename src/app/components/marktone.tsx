@@ -398,8 +398,6 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
       </div>
       <div className="editor-area">
         <div className="textarea-wrapper">
-          {/*
-          // @ts-ignore for some attributes */}
           <ReactTextareaAutocomplete
             value={rawText}
             trigger={{
