@@ -159,9 +159,9 @@ class MarktoneRenderer extends Renderer {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Because the inheritance source argument is omitted.
   listitem(text: string, isTask: boolean): string {
-    let style = "";
+    let style = "text-indent: 0";
     if (isTask) {
-      style = "list-style-type: none; margin-left: -20px; text-indent: -19px;";
+      style = "list-style-type: none; text-indent: -19px;";
     }
     return `<li style="${style}">${text}</li>`;
   }
