@@ -4,7 +4,7 @@ version: 2.1
 # Constant definitions
 #
 constants:
-  - &node-version 12.20.0
+  - &node-version 14.15.4
 
 #
 # Import orbs
