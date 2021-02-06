@@ -1,8 +1,7 @@
 {
-  "name": "chrome-extension-marktone",
+  "name": "marktone",
   "version": "1.5.2",
   "description": "Change a Rich Text input area to Markdown input area on kintone",
-  "main": "index.js",
   "scripts": {
     "start": "webpack --watch",
     "build": "webpack",
@@ -16,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ganta/chrome-extension-marktone.git"
+    "url": "git+https://github.com/ganta/marktone.git"
   },
   "author": "Hideki Igarashi <hideki.develop@gmail.com> (https://github.com/ganta)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ganta/chrome-extension-marktone/issues"
+    "url": "https://github.com/ganta/marktone/issues"
   },
-  "homepage": "https://github.com/ganta/chrome-extension-marktone#readme",
+  "homepage": "https://github.com/ganta/marktone",
   "devDependencies": {
     "@cybozu/eslint-config": "11.0.3",
     "@types/chrome": "0.0.129",
