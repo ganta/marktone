@@ -5,12 +5,11 @@
   ],
   "labels": ["renovate"],
   "automergeType": "branch",
-  "patch": {
-    "automerge": true,
-  },
   "packageRules": [
     {
-      "depTypeList": ["devDependencies"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
     },
   ],
