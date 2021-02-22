@@ -19,7 +19,7 @@ workflows:
   main:
     jobs:
       - lint
-      - pack
+      - package
 
 #
 # Jobs
@@ -40,7 +40,7 @@ jobs:
           command: npm run prettier
       - store_test_results:
           path: ./test-reports
-  pack:
+  package:
     executor:
       name: node/default
       tag: *node-version
@@ -48,5 +48,5 @@ jobs:
       - checkout
       - node/install-packages
       - run:
-          name: Execute Webpack
-          command: npx webpack
+          name: Run package
+          command: npm run package
