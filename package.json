@@ -1,5 +1,5 @@
 {
-  "name": "marktone",
+  "private": true,
   "version": "1.5.2",
   "description": "Change a Rich Text input area to Markdown input area on kintone",
   "scripts": {
