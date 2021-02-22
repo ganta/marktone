@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "1.5.2",
-  "description": "Change a Rich Text input area to Markdown input area on kintone",
+  "license": "MIT",
   "scripts": {
     "start": "webpack --watch",
     "clean": "rimraf 'dist/*' '*.zip'",
@@ -16,16 +16,6 @@
     "prepackage": "run-s clean build",
     "package": "cd dist && zip -r ../marktone.zip ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ganta/marktone.git"
-  },
-  "author": "Hideki Igarashi <hideki.develop@gmail.com> (https://github.com/ganta)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ganta/marktone/issues"
-  },
-  "homepage": "https://github.com/ganta/marktone",
   "dependencies": {
     "@webscopeio/react-textarea-autocomplete": "4.7.3",
     "dompurify": "2.2.6",
