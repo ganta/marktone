@@ -10,7 +10,7 @@ constants:
 # Import orbs
 #
 orbs:
-  node: circleci/node@4.1.1
+  node: circleci/node@4.2.0
 
 #
 # Workflow definitions
