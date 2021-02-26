@@ -197,15 +197,17 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
     const tabModeThresholdWidth = 600;
     const marktoneEl = ref.current!;
 
-    const resizeObserver = new ResizeObserver((entries) => {
-      entries.forEach((entry: ResizeObserverEntry) => {
-        if (entry.contentRect.width < tabModeThresholdWidth) {
-          marktoneEl.classList.add("tab-mode");
-        } else {
-          marktoneEl.classList.remove("tab-mode");
-        }
-      });
-    });
+    const resizeObserver = new ResizeObserver(
+      (entries: ResizeObserverEntry[]) => {
+        entries.forEach((entry) => {
+          if (entry.contentRect.width < tabModeThresholdWidth) {
+            marktoneEl.classList.add("tab-mode");
+          } else {
+            marktoneEl.classList.remove("tab-mode");
+          }
+        });
+      }
+    );
     resizeObserver.observe(marktoneEl, { box: "border-box" });
   }, []);
 
