@@ -359,6 +359,31 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
     await uploadFiles(files);
   };
 
+  /**
+   * Handles the event when the file is pasted from the clipboard.
+   *
+   * @param event ClipboardEvent
+   */
+  const handlePasteFromClipboard = async (
+    event: React.ClipboardEvent<HTMLTextAreaElement>
+  ): Promise<void> => {
+    const clipboardData = event.clipboardData;
+    const files = Array.from<File>(clipboardData.files);
+
+    // When a file is copied on Finder, etc., only image files are stored in `files`.
+    // (However, in the case of PDF, the first page is stored as an image file, and the file itself is not stored.)
+    // To prevent unintended behavior when this specification is changed,
+    // limit the list to pass the upload process to images only.
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+
+    if (imageFiles.length < 1) {
+      return;
+    }
+
+    event.preventDefault();
+    await uploadFiles(imageFiles);
+  };
+
   const handleClickEditorTab = (): void => {
     ref.current!.classList.remove("preview-active");
     textAreaRef.current!.focus();
@@ -429,6 +454,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
               isSupportedFileUploading() ? handleDragLeave : doNothing
             }
             onDrop={isSupportedFileUploading() ? handleDropFile : doNothing}
+            onPaste={handlePasteFromClipboard}
             ref={reactTextAreaAutocompleteRef}
             innerRef={(textAreaEl): void => {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
