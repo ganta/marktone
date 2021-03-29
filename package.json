@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "1.5.2",
+  "version": "1.6.0",
   "license": "MIT",
   "scripts": {
     "start": "webpack --watch",
