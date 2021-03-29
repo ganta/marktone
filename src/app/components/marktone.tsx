@@ -306,30 +306,22 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
   };
 
   /**
-   * Handles the event when the file is dropped to the Markdown text area.
+   * Uploads files.
+   *
+   * @param files
    */
-  const handleDropFile = async (
-    event: React.DragEvent<HTMLTextAreaElement>
-  ): Promise<void> => {
-    event.stopPropagation();
-    event.preventDefault();
-
-    setDragging(false);
-
-    const files = Array.from<File>(event.dataTransfer.files);
-
+  const uploadFiles = async (files: File[]) => {
     let caretPosition = getCaretPosition();
     let currentRawText = rawText;
 
     for (const file of files) {
-      const uploadingText = file.type.startsWith("image/")
-        ? `![](Uploading... ${file.name})`
-        : `[](Uploading... ${file.name}]`;
+      const uploadingText = `${
+        file.type.startsWith("image/") ? "!" : ""
+      }[](Uploading... ${file.name})`;
 
-      currentRawText = `${currentRawText.slice(
-        0,
-        caretPosition
-      )}${uploadingText}\n${currentRawText.slice(caretPosition)}`;
+      const beforeText = currentRawText.slice(0, caretPosition);
+      const afterText = currentRawText.slice(caretPosition);
+      currentRawText = `${beforeText}${uploadingText}\n${afterText}`;
 
       caretPosition += uploadingText.length + 1;
 
@@ -348,6 +340,23 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
       caretPosition += uploadedText.length - uploadingText.length;
       setCaretPosition(caretPosition);
     }
+  };
+
+  /**
+   * Handles the event when the file is dropped to the Markdown text area.
+   *
+   * @param event DragEvent
+   */
+  const handleDropFile = async (
+    event: React.DragEvent<HTMLTextAreaElement>
+  ): Promise<void> => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    setDragging(false);
+
+    const files = Array.from<File>(event.dataTransfer.files);
+    await uploadFiles(files);
   };
 
   const handleClickEditorTab = (): void => {
