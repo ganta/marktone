@@ -47,7 +47,7 @@ class MarktoneRendererHelper {
     if (!hljs.listLanguages().includes(specifiedLanguage)) {
       language = languageAliases[specifiedLanguage] || "plaintext";
     }
-    const highlightedCode = hljs.highlight(language, code).value;
+    const highlightedCode = hljs.highlight(code, { language }).value;
     const highlightedCodeWithInlineStyle = highlightedCode.replace(
       /class="([\w-]+)"/g,
       (matchedString, className) => {
