@@ -454,7 +454,9 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
               isSupportedFileUploading() ? handleDragLeave : doNothing
             }
             onDrop={isSupportedFileUploading() ? handleDropFile : doNothing}
-            onPaste={handlePasteFromClipboard}
+            onPaste={
+              isSupportedFileUploading() ? handlePasteFromClipboard : doNothing
+            }
             ref={reactTextAreaAutocompleteRef}
             innerRef={(textAreaEl): void => {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
