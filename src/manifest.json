@@ -18,6 +18,7 @@
   },
   "permissions": [
     "storage",
+    "clipboardRead",
     "https://*.cybozu.com/k/*",
     "https://*.cybozu-dev.com/k/*",
     "https://*.kintone.com/k/*",

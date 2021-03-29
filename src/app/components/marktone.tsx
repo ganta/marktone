@@ -306,30 +306,22 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
   };
 
   /**
-   * Handles the event when the file is dropped to the Markdown text area.
+   * Uploads files.
+   *
+   * @param files
    */
-  const handleDropFile = async (
-    event: React.DragEvent<HTMLTextAreaElement>
-  ): Promise<void> => {
-    event.stopPropagation();
-    event.preventDefault();
-
-    setDragging(false);
-
-    const files = Array.from<File>(event.dataTransfer.files);
-
+  const uploadFiles = async (files: File[]) => {
     let caretPosition = getCaretPosition();
     let currentRawText = rawText;
 
     for (const file of files) {
-      const uploadingText = file.type.startsWith("image/")
-        ? `![](Uploading... ${file.name})`
-        : `[](Uploading... ${file.name}]`;
+      const uploadingText = `${
+        file.type.startsWith("image/") ? "!" : ""
+      }[](Uploading... ${file.name})`;
 
-      currentRawText = `${currentRawText.slice(
-        0,
-        caretPosition
-      )}${uploadingText}\n${currentRawText.slice(caretPosition)}`;
+      const beforeText = currentRawText.slice(0, caretPosition);
+      const afterText = currentRawText.slice(caretPosition);
+      currentRawText = `${beforeText}${uploadingText}\n${afterText}`;
 
       caretPosition += uploadingText.length + 1;
 
@@ -348,6 +340,48 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
       caretPosition += uploadedText.length - uploadingText.length;
       setCaretPosition(caretPosition);
     }
+  };
+
+  /**
+   * Handles the event when the file is dropped to the Markdown text area.
+   *
+   * @param event DragEvent
+   */
+  const handleDropFile = async (
+    event: React.DragEvent<HTMLTextAreaElement>
+  ): Promise<void> => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    setDragging(false);
+
+    const files = Array.from<File>(event.dataTransfer.files);
+    await uploadFiles(files);
+  };
+
+  /**
+   * Handles the event when the file is pasted from the clipboard.
+   *
+   * @param event ClipboardEvent
+   */
+  const handlePasteFromClipboard = async (
+    event: React.ClipboardEvent<HTMLTextAreaElement>
+  ): Promise<void> => {
+    const clipboardData = event.clipboardData;
+    const files = Array.from<File>(clipboardData.files);
+
+    // When a file is copied on Finder, etc., only image files are stored in `files`.
+    // (However, in the case of PDF, the first page is stored as an image file, and the file itself is not stored.)
+    // To prevent unintended behavior when this specification is changed,
+    // limit the list to pass the upload process to images only.
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+
+    if (imageFiles.length < 1) {
+      return;
+    }
+
+    event.preventDefault();
+    await uploadFiles(imageFiles);
   };
 
   const handleClickEditorTab = (): void => {
@@ -420,6 +454,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
               isSupportedFileUploading() ? handleDragLeave : doNothing
             }
             onDrop={isSupportedFileUploading() ? handleDropFile : doNothing}
+            onPaste={handlePasteFromClipboard}
             ref={reactTextAreaAutocompleteRef}
             innerRef={(textAreaEl): void => {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
