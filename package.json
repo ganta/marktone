@@ -28,7 +28,7 @@
     "@cybozu/eslint-config": "12.0.1",
     "@types/chrome": "0.0.133",
     "@types/dompurify": "2.2.1",
-    "@types/marked": "2.0.0",
+    "@types/marked": "2.0.1",
     "@types/react": "17.0.3",
     "@types/react-dom": "17.0.3",
     "@types/webscopeio__react-textarea-autocomplete": "4.7.0",
