@@ -1,0 +1,36 @@
+name: CI
+
+on: push
+
+jobs:
+  npm-run:
+    name: ${{ matrix.stage }}
+    strategy:
+      matrix:
+        stage: [lint, package]
+
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Read .tool-versions
+        id: tool
+        run: |
+          node_version=$(grep "^nodejs " .tool-versions | awk '{ print $2 }')
+          echo ::set-output name=node-version::${node_version}
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ steps.tool.outputs.node-version }}
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - run: npm ci
+
+      - run: npm run ${{ matrix.stage }}
