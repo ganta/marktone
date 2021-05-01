@@ -5,6 +5,17 @@
   ],
   "labels": ["renovate"],
   "automergeType": "branch",
+  "regexManagers": [
+    // TODO: Remove this setting when Renovate supports asdf.
+    // https://github.com/renovatebot/renovate/issues/4051
+    {
+      "fileMatch": ["^.tool-versions$"],
+      "matchStrings": ["^nodejs (?<currentValue>.*)\\n"],
+      "depNameTemplate": "nodejs/node",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "node",
+    }
+  ],
   "packageRules": [
     {
       "matchManagers": ["npm"],
