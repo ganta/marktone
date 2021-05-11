@@ -274,9 +274,8 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
   };
 
   // The reference of ReactTextAreaAutocomplete component
-  const reactTextAreaAutocompleteRef = useRef<
-    ReactTextareaAutocomplete<MentionCandidateItem>
-  >(null);
+  const reactTextAreaAutocompleteRef =
+    useRef<ReactTextareaAutocomplete<MentionCandidateItem>>(null);
 
   /**
    * Gets the caret position of the Markdown text area.

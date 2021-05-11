@@ -80,9 +80,10 @@ class MarktoneRenderer extends Renderer {
   constructor(mentionReplacer: MentionReplacer, options?: MarkedOptions) {
     super(options);
     this.mentionReplacer = mentionReplacer;
-    this.monospaceFontFamiliesString = MarktoneRenderer.MONOSPACE_FONT_FAMILIES.map(
-      (familyName) => `'${familyName}'`
-    ).join(", ");
+    this.monospaceFontFamiliesString =
+      MarktoneRenderer.MONOSPACE_FONT_FAMILIES.map(
+        (familyName) => `'${familyName}'`
+      ).join(", ");
   }
 
   //
