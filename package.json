@@ -35,7 +35,7 @@
     "@typescript-eslint/eslint-plugin": "4.25.0",
     "@typescript-eslint/parser": "4.25.0",
     "chrome-manifest-loader": "0.3.0",
-    "copy-webpack-plugin": "8.1.1",
+    "copy-webpack-plugin": "9.0.0",
     "css-loader": "5.2.6",
     "eslint": "7.27.0",
     "eslint-import-resolver-webpack": "0.13.1",
