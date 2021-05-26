@@ -20,7 +20,7 @@
     "@webscopeio/react-textarea-autocomplete": "4.7.3",
     "dompurify": "2.2.8",
     "highlight.js": "10.7.2",
-    "marked": "2.0.3",
+    "marked": "2.0.5",
     "react": "17.0.2",
     "react-dom": "17.0.2"
   },
@@ -28,7 +28,7 @@
     "@cybozu/eslint-config": "14.0.0",
     "@types/chrome": "0.0.142",
     "@types/dompurify": "2.2.2",
-    "@types/marked": "2.0.2",
+    "@types/marked": "2.0.3",
     "@types/react": "17.0.8",
     "@types/react-dom": "17.0.5",
     "@types/webscopeio__react-textarea-autocomplete": "4.7.0",
