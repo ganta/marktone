@@ -31,7 +31,7 @@
     "@types/marked": "2.0.3",
     "@types/react": "17.0.13",
     "@types/react-dom": "17.0.8",
-    "@types/webscopeio__react-textarea-autocomplete": "4.7.0",
+    "@types/webscopeio__react-textarea-autocomplete": "4.7.1",
     "@typescript-eslint/eslint-plugin": "4.28.1",
     "@typescript-eslint/parser": "4.28.1",
     "chrome-manifest-loader": "0.3.0",
