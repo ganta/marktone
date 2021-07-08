@@ -27,7 +27,7 @@
   "devDependencies": {
     "@cybozu/eslint-config": "14.0.1",
     "@types/chrome": "0.0.146",
-    "@types/dompurify": "2.2.2",
+    "@types/dompurify": "2.2.3",
     "@types/marked": "2.0.3",
     "@types/react": "17.0.13",
     "@types/react-dom": "17.0.8",
