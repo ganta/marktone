@@ -101,7 +101,7 @@ interface LoginUser {
   language: string;
 }
 
-export class KintoneClient {
+export default class KintoneClient {
   static defaultThumbnailWidth = 250;
 
   private static presetOrganizationImageURL =
@@ -147,7 +147,7 @@ export class KintoneClient {
   }
 
   static getLoginUser(): LoginUser {
-    return JSON.parse(document.body.dataset.loginUser as string);
+    return JSON.parse(document.body.dataset.loginUser as string) as LoginUser;
   }
 
   static getSpaceId(): number | null {
@@ -156,7 +156,7 @@ export class KintoneClient {
   }
 
   static getRequestToken(): string {
-    return document.body.dataset.requestToken!;
+    return document.body.dataset.requestToken || "";
   }
 
   static isSpacePage(): boolean {
@@ -340,5 +340,3 @@ export class KintoneClient {
     return (await rawResponse.json()) as T;
   }
 }
-
-export default KintoneClient;

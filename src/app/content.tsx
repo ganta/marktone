@@ -1,8 +1,6 @@
 import "../manifest.json";
 import "../styles/content.scss";
 
-import React from "react";
-
 import KintoneClient from "./kintone/kintone-client";
 import MarktoneHandler from "./marktone-handler";
 import MarktoneConfig from "./marktone-config";
