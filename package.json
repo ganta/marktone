@@ -17,7 +17,7 @@
     "package": "cd dist && zip -r ../marktone.zip ."
   },
   "dependencies": {
-    "@webscopeio/react-textarea-autocomplete": "4.7.3",
+    "@webscopeio/react-textarea-autocomplete": "4.8.1",
     "dompurify": "2.3.3",
     "highlight.js": "11.3.1",
     "marked": "2.1.3",
