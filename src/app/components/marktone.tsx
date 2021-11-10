@@ -111,7 +111,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
   // The original editor field HTML element of kintone
   const originalEditorFieldEl = originalFormEl.querySelector<HTMLElement>(
     'div.ocean-ui-editor-field[role="textbox"]'
-  )!;
+  );
 
   // Get Marktone enabled status.
   const isMarktoneEnabled = (): boolean => {
@@ -124,7 +124,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
 
   // Updates the kintone original editor field with the rendered HTML.
   useEffect(() => {
-    if (isMarktoneEnabled()) {
+    if (isMarktoneEnabled() && originalEditorFieldEl) {
       originalEditorFieldEl.innerHTML = renderedHTML;
     }
   }, [renderedHTML, originalEditorFieldEl]);
@@ -158,7 +158,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
 
       if (
         textAreaRef.current === null ||
-        textAreaRef.current!.value === "" ||
+        textAreaRef.current.value === "" ||
         confirm("Changes you made may not be saved.")
       ) {
         window.removeEventListener(
@@ -195,7 +195,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
 
   useEffect(() => {
     const tabModeThresholdWidth = 600;
-    const marktoneEl = ref.current!;
+    const marktoneEl = ref.current as HTMLDivElement;
 
     const resizeObserver = new ResizeObserver(
       (entries: ResizeObserverEntry[]) => {
@@ -384,8 +384,8 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
   };
 
   const handleClickEditorTab = (): void => {
-    ref.current!.classList.remove("preview-active");
-    textAreaRef.current!.focus();
+    ref.current?.classList.remove("preview-active");
+    textAreaRef.current?.focus();
   };
   const handleKeyDownEditorTab = (event: KeyboardEvent): void => {
     if (event.key === "Enter" || event.key === " ") {
@@ -394,7 +394,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
   };
 
   const handleClickPreviewTab = (): void => {
-    ref.current!.classList.add("preview-active");
+    ref.current?.classList.add("preview-active");
   };
   const handleKeyDownPreviewTab = (event: KeyboardEvent): void => {
     if (event.key === "Enter" || event.key === " ") {
@@ -477,8 +477,6 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
           />
         </div>
         <div className="preview-wrapper" style={{ height: previewHeight }}>
-          {/* Exclude the jsx-a11y/no-static-element-interactions rule because no suitable role exists. */}
-          {/* eslint-disable-next-line react/no-danger,jsx-a11y/no-static-element-interactions */}
           <div
             className="preview"
             onClick={(event): void => event.preventDefault()}

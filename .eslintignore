@@ -1,2 +1,5 @@
-**/*.js
-dist/*
+/.git/
+/.idea/
+/node_modules/
+/dist/
+webpack.config.js

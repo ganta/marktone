@@ -10,12 +10,12 @@ MarktoneConfig.loadEnabled((enabled) => {
   setExtensionIcon(enabled);
 });
 
-chrome.browserAction.onClicked.addListener((tab) => {
+chrome.browserAction.onClicked.addListener((_tab) => {
   MarktoneConfig.loadEnabled((enabled) => {
     const newEnabled = !enabled;
 
     setExtensionIcon(newEnabled);
 
-    MarktoneConfig.saveEnabled(newEnabled);
+    void MarktoneConfig.saveEnabled(newEnabled);
   });
 });

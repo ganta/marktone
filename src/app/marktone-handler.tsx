@@ -38,8 +38,8 @@ class MarktoneHandler {
 
   private observeCommentFormAppearance(): void {
     const observer = new MutationObserver((records) => {
-      const commentFormRecords = records.filter(
-        MarktoneHandler.isExpandedStatusChangedCommentFormRecord
+      const commentFormRecords = records.filter((record) =>
+        MarktoneHandler.isExpandedStatusChangedCommentFormRecord(record)
       );
 
       commentFormRecords.forEach((record) => {
@@ -47,11 +47,11 @@ class MarktoneHandler {
         const isFormExpanded = targetElement.getAttribute("aria-expanded");
         const originalForm = targetElement.querySelector<HTMLFormElement>(
           "form.ocean-ui-comments-commentform-form"
-        )!;
+        ) as HTMLFormElement;
 
         if (isFormExpanded === "true") {
           // The original comment form is opened.
-          this.renderMarktone(originalForm);
+          void this.renderMarktone(originalForm);
         } else {
           // The original comment form is closed.
           this.unmountMarktone(originalForm);
@@ -70,7 +70,7 @@ class MarktoneHandler {
   private async renderMarktone(originalForm: HTMLFormElement): Promise<void> {
     const originalTextbox = originalForm.querySelector<HTMLDivElement>(
       ".ocean-ui-editor-field"
-    )!;
+    ) as HTMLDivElement;
 
     const replyMentions = await this.extractReplyMentions(originalTextbox);
     const marktoneContainer = this.findOrCreateMarktoneContainer(originalForm);
@@ -89,7 +89,7 @@ class MarktoneHandler {
   private unmountMarktone(originalForm: HTMLFormElement): void {
     const marktoneContainer = originalForm.querySelector<Element>(
       ".marktone-container"
-    )!;
+    ) as Element;
     ReactDOM.unmountComponentAtNode(marktoneContainer);
     originalForm.removeChild(marktoneContainer);
   }

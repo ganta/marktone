@@ -1,7 +1,7 @@
 class MarktoneConfig {
   static loadEnabled(func: (enabled: boolean) => void): void {
     chrome.storage.sync.get(["marktoneEnabled"], (result) => {
-      let enabled = result.marktoneEnabled;
+      let enabled = result.marktoneEnabled as boolean;
 
       if (enabled === undefined) enabled = true;
 
@@ -9,14 +9,14 @@ class MarktoneConfig {
     });
   }
 
-  static saveEnabled(enabled: boolean): void {
-    chrome.storage.sync.set({ marktoneEnabled: enabled });
+  static async saveEnabled(enabled: boolean): Promise<void> {
+    await chrome.storage.sync.set({ marktoneEnabled: enabled });
   }
 
   static onEnabledChanged(func: (enabled: boolean) => void): void {
-    chrome.storage.onChanged.addListener((changes, namespace) => {
+    chrome.storage.onChanged.addListener((changes, _namespace) => {
       if (changes.marktoneEnabled) {
-        func(changes.marktoneEnabled.newValue);
+        func(changes.marktoneEnabled.newValue as boolean);
       }
     });
   }

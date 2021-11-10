@@ -38,7 +38,7 @@ class MentionReplacer {
 
   static unescapeCode(code: string): string {
     return code.replace(/%([0-9a-z]{2})/g, (match, charCodeStr) => {
-      const charCode = parseInt(charCodeStr, 16);
+      const charCode = parseInt(charCodeStr as string, 16);
       return String.fromCharCode(charCode);
     });
   }

@@ -1,7 +1,7 @@
 import { MarkedOptions, Renderer } from "marked";
+import hljs from "highlight.js";
 import MentionReplacer from "../replacer/mention-replacer";
 import KintoneClient from "../../kintone/kintone-client";
-import hljs from "highlight.js";
 import { highlightStyles, languageAliases } from "./highlight-settings";
 
 class MarktoneRendererHelper {
@@ -51,7 +51,7 @@ class MarktoneRendererHelper {
     const highlightedCodeWithInlineStyle = highlightedCode.replace(
       /class="([\w-]+)"/g,
       (matchedString, className) => {
-        const style = highlightStyles[className];
+        const style = highlightStyles[className as string];
         if (style === undefined) return matchedString;
         return `style="${style}"`;
       }
@@ -59,10 +59,6 @@ class MarktoneRendererHelper {
 
     return highlightedCodeWithInlineStyle;
   }
-}
-
-interface Render {
-  options: MarkedOptions;
 }
 
 /* eslint-disable class-methods-use-this */
