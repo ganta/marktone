@@ -1,6 +1,6 @@
 {
+  "manifest_version": 3,
   "name": "Marktone",
-  "manifest_version": 2,
   "version": "1.6.0",
   "description": "Change a Rich Text input area on kintone https://kintone.cybozu.co.jp/ to the Markdown input area.",
   "homepage_url": "https://github.com/ganta/marktone",
@@ -9,24 +9,16 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "browser_action": {
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    },
-    "default_title": "Marktone"
-  },
-  "permissions": [
-    "storage",
-    "clipboardRead",
-    "https://*.cybozu.com/k/*",
-    "https://*.cybozu-dev.com/k/*",
-    "https://*.kintone.com/k/*",
-    "https://*.kintone-dev.com/k/*",
-    "https://*.cybozu.cn/k/*",
-    "https://*.cybozu-dev.cn/k/*"
+  "permissions": ["storage", "clipboardRead"],
+  "web_accessible_resources": [
+    {
+      "resources": ["js/initialization.js"],
+      "matches": ["<all_urls>"]
+    }
   ],
+  "background": {
+    "service_worker": "js/background.js"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -37,17 +29,17 @@
         "https://*.cybozu.cn/k/*",
         "https://*.cybozu-dev.cn/k/*"
       ],
-      "js": [
-        "js/content.js"
-      ],
-      "css": [
-        "css/content.css"
-      ],
+      "js": ["js/content.js"],
+      "css": ["css/content.css"],
       "all_frames": true
     }
   ],
-  "background": {
-    "scripts": ["js/background.js"],
-    "persistent": false
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Marktone"
   }
 }

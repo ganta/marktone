@@ -1,16 +1,17 @@
 import MarktoneConfig from "./marktone-config";
 
 function setExtensionIcon(enabled: boolean): void {
-  chrome.browserAction.setIcon({
-    path: enabled ? "icons/icon48.png" : "icons/disabled-icon48.png",
-  });
+  const path = chrome.runtime.getURL(
+    enabled ? "icons/icon48.png" : "icons/disabled-icon48.png"
+  );
+  chrome.action.setIcon({ path });
 }
 
 MarktoneConfig.loadEnabled((enabled) => {
   setExtensionIcon(enabled);
 });
 
-chrome.browserAction.onClicked.addListener((_tab) => {
+chrome.action.onClicked.addListener((_tab) => {
   MarktoneConfig.loadEnabled((enabled) => {
     const newEnabled = !enabled;
 

@@ -22,12 +22,16 @@ MarktoneConfig.onEnabledChanged(setMarktoneEnabled);
 // Pass the login user information to DOM.
 // Because `window.kintone` cannot be referred directly from Chrome extension.
 const initializationScript = document.createElement("script");
-initializationScript.text = `
-    document.body.dataset.loginUser = JSON.stringify(kintone.getLoginUser());
-    document.body.dataset.requestToken = kintone.getRequestToken();
-`;
-document.body.appendChild(initializationScript);
+initializationScript.src = chrome.runtime.getURL("js/initialization.js");
+initializationScript.onload = function () {
+  (this as HTMLScriptElement).remove();
+};
+(document.head || document.documentElement).appendChild(initializationScript);
 
-const kintoneClient = new KintoneClient();
-const handler = new MarktoneHandler(kintoneClient);
-handler.handle();
+const run = () => {
+  const kintoneClient = new KintoneClient();
+  const handler = new MarktoneHandler(kintoneClient);
+  handler.handle();
+};
+
+document.body.addEventListener("marktone-initialized", run, { once: true });
