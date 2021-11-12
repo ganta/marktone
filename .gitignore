@@ -6,3 +6,6 @@ dist/
 
 # Package
 *.zip
+
+# Storybook
+storybook-static/
