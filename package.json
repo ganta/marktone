@@ -35,7 +35,7 @@
     "@storybook/builder-webpack5": "6.3.12",
     "@storybook/manager-webpack5": "6.3.12",
     "@storybook/react": "6.3.12",
-    "@testing-library/jest-dom": "5.15.0",
+    "@testing-library/jest-dom": "5.15.1",
     "@testing-library/react": "12.1.2",
     "@types/chrome": "0.0.164",
     "@types/dompurify": "2.3.1",
