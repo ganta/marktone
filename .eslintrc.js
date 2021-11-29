@@ -13,12 +13,17 @@ module.exports = {
   plugins: ["import"],
   extends: [
     "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:import/typescript",
     "prettier",
   ],
   settings: {
+    react: {
+      version: "17.0",
+    },
     "import/resolver": {
       node: {
         extensions: [".js", ".ts", ".tsx", ".json"],
@@ -26,6 +31,8 @@ module.exports = {
     },
   },
   rules: {
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
     "import/order": "error",
   },
   parserOptions: {
