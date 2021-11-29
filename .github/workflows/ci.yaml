@@ -15,7 +15,7 @@ jobs:
     name: ${{ matrix.stage }}
     strategy:
       matrix:
-        stage: [lint, package]
+        stage: [lint, package, build-storybook]
 
     runs-on: ubuntu-20.04
 
