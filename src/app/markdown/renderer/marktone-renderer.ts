@@ -1,4 +1,4 @@
-import { MarkedOptions, Renderer } from "marked";
+import { marked, Renderer } from "marked";
 import hljs from "highlight.js";
 import MentionReplacer from "../replacer/mention-replacer";
 import KintoneClient from "../../kintone/kintone-client";
@@ -73,7 +73,10 @@ class MarktoneRenderer extends Renderer {
   ];
   private monospaceFontFamiliesString: string;
 
-  constructor(mentionReplacer: MentionReplacer, options?: MarkedOptions) {
+  constructor(
+    mentionReplacer: MentionReplacer,
+    options?: marked.MarkedOptions
+  ) {
     super(options);
     this.mentionReplacer = mentionReplacer;
     this.monospaceFontFamiliesString =
