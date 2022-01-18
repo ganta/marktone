@@ -7,7 +7,6 @@ module.exports = {
   globals: {
     document: true,
     window: true,
-    MutationObserver: true,
     fetch: true,
   },
   plugins: ["import"],
