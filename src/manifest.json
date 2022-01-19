@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Marktone",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Change a Rich Text input area on kintone https://kintone.cybozu.co.jp/ to the Markdown input area.",
   "homepage_url": "https://github.com/ganta/marktone",
   "icons": {
