@@ -64,7 +64,6 @@ exclude_patterns:
   - "**/vendor/"
   - "**/*_test.go"
   - "**/*.d.ts"
-  - "package.json"
-  - "package-lock.json"
+  - "**/*.json"
   - ".tool-versions"
   - "src/stories"
