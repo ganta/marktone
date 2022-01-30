@@ -2,7 +2,10 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: ["config:base"],
   labels: ["renovate"],
-  automergeType: "branch",
+  lockFileMaintenance: {
+    enabled: true,
+    extends: ["schedule:monthly"],
+  },
   regexManagers: [
     // TODO: Remove this setting when Renovate supports asdf.
     // https://github.com/renovatebot/renovate/issues/4051
