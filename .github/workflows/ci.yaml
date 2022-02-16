@@ -7,8 +7,9 @@ on:
       - 'renovate/**'
 
   pull_request:
-    branches-ignore:
-      - 'renovate/**'
+    branches:
+      - '!renovate/**'
+      - '**'
 
 jobs:
   npm-run:
