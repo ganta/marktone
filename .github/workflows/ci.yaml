@@ -5,15 +5,16 @@ on:
     branches:
       - main
       - 'renovate/**'
-
   pull_request:
-    branches:
-      - '!renovate/**'
-      - '**'
 
 jobs:
   npm-run:
     name: ${{ matrix.stage }}
+
+    # The `branches-ignore` in the `pull_request` event does not work due to a bug in GitHub.
+    # So, use `head_ref` to determine the condition of job execution.
+    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'renovate/')) }}
+
     strategy:
       matrix:
         stage: [lint, package, build-storybook]
