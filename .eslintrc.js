@@ -59,6 +59,16 @@ module.exports = {
           "error",
           { varsIgnorePattern: "^_", argsIgnorePattern: "^_" },
         ],
+        "@typescript-eslint/no-misused-promises": [
+          "error",
+          {
+            // Asynchronous React callbacks may return void.
+            // https://github.com/typescript-eslint/typescript-eslint/issues/4619
+            checksVoidReturn: {
+              attributes: false,
+            },
+          },
+        ],
       },
     },
   ],
