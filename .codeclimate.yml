@@ -43,9 +43,6 @@ checks:
       threshold: #language-specific defaults. overrides affect all languages.
 
 plugins:
-  eslint:
-    enabled: true
-    channel: "eslint-7"
   nodesecurity:
     enabled: true
 
