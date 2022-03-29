@@ -6,5 +6,15 @@ type Story = ComponentStoryObj<typeof MentionSuggestion>;
 export default { component: MentionSuggestion };
 
 export const Default: Story = {
-  args: { suggestedEntities: [] },
+  args: {
+    suggestedEntities: [
+      {
+        entityType: "user",
+        id: "1",
+        code: "test",
+        name: "Test",
+        avatarUrl: "https://i.pravatar.cc/300",
+      },
+    ],
+  },
 };
