@@ -19,6 +19,17 @@
   ],
   packageRules: [
     {
+      groupName: "React",
+      groupSlug: "react",
+      matchManagers: ["npm"],
+      matchPackageNames: [
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom",
+      ],
+    },
+    {
       groupName: "npm-non-major",
       matchManagers: ["npm"],
       matchUpdateTypes: ["minor", "patch"],
