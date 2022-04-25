@@ -1,6 +1,11 @@
-import React, { ChangeEventHandler } from "react";
+import React, {
+  ChangeEventHandler,
+  KeyboardEventHandler,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { useMarktone } from "./MarktoneProvider";
+import MentionSuggestion from "./MentionSuggestion";
 
 const Editor = styled.div`
   display: flex;
@@ -35,16 +40,45 @@ const TextArea = styled.textarea`
 
 const MarkdownEditor = () => {
   const { markdown, setMarkdown } = useMarktone();
+  const [suggestionActivity, setSuggestionActivity] = useState(false);
 
   const handleChange: ChangeEventHandler<HTMLTextAreaElement> = (
     event
   ): void => {
-    setMarkdown(event.target.value);
+    handleRenderMarkdown(event);
+    handleAutoComplete(event);
+  };
+
+  const handleKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (event) => {
+    const { key } = event;
+    console.log({ key });
+  };
+
+  const handleRenderMarkdown: ChangeEventHandler<HTMLTextAreaElement> = ({
+    target,
+  }) => {
+    setMarkdown(target.value);
+  };
+
+  const handleAutoComplete: ChangeEventHandler<HTMLTextAreaElement> = ({
+    target,
+  }) => {
+    const { selectionStart, selectionEnd, selectionDirection } = target;
+    console.log({ selectionStart, selectionEnd, selectionDirection });
+    const charOnCaret = [...target.value][selectionEnd - 1];
+    console.log({ charOnCaret });
+
+    setSuggestionActivity(charOnCaret === "@");
   };
 
   return (
     <Editor>
-      <TextArea value={markdown} onChange={handleChange} />
+      <TextArea
+        value={markdown}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+      />
+      {suggestionActivity && <MentionSuggestion suggestedEntities={[]} />}
     </Editor>
   );
 };

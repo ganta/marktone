@@ -34,6 +34,11 @@ const Item = styled.li<{ selected: boolean }>`
   padding: 4px 8px;
   background-color: ${({ selected }) => (selected ? "#0c50cd" : "transparent")};
   color: ${({ selected }) => (selected ? "#fff" : "#000")};
+
+  :hover {
+    background-color: #0c50cd;
+    color: #fff;
+  }
 `;
 
 const AvatarImage = styled.img`
@@ -66,13 +71,15 @@ const MentionSuggestion = ({ suggestedEntities }: Props) => {
 
   return (
     <Component>
-      <ItemList>
+      <ItemList role="listbox">
         {suggestedEntities.map((entity) => {
           const { entityType, id, code, name, avatarUrl } = entity;
 
           return (
             <Item
               key={`${entityType}-${id}`}
+              role="option"
+              aria-selected={entity === selectedEntity}
               selected={entity === selectedEntity}
             >
               <Avatar>
