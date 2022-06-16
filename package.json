@@ -51,7 +51,7 @@
     "@types/dompurify": "2.3.3",
     "@types/jest": "28.1.1",
     "@types/marked": "4.0.3",
-    "@types/react": "17.0.46",
+    "@types/react": "17.0.47",
     "@types/react-dom": "17.0.17",
     "@types/styled-components": "5.1.25",
     "@types/webscopeio__react-textarea-autocomplete": "4.7.2",
