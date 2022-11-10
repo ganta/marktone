@@ -37,7 +37,7 @@
     "unist-util-visit": "4.1.1"
   },
   "devDependencies": {
-    "@babel/core": "7.18.10",
+    "@babel/core": "7.20.2",
     "@storybook/addon-a11y": "6.5.13",
     "@storybook/addon-actions": "6.5.13",
     "@storybook/addon-essentials": "6.5.13",
@@ -57,7 +57,7 @@
     "@types/webscopeio__react-textarea-autocomplete": "4.7.2",
     "@typescript-eslint/eslint-plugin": "5.33.1",
     "@typescript-eslint/parser": "5.33.1",
-    "babel-loader": "8.2.5",
+    "babel-loader": "8.3.0",
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.7.1",
     "eslint": "8.22.0",
