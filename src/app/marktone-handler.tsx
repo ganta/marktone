@@ -4,11 +4,13 @@ import ReactDOM from "react-dom";
 import KintoneClient from "./kintone/kintone-client";
 import HTMLElementUtil from "./kintone/html-element-util";
 import MentionReplacer from "./markdown/replacer/mention-replacer";
+import EmojiReplacer from "./markdown/replacer/emoji-replacer";
 import Marktone, { ReplyMention } from "./components/marktone";
 
 class MarktoneHandler {
   private readonly kintoneClient: KintoneClient;
   private readonly mentionReplacer: MentionReplacer;
+  private readonly emojiReplacer: EmojiReplacer;
 
   private static isExpandedStatusChangedCommentFormRecord(
     record: MutationRecord
@@ -30,6 +32,7 @@ class MarktoneHandler {
   constructor(kintoneClient: KintoneClient) {
     this.kintoneClient = kintoneClient;
     this.mentionReplacer = new MentionReplacer(kintoneClient);
+    this.emojiReplacer = new EmojiReplacer();
   }
 
   handle(): void {
@@ -81,6 +84,7 @@ class MarktoneHandler {
         replayMentions={replyMentions}
         kintoneClient={this.kintoneClient}
         mentionReplacer={this.mentionReplacer}
+        emojiReplacer={this.emojiReplacer}
       />,
       marktoneContainer
     );

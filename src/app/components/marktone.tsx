@@ -8,6 +8,7 @@ import ReactTextareaAutocomplete, {
 import MarktoneRenderer from "../markdown/renderer/marktone-renderer";
 import KintoneClient from "../kintone/kintone-client";
 import MentionReplacer from "../markdown/replacer/mention-replacer";
+import EmojiReplacer from "../markdown/replacer/emoji-replacer";
 import {
   DirectoryEntity,
   DirectoryEntityType,
@@ -27,6 +28,7 @@ interface MarktoneProps {
   replayMentions: ReplyMention[];
   kintoneClient: KintoneClient;
   mentionReplacer: MentionReplacer;
+  emojiReplacer: EmojiReplacer;
 }
 
 interface MentionCandidateItem {
@@ -64,7 +66,8 @@ const MentionCandidate: React.FC<ItemComponentProps<MentionCandidateItem>> = (
  * Marktone component.
  */
 const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
-  const { originalFormEl, kintoneClient, mentionReplacer } = props;
+  const { originalFormEl, kintoneClient, mentionReplacer, emojiReplacer } =
+    props;
 
   // Setup Marked.js
   marked.setOptions({
@@ -73,7 +76,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
     headerIds: false,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore for `listitem()`
-    renderer: new MarktoneRenderer(mentionReplacer),
+    renderer: new MarktoneRenderer(mentionReplacer, emojiReplacer),
   });
 
   /**

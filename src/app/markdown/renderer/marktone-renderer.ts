@@ -1,6 +1,7 @@
 import { marked, Renderer } from "marked";
 import hljs from "highlight.js";
 import MentionReplacer from "../replacer/mention-replacer";
+import EmojiReplacer from "../replacer/emoji-replacer";
 import KintoneClient from "../../kintone/kintone-client";
 import { highlightStyles, languageAliases } from "./highlight-settings";
 
@@ -64,6 +65,7 @@ class MarktoneRendererHelper {
 /* eslint-disable class-methods-use-this */
 class MarktoneRenderer extends Renderer {
   private mentionReplacer: MentionReplacer;
+  private emojiReplacer: EmojiReplacer;
   private static MONOSPACE_FONT_FAMILIES: readonly string[] = [
     "SFMono-Regular",
     "Consolas",
@@ -75,10 +77,12 @@ class MarktoneRenderer extends Renderer {
 
   constructor(
     mentionReplacer: MentionReplacer,
+    emojiReplacer: EmojiReplacer,
     options?: marked.MarkedOptions
   ) {
     super(options);
     this.mentionReplacer = mentionReplacer;
+    this.emojiReplacer = emojiReplacer;
     this.monospaceFontFamiliesString =
       MarktoneRenderer.MONOSPACE_FONT_FAMILIES.map(
         (familyName) => `'${familyName}'`
@@ -102,7 +106,9 @@ class MarktoneRenderer extends Renderer {
   }
 
   html(html: string): string {
-    return this.mentionReplacer.replaceMention(html);
+    return this.mentionReplacer.replaceMention(
+      this.emojiReplacer.replaceEmoji(html)
+    );
   }
 
   code(code: string, language: string, isEscaped: boolean): string {
@@ -183,7 +189,9 @@ class MarktoneRenderer extends Renderer {
   //
 
   text(text: string): string {
-    return this.mentionReplacer.replaceMention(text);
+    return this.mentionReplacer.replaceMention(
+      this.emojiReplacer.replaceEmoji(text)
+    );
   }
 
   codespan(code: string): string {
