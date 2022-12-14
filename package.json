@@ -60,7 +60,7 @@
     "@typescript-eslint/parser": "5.46.1",
     "babel-loader": "9.1.0",
     "copy-webpack-plugin": "11.0.0",
-    "css-loader": "6.7.2",
+    "css-loader": "6.7.3",
     "eslint": "8.29.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-import-resolver-webpack": "0.13.2",
