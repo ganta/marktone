@@ -48,7 +48,7 @@
     "@storybook/react": "6.5.15",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "12.1.5",
-    "@types/chrome": "0.0.206",
+    "@types/chrome": "0.0.207",
     "@types/dompurify": "2.4.0",
     "@types/jest": "29.2.5",
     "@types/marked": "4.0.8",
