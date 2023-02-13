@@ -1,4 +1,11 @@
+import { Meta, StoryObj } from "@storybook/react";
 import MarktoneProvider from "./MarktoneProvider";
 
-export default { component: MarktoneProvider };
-export const Default = { args: {} };
+const meta: Meta<typeof MarktoneProvider> = {
+  component: MarktoneProvider,
+};
+export default meta;
+
+export const Primary: StoryObj<typeof MarktoneProvider> = {
+  args: {},
+};
