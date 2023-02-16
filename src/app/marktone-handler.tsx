@@ -1,6 +1,6 @@
 import React from "react";
-import ReactDOM from "react-dom";
 
+import { createRoot } from "react-dom/client";
 import KintoneClient from "./kintone/kintone-client";
 import HTMLElementUtil from "./kintone/html-element-util";
 import MentionReplacer from "./markdown/replacer/mention-replacer";
@@ -78,15 +78,23 @@ class MarktoneHandler {
     const replyMentions = await this.extractReplyMentions(originalTextbox);
     const marktoneContainer = this.findOrCreateMarktoneContainer(originalForm);
 
-    ReactDOM.render(
+    const root = createRoot(marktoneContainer);
+    originalForm.addEventListener(
+      "unmountMarktone",
+      () => {
+        root.unmount();
+      },
+      { once: true }
+    );
+
+    root.render(
       <Marktone
         originalFormEl={originalForm}
         replayMentions={replyMentions}
         kintoneClient={this.kintoneClient}
         mentionReplacer={this.mentionReplacer}
         emojiReplacer={this.emojiReplacer}
-      />,
-      marktoneContainer
+      />
     );
   }
 
@@ -94,7 +102,8 @@ class MarktoneHandler {
     const marktoneContainer = originalForm.querySelector<Element>(
       ".marktone-container"
     ) as Element;
-    ReactDOM.unmountComponentAtNode(marktoneContainer);
+    const event = new Event("unmountMarktone");
+    originalForm.dispatchEvent(event);
     originalForm.removeChild(marktoneContainer);
   }
 
