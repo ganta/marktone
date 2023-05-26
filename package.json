@@ -38,7 +38,7 @@
     "unist-util-visit": "4.1.2"
   },
   "devDependencies": {
-    "@babel/core": "7.21.8",
+    "@babel/core": "7.22.0",
     "@storybook/addon-a11y": "7.0.17",
     "@storybook/addon-actions": "7.0.17",
     "@storybook/addon-essentials": "7.0.17",
