@@ -35,7 +35,7 @@
     "remark-rehype": "10.1.0",
     "styled-components": "5.3.11",
     "unified": "10.1.2",
-    "unist-util-visit": "4.1.2"
+    "unist-util-visit": "5.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.22.8",
