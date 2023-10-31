@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@webscopeio/react-textarea-autocomplete": "4.9.2",
-    "dompurify": "3.0.5",
+    "dompurify": "3.0.6",
     "gemoji": "8.1.0",
     "highlight.js": "11.8.0",
     "marked": "4.3.0",
@@ -48,7 +48,7 @@
     "@testing-library/jest-dom": "5.17.0",
     "@testing-library/react": "14.0.0",
     "@types/chrome": "0.0.215",
-    "@types/dompurify": "3.0.2",
+    "@types/dompurify": "3.0.4",
     "@types/jest": "29.5.7",
     "@types/marked": "4.3.2",
     "@types/react": "18.2.33",
