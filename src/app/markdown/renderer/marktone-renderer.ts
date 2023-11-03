@@ -1,4 +1,4 @@
-import { marked, Renderer } from "marked";
+import { MarkedOptions, Renderer } from "marked";
 import hljs from "highlight.js";
 import MentionReplacer from "../replacer/mention-replacer";
 import EmojiReplacer from "../replacer/emoji-replacer";
@@ -78,7 +78,7 @@ class MarktoneRenderer extends Renderer {
   constructor(
     mentionReplacer: MentionReplacer,
     emojiReplacer: EmojiReplacer,
-    options?: marked.MarkedOptions,
+    options?: MarkedOptions,
   ) {
     super(options);
     this.mentionReplacer = mentionReplacer;
