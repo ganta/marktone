@@ -13,7 +13,7 @@ class MarktoneHandler {
   private readonly emojiReplacer: EmojiReplacer;
 
   private static isExpandedStatusChangedCommentFormRecord(
-    record: MutationRecord
+    record: MutationRecord,
   ): boolean {
     const targetElement = record.target as HTMLElement;
 
@@ -42,14 +42,14 @@ class MarktoneHandler {
   private observeCommentFormAppearance(): void {
     const observer = new MutationObserver((records) => {
       const commentFormRecords = records.filter((record) =>
-        MarktoneHandler.isExpandedStatusChangedCommentFormRecord(record)
+        MarktoneHandler.isExpandedStatusChangedCommentFormRecord(record),
       );
 
       commentFormRecords.forEach((record) => {
         const targetElement = record.target as HTMLElement;
         const isFormExpanded = targetElement.getAttribute("aria-expanded");
         const originalForm = targetElement.querySelector<HTMLFormElement>(
-          "form.ocean-ui-comments-commentform-form"
+          "form.ocean-ui-comments-commentform-form",
         ) as HTMLFormElement;
 
         if (isFormExpanded === "true") {
@@ -72,7 +72,7 @@ class MarktoneHandler {
 
   private async renderMarktone(originalForm: HTMLFormElement): Promise<void> {
     const originalTextbox = originalForm.querySelector<HTMLDivElement>(
-      ".ocean-ui-editor-field"
+      ".ocean-ui-editor-field",
     ) as HTMLDivElement;
 
     const replyMentions = await this.extractReplyMentions(originalTextbox);
@@ -84,7 +84,7 @@ class MarktoneHandler {
       () => {
         root.unmount();
       },
-      { once: true }
+      { once: true },
     );
 
     root.render(
@@ -94,13 +94,13 @@ class MarktoneHandler {
         kintoneClient={this.kintoneClient}
         mentionReplacer={this.mentionReplacer}
         emojiReplacer={this.emojiReplacer}
-      />
+      />,
     );
   }
 
   private unmountMarktone(originalForm: HTMLFormElement): void {
     const marktoneContainer = originalForm.querySelector<Element>(
-      ".marktone-container"
+      ".marktone-container",
     ) as Element;
     const event = new Event("unmountMarktone");
     originalForm.dispatchEvent(event);
@@ -108,12 +108,11 @@ class MarktoneHandler {
   }
 
   private async extractReplyMentions(
-    element: HTMLElement
+    element: HTMLElement,
   ): Promise<ReplyMention[]> {
     const idAndTypes = HTMLElementUtil.extractReplyMentions(element);
-    const entities = await this.kintoneClient.listDirectoryEntityByIdAndType(
-      idAndTypes
-    );
+    const entities =
+      await this.kintoneClient.listDirectoryEntityByIdAndType(idAndTypes);
 
     return entities.map<ReplyMention>((entity) => {
       return { type: entity.type, code: entity.code };
@@ -121,10 +120,10 @@ class MarktoneHandler {
   }
 
   private findOrCreateMarktoneContainer(
-    originalForm: HTMLFormElement
+    originalForm: HTMLFormElement,
   ): HTMLDivElement {
     const container = originalForm.querySelector<HTMLDivElement>(
-      ".marktone-container"
+      ".marktone-container",
     );
     if (container !== null) return container;
 

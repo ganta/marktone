@@ -89,7 +89,7 @@ class MentionReplacer {
     const replacer = (
       match: string,
       type: string,
-      escapedCode: string
+      escapedCode: string,
     ): string => {
       const code = MentionReplacer.unescapeCode(escapedCode);
       let entity;
@@ -115,7 +115,7 @@ class MentionReplacer {
   }
 
   private async findUserWithCache(
-    code: string
+    code: string,
   ): Promise<DirectoryEntity | null> {
     let user = this.getUserFromCache(code);
     if (user) return null;
@@ -131,7 +131,7 @@ class MentionReplacer {
   }
 
   private async findOrganizationWithCache(
-    code: string
+    code: string,
   ): Promise<DirectoryEntity | null> {
     let organization = this.getOrganizationFromCache(code);
     if (organization) return null;
@@ -147,7 +147,7 @@ class MentionReplacer {
   }
 
   private async findGroupWithCache(
-    code: string
+    code: string,
   ): Promise<DirectoryEntity | null> {
     let group = this.getGroupFromCache(code);
     if (group) return null;

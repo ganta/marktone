@@ -21,7 +21,7 @@ class HTMLElementUtil {
           };
         }
         return { type: "USER", id: anchor.dataset.mentionId as string };
-      }
+      },
     );
   }
 }

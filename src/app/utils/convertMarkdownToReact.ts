@@ -11,7 +11,7 @@ import withInlineHighlight from "./rehypeInlineHighlight";
 import withCustomStyle from "./rehypeCustomStyle";
 
 export const convertMarkdownToReactElement = async (
-  markdown: string
+  markdown: string,
 ): Promise<JSX.Element> => {
   const { result } = await unified()
     .use(fromHtml)

@@ -43,7 +43,7 @@ interface MentionCandidateItem {
  * The mention candidate component.
  */
 const MentionCandidate: React.FC<ItemComponentProps<MentionCandidateItem>> = (
-  props: ItemComponentProps<MentionCandidateItem>
+  props: ItemComponentProps<MentionCandidateItem>,
 ) => {
   const {
     entity: { code, name, avatar },
@@ -86,7 +86,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
    * @return The string with mentions separated by spaces
    */
   const convertReplyMentionsToText = (
-    replyMentions: ReplyMention[]
+    replyMentions: ReplyMention[],
   ): string => {
     const currentUser = KintoneClient.getLoginUser();
     const normalizedMentions = replyMentions.filter((replyMention) => {
@@ -94,7 +94,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
       return replyMention.code !== currentUser.code;
     });
     const mentions = normalizedMentions.map((replyMention) =>
-      MentionReplacer.createMention(replyMention.type, replyMention.code)
+      MentionReplacer.createMention(replyMention.type, replyMention.code),
     );
     return mentions.join(" ");
   };
@@ -113,7 +113,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
 
   // The original editor field HTML element of kintone
   const originalEditorFieldEl = originalFormEl.querySelector<HTMLElement>(
-    'div.ocean-ui-editor-field[role="textbox"]'
+    'div.ocean-ui-editor-field[role="textbox"]',
   );
 
   // Get Marktone enabled status.
@@ -138,7 +138,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
   // Shows the confirm dialog before leave the page.
   useEffect(() => {
     const showConfirmDialogOnBeforeUnload = (
-      event: BeforeUnloadEvent
+      event: BeforeUnloadEvent,
     ): void => {
       if (textAreaRef.current !== null && textAreaRef.current.value === "") {
         return;
@@ -154,7 +154,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
       const currentHash = window.location.hash;
       const targetEl = event.target as HTMLElement;
       const hashChangeAnchorEl = targetEl.closest<HTMLAnchorElement>(
-        `a[href^="${currentPathname}#"]:not([href="${currentPathname}${currentHash}"])`
+        `a[href^="${currentPathname}#"]:not([href="${currentPathname}${currentHash}"])`,
       );
 
       if (hashChangeAnchorEl === null) return;
@@ -166,11 +166,11 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
       ) {
         window.removeEventListener(
           "beforeunload",
-          showConfirmDialogOnBeforeUnload
+          showConfirmDialogOnBeforeUnload,
         );
         document.removeEventListener(
           "click",
-          showConfirmDialogOnHashChangeAnchorClicked
+          showConfirmDialogOnHashChangeAnchorClicked,
         );
       } else {
         event.preventDefault();
@@ -178,17 +178,17 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
     };
     document.addEventListener(
       "click",
-      showConfirmDialogOnHashChangeAnchorClicked
+      showConfirmDialogOnHashChangeAnchorClicked,
     );
 
     return (): void => {
       window.removeEventListener(
         "beforeunload",
-        showConfirmDialogOnBeforeUnload
+        showConfirmDialogOnBeforeUnload,
       );
       document.removeEventListener(
         "hashchange",
-        showConfirmDialogOnHashChangeAnchorClicked
+        showConfirmDialogOnHashChangeAnchorClicked,
       );
     };
   }, []);
@@ -209,7 +209,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
             marktoneEl.classList.remove("tab-mode");
           }
         });
-      }
+      },
     );
     resizeObserver.observe(marktoneEl, { box: "border-box" });
   }, []);
@@ -218,7 +218,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
    * Handles the event when the Markdown textarea is updated.
    */
   const handleChangeMarkdownTextArea = async (
-    event: React.ChangeEvent<HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLTextAreaElement>,
   ): Promise<void> => {
     const markdownText = event.target.value;
     setRawText(markdownText);
@@ -253,7 +253,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
    * Returns the kintone users, organizations and groups that matches the specified token.
    */
   const kintoneDirectoryProvider = async (
-    token: string
+    token: string,
   ): Promise<DirectoryEntity[]> => {
     const collection = await kintoneClient.searchDirectory(token);
     return collection.flat();
@@ -350,7 +350,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
    * @param event DragEvent
    */
   const handleDropFile = async (
-    event: React.DragEvent<HTMLTextAreaElement>
+    event: React.DragEvent<HTMLTextAreaElement>,
   ): Promise<void> => {
     event.stopPropagation();
     event.preventDefault();
@@ -367,7 +367,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
    * @param event ClipboardEvent
    */
   const handlePasteFromClipboard = async (
-    event: React.ClipboardEvent<HTMLTextAreaElement>
+    event: React.ClipboardEvent<HTMLTextAreaElement>,
   ): Promise<void> => {
     const clipboardData = event.clipboardData;
     const files = Array.from<File>(clipboardData.files);

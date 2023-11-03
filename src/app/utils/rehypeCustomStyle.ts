@@ -73,7 +73,7 @@ const applyCustomStyle = (node: Element) => {
 
 const addStyle = (
   properties: Properties = {},
-  style: Record<string, string>
+  style: Record<string, string>,
 ): void => {
   const currentStyle = properties.style;
   const styleString = Object.entries(style)
