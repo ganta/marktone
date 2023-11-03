@@ -73,7 +73,6 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
   marked.setOptions({
     gfm: true, // Enable GitHub Flavored Markdown.
     breaks: true, // Add 'br' element on a single line break.
-    headerIds: false,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore for `listitem()`
     renderer: new MarktoneRenderer(mentionReplacer, emojiReplacer),
