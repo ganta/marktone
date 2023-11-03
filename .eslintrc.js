@@ -33,6 +33,7 @@ module.exports = {
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "import/order": "error",
+    "import/no-named-as-default": "off",
   },
   parserOptions: {
     ecmaFeatures: {
