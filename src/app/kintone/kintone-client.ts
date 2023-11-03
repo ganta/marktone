@@ -182,7 +182,7 @@ export default class KintoneClient {
 
   static getDownloadURL(
     fileKey: string,
-    additionalParams?: { [key: string]: string }
+    additionalParams?: { [key: string]: string },
   ): string {
     const params = new URLSearchParams();
     params.append("fileKey", fileKey);
@@ -218,7 +218,7 @@ export default class KintoneClient {
     if (!KintoneClient.isGuestSpace()) return "/k/api";
 
     const matched = window.location.pathname.match(
-      /^\/k\/guest\/(?<spaceId>\d+)\//
+      /^\/k\/guest\/(?<spaceId>\d+)\//,
     );
     if (matched && matched.groups) {
       return `/k/guest/${matched.groups.spaceId}/api`;
@@ -228,12 +228,12 @@ export default class KintoneClient {
   }
 
   async listDirectoryEntityByIdAndType(
-    idAndTypes: Array<{ id: string; type: string }>
+    idAndTypes: Array<{ id: string; type: string }>,
   ): Promise<DirectoryEntity[]> {
     const requestBody = { idAndTypes };
     const response = await this.postToAPI<ListDirectoryEntityResponse>(
       KintoneClient.listDirectoryByIdAndTypeAPI,
-      requestBody
+      requestBody,
     );
 
     return response.result.entities.map((entity) => {
@@ -256,7 +256,7 @@ export default class KintoneClient {
     };
     const response = await this.postToAPI<SearchDirectoryResponse>(
       KintoneClient.searchDirectoryAPI,
-      requestBody
+      requestBody,
     );
 
     const users = response.result.users.map<DirectoryEntity>((u) => ({

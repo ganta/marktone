@@ -55,7 +55,7 @@ class MarktoneRendererHelper {
         const style = highlightStyles[className as string];
         if (style === undefined) return matchedString;
         return `style="${style}"`;
-      }
+      },
     );
 
     return highlightedCodeWithInlineStyle;
@@ -78,14 +78,14 @@ class MarktoneRenderer extends Renderer {
   constructor(
     mentionReplacer: MentionReplacer,
     emojiReplacer: EmojiReplacer,
-    options?: marked.MarkedOptions
+    options?: marked.MarkedOptions,
   ) {
     super(options);
     this.mentionReplacer = mentionReplacer;
     this.emojiReplacer = emojiReplacer;
     this.monospaceFontFamiliesString =
       MarktoneRenderer.MONOSPACE_FONT_FAMILIES.map(
-        (familyName) => `'${familyName}'`
+        (familyName) => `'${familyName}'`,
       ).join(", ");
   }
 
@@ -107,7 +107,7 @@ class MarktoneRenderer extends Renderer {
 
   html(html: string): string {
     return this.mentionReplacer.replaceMention(
-      this.emojiReplacer.replaceEmoji(html)
+      this.emojiReplacer.replaceEmoji(html),
     );
   }
 
@@ -117,7 +117,7 @@ class MarktoneRenderer extends Renderer {
       : code;
     const escapedCodeWithHighlight = MarktoneRendererHelper.highlightCode(
       unescapedCode,
-      language
+      language,
     );
 
     const preStyle =
@@ -152,7 +152,7 @@ class MarktoneRenderer extends Renderer {
 
   tablecell(
     content: string,
-    flags: { header: boolean; align: "center" | "left" | "right" | null }
+    flags: { header: boolean; align: "center" | "left" | "right" | null },
   ): string {
     const type = flags.header ? "th" : "td";
     const style = "border: 1px solid #dfe2e5; padding: 6px 13px;";
@@ -190,7 +190,7 @@ class MarktoneRenderer extends Renderer {
 
   text(text: string): string {
     return this.mentionReplacer.replaceMention(
-      this.emojiReplacer.replaceEmoji(text)
+      this.emojiReplacer.replaceEmoji(text),
     );
   }
 

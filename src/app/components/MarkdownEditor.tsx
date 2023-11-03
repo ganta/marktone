@@ -37,7 +37,7 @@ const MarkdownEditor = () => {
   const { markdown, setMarkdown } = useMarktone();
 
   const handleChange: ChangeEventHandler<HTMLTextAreaElement> = (
-    event
+    event,
   ): void => {
     setMarkdown(event.target.value);
   };

@@ -11,7 +11,7 @@ type MarktoneContextType = {
 };
 
 const MarktoneContext = createContext<MarktoneContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const useMarktone = () => {
