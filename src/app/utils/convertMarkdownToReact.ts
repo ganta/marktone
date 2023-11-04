@@ -25,7 +25,7 @@ export const convertMarkdownToReactElement = async (
         code: [...(defaultSchema.attributes?.code || []), ["className"]],
       },
     })
-    .use(withHighlight, { detect: true, ignoreMissing: true })
+    .use(withHighlight, { detect: true })
     .use(withInlineHighlight)
     .use(withCustomStyle)
     .use(toReact, { createElement })
