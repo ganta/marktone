@@ -1,4 +1,3 @@
-import "../manifest.json";
 import "../styles/content.scss";
 
 import KintoneClient from "./kintone/kintone-client";

@@ -1,13 +1,19 @@
 module.exports = {
   root: true,
   env: {
+    es6: true,
+    browser: true,
     webextensions: true,
     node: true,
   },
-  globals: {
-    document: true,
-    window: true,
-    fetch: true,
+  parserOptions: {
+    ecmaVersion: "latest",
+    ecmaFeatures: {
+      jsx: true,
+    },
+    sourceType: "module",
+    tsconfigRootDir: __dirname,
+    project: ["./tsconfig.json", "./tsconfig.node.json"],
   },
   plugins: ["import"],
   extends: [
@@ -34,11 +40,6 @@ module.exports = {
     "react/react-in-jsx-scope": "off",
     "import/order": "error",
     "import/no-named-as-default": "off",
-  },
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
   },
   overrides: [
     {
