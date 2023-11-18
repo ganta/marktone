@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { convertMarkdownToReactElement } from "../utils/convertMarkdownToReact";
 
 export const useMarkdown = (text: string) => {

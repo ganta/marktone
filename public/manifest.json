@@ -12,12 +12,13 @@
   "permissions": ["storage"],
   "web_accessible_resources": [
     {
-      "resources": ["js/initialization.js"],
+      "resources": ["content.js", "assets/*", "js/initialization.js"],
       "matches": ["<all_urls>"]
     }
   ],
   "background": {
-    "service_worker": "js/background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
@@ -29,8 +30,8 @@
         "https://*.cybozu.cn/k/*",
         "https://*.cybozu-dev.cn/k/*"
       ],
-      "js": ["js/content.js"],
-      "css": ["css/content.css"],
+      "js": ["content-loader.js"],
+      "css": ["content.css"],
       "all_frames": true
     }
   ],

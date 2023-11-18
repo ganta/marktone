@@ -1,5 +1,3 @@
-import React from "react";
-
 import { createRoot } from "react-dom/client";
 import KintoneClient from "./kintone/kintone-client";
 import HTMLElementUtil from "./kintone/html-element-util";
