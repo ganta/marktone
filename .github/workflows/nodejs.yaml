@@ -1,0 +1,22 @@
+name: Node.js
+
+on:
+  push:
+    paths:
+      - ".node-version"
+
+jobs:
+  check-installable-via-node-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: .node-version
+          sparse-checkout-cone-mode: false
+      - name: Check installable via node-build
+        run: |
+          node_version=$(cat .node-version)
+          gh api "/repos/nodenv/node-build/contents/share/node-build/${node_version}" --silent
+        env:
+          GH_TOKEN: ${{ github.token }}
