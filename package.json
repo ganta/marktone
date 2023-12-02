@@ -59,7 +59,7 @@
     "@typescript-eslint/parser": "6.10.0",
     "archiver": "6.0.1",
     "eslint": "8.55.0",
-    "eslint-config-prettier": "9.0.0",
+    "eslint-config-prettier": "9.1.0",
     "eslint-plugin-import": "2.29.0",
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
