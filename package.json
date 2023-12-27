@@ -33,7 +33,7 @@
     "remark-gfm": "4.0.0",
     "remark-parse": "10.0.2",
     "remark-rehype": "11.0.0",
-    "styled-components": "6.1.4",
+    "styled-components": "6.1.5",
     "unified": "10.1.2",
     "unist-util-visit": "5.0.0"
   },
