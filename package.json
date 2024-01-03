@@ -45,7 +45,7 @@
     "@storybook/addon-links": "7.6.7",
     "@storybook/react": "7.6.7",
     "@storybook/react-vite": "7.6.7",
-    "@testing-library/jest-dom": "6.1.6",
+    "@testing-library/jest-dom": "6.2.0",
     "@testing-library/react": "14.1.2",
     "@types/archiver": "6.0.2",
     "@types/chrome": "0.0.254",
