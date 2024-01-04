@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@webscopeio/react-textarea-autocomplete": "4.9.2",
-    "dompurify": "3.0.6",
+    "dompurify": "3.0.7",
     "gemoji": "8.1.0",
     "highlight.js": "11.9.0",
     "marked": "9.1.6",
