@@ -48,7 +48,7 @@
     "@testing-library/jest-dom": "6.2.0",
     "@testing-library/react": "14.1.2",
     "@types/archiver": "6.0.2",
-    "@types/chrome": "0.0.257",
+    "@types/chrome": "0.0.258",
     "@types/dompurify": "3.0.5",
     "@types/jest": "29.5.11",
     "@types/react": "18.2.48",
