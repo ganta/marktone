@@ -46,7 +46,7 @@
     "@storybook/react": "7.6.17",
     "@storybook/react-vite": "7.6.17",
     "@testing-library/jest-dom": "6.4.2",
-    "@testing-library/react": "14.2.1",
+    "@testing-library/react": "14.2.2",
     "@types/archiver": "6.0.2",
     "@types/chrome": "0.0.263",
     "@types/dompurify": "3.0.5",
