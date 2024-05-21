@@ -6,24 +6,6 @@ import KintoneClient from "../../kintone/kintone-client";
 import { highlightStyles, languageAliases } from "./highlight-settings";
 
 class MarktoneRendererHelper {
-  static escapeHTML(html: string): string {
-    const escapeTest = /[&<>"']/;
-    const escapeReplace = new RegExp(escapeTest, "g");
-    const replacements: { [key: string]: string } = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;",
-    };
-
-    if (escapeTest.test(html)) {
-      return html.replace(escapeReplace, (ch) => replacements[ch]);
-    }
-
-    return html;
-  }
-
   static unescapeHTML(html: string): string {
     const unescapeTest = /(&(?:lt|amp|gt|quot|#39);)/;
     const unescapeReplace = new RegExp(unescapeTest, "g");
@@ -206,8 +188,6 @@ class MarktoneRenderer extends Renderer {
   }
 
   link(href: string, title: string, text: string): string {
-    // For later sanitization with DOMPurify, skip the `href` sanitization here.
-
     if (href === null) return text;
 
     if (href.startsWith("tmp:")) {
@@ -232,7 +212,7 @@ class MarktoneRenderer extends Renderer {
     }
 
     const attributes: { [key: string]: string } = {
-      href: MarktoneRendererHelper.escapeHTML(href),
+      href,
     };
     if (title) attributes.title = title;
 
@@ -243,8 +223,6 @@ class MarktoneRenderer extends Renderer {
   }
 
   image(href: string, title: string | null, text: string): string {
-    // For later sanitization with DOMPurify, skip the `href` sanitization here.
-
     if (href === null) {
       return text;
     }
