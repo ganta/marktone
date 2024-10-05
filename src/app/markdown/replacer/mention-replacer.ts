@@ -30,7 +30,7 @@ class MentionReplacer {
     };
     return (
       code
-        .replace(/[ @%&'"<>*]/g, replacer)
+        .replace(/[ @%&'"<>*+]/g, replacer)
         // Escape Markdown syntax characters following a multi-bytes character.
         .replace(/(?<!\w)[ _~![\]|\\-]/g, replacer)
     );
@@ -107,7 +107,11 @@ class MentionReplacer {
       if (!entity) return match;
 
       const attrName = type ? `${type}-mention-id` : "mention-id";
-      const href = type ? "#" : `/k/#/people/user/${code}`;
+      const href = type
+        ? "#"
+        : code.includes("@")
+          ? `/k/guest/#/people/guest/${escapedCode}`
+          : `/k/#/people/user/${escapedCode}`;
       // LRO/RLO may be included in `name`. Therefore, it is surrounded by bdi element.
       return `<a class="${className}" href="${href}" data-${attrName}="${entity.id}" tabindex="-1" style="${style}">@<bdi>${entity.name}</bdi></a>`;
     };
