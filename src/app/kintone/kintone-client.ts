@@ -236,12 +236,12 @@ export default class KintoneClient {
       requestBody,
     );
 
-    return response.result.entities.map((entity) => {
+    return response.result.entities.map(({ entityType, id, code, name }) => {
       return {
-        type: DirectoryEntityTypeUtil.valueOf(entity.entityType),
-        id: parseInt(entity.id, 10),
-        code: entity.code,
-        name: entity.name,
+        type: DirectoryEntityTypeUtil.valueOf(entityType),
+        id,
+        code,
+        name,
         avatar: "",
       };
     });
@@ -259,27 +259,33 @@ export default class KintoneClient {
       requestBody,
     );
 
-    const users = response.result.users.map<DirectoryEntity>((u) => ({
-      type: DirectoryEntityType.USER,
-      id: parseInt(u.id, 10),
-      code: u.code,
-      name: u.name,
-      avatar: u.photo.size_24,
-    }));
-    const orgs = response.result.orgs.map<DirectoryEntity>((o) => ({
-      type: DirectoryEntityType.ORGANIZATION,
-      id: parseInt(o.id, 10),
-      code: o.code,
-      name: o.name,
-      avatar: KintoneClient.presetOrganizationImageURL,
-    }));
-    const groups = response.result.groups.map<DirectoryEntity>((g) => ({
-      type: DirectoryEntityType.GROUP,
-      id: parseInt(g.id, 10),
-      code: g.code,
-      name: g.name,
-      avatar: KintoneClient.presetGroupImageURL,
-    }));
+    const users = response.result.users.map<DirectoryEntity>(
+      ({ id, code, name, photo }) => ({
+        type: DirectoryEntityType.USER,
+        id,
+        code,
+        name,
+        avatar: photo.size_24,
+      }),
+    );
+    const orgs = response.result.orgs.map<DirectoryEntity>(
+      ({ id, code, name }) => ({
+        type: DirectoryEntityType.ORGANIZATION,
+        id,
+        code,
+        name,
+        avatar: KintoneClient.presetOrganizationImageURL,
+      }),
+    );
+    const groups = response.result.groups.map<DirectoryEntity>(
+      ({ id, code, name }) => ({
+        type: DirectoryEntityType.GROUP,
+        id,
+        code,
+        name,
+        avatar: KintoneClient.presetGroupImageURL,
+      }),
+    );
 
     return new DirectoryEntityCollection({ users, orgs, groups });
   }

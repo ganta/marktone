@@ -25,7 +25,7 @@ export class DirectoryEntityTypeUtil {
 
 export interface DirectoryEntity {
   type: DirectoryEntityType;
-  id: number;
+  id: string;
   code: string;
   name: string;
   avatar: string;
