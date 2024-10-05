@@ -33,7 +33,7 @@ interface MarktoneProps {
 
 interface MentionCandidateItem {
   type: DirectoryEntityType;
-  id: number;
+  id: string;
   code: string;
   name: string;
   avatar: string;
