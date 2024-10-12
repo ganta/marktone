@@ -1,9 +1,9 @@
-import DirectoryEntityCache from "../../kintone/directory-entity-cache";
 import {
-  DirectoryEntity,
+  type DirectoryEntity,
   DirectoryEntityType,
 } from "../../kintone/directory-entity";
-import KintoneClient from "../../kintone/kintone-client";
+import DirectoryEntityCache from "../../kintone/directory-entity-cache";
+import type KintoneClient from "../../kintone/kintone-client";
 
 class MentionReplacer {
   private static mentionRegExp = /@(?:(org|group)\/)?([^\s]+)/g;
@@ -38,7 +38,7 @@ class MentionReplacer {
 
   static unescapeCode(code: string): string {
     return code.replace(/%([0-9a-z]{2})/g, (_match, charCodeStr) => {
-      const charCode = parseInt(charCodeStr as string, 16);
+      const charCode = Number.parseInt(charCodeStr as string, 16);
       return String.fromCharCode(charCode);
     });
   }
@@ -53,9 +53,9 @@ class MentionReplacer {
 
   async fetchDirectoryEntityInText(text: string): Promise<void> {
     // TODO: Use `String.prototype.matchAll` when it becomes ES2020
-    let matched;
+    let matched: RegExpExecArray | null;
     const promises = [];
-    // eslint-disable-next-line no-cond-assign
+    // biome-ignore lint/suspicious/noAssignInExpressions: TODO: Refactor not to use assignment in expressions.
     while ((matched = MentionReplacer.mentionRegExp.exec(text)) !== null) {
       const type = matched[1];
       const escapedCode = matched[2];
@@ -92,7 +92,7 @@ class MentionReplacer {
       escapedCode: string,
     ): string => {
       const code = MentionReplacer.unescapeCode(escapedCode);
-      let entity;
+      let entity: DirectoryEntity | null;
       switch (type) {
         case DirectoryEntityType.ORGANIZATION:
           entity = this.getOrganizationFromCache(code);

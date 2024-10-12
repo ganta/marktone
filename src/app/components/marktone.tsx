@@ -1,18 +1,18 @@
-import React, { KeyboardEvent, ReactElement } from "react";
-import { marked } from "marked";
-import DOMPurify from "dompurify";
 import ReactTextareaAutocomplete, {
-  ItemComponentProps,
+  type ItemComponentProps,
 } from "@webscopeio/react-textarea-autocomplete";
+import DOMPurify from "dompurify";
+import { marked } from "marked";
+import React, { type KeyboardEvent, type ReactElement } from "react";
 
-import MarktoneRenderer from "../markdown/renderer/marktone-renderer";
-import KintoneClient from "../kintone/kintone-client";
-import MentionReplacer from "../markdown/replacer/mention-replacer";
-import EmojiReplacer from "../markdown/replacer/emoji-replacer";
 import {
-  DirectoryEntity,
+  type DirectoryEntity,
   DirectoryEntityType,
 } from "../kintone/directory-entity";
+import KintoneClient from "../kintone/kintone-client";
+import MarktoneRenderer from "../markdown/renderer/marktone-renderer";
+import type EmojiReplacer from "../markdown/replacer/emoji-replacer";
+import MentionReplacer from "../markdown/replacer/mention-replacer";
 
 import "@webscopeio/react-textarea-autocomplete/style.css";
 
@@ -201,13 +201,13 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
 
     const resizeObserver = new ResizeObserver(
       (entries: ResizeObserverEntry[]) => {
-        entries.forEach((entry) => {
+        for (const entry of entries) {
           if (entry.contentRect.width < tabModeThresholdWidth) {
             marktoneEl.classList.add("tab-mode");
           } else {
             marktoneEl.classList.remove("tab-mode");
           }
-        });
+        }
       },
     );
     resizeObserver.observe(marktoneEl, { box: "border-box" });
@@ -485,6 +485,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
             onKeyDown={(event): void => event.preventDefault()}
             onKeyUp={(event): void => event.preventDefault()}
             onKeyPress={(event): void => event.preventDefault()}
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: This is a preview area and the content is sanitized.
             dangerouslySetInnerHTML={{ __html: renderedHTML }}
           />
         </div>

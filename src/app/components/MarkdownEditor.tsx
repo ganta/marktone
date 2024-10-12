@@ -1,4 +1,4 @@
-import { ChangeEventHandler } from "react";
+import type { ChangeEventHandler } from "react";
 import styled from "styled-components";
 import { useMarktone } from "./MarktoneProvider";
 

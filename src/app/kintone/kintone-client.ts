@@ -1,5 +1,5 @@
 import {
-  DirectoryEntity,
+  type DirectoryEntity,
   DirectoryEntityType,
   DirectoryEntityTypeUtil,
 } from "./directory-entity";
@@ -152,7 +152,7 @@ export default class KintoneClient {
 
   static getSpaceId(): number | null {
     const match = window.location.hash.match(/\/space\/(\d+)\//);
-    return match ? parseInt(match[1], 10) : null;
+    return match ? Number.parseInt(match[1], 10) : null;
   }
 
   static getRequestToken(): string {
@@ -190,9 +190,9 @@ export default class KintoneClient {
     params.append("_ref", encodeURI(window.location.href));
 
     if (additionalParams) {
-      Object.entries(additionalParams).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(additionalParams)) {
         params.append(key, value);
-      });
+      }
     }
 
     return `${KintoneClient.getAPIPathPrefix()}${
@@ -204,7 +204,7 @@ export default class KintoneClient {
     const matched = fileName.toLowerCase().match(/.+\.(?<extension>\w+)$/);
     let iconName = "other";
 
-    if (matched && matched.groups) {
+    if (matched?.groups) {
       const extension = matched.groups.extension;
       if (KintoneClient.fileIconExtensions.includes(extension)) {
         iconName = extension;
@@ -220,7 +220,7 @@ export default class KintoneClient {
     const matched = window.location.pathname.match(
       /^\/k\/guest\/(?<spaceId>\d+)\//,
     );
-    if (matched && matched.groups) {
+    if (matched?.groups) {
       return `/k/guest/${matched.groups.spaceId}/api`;
     }
 

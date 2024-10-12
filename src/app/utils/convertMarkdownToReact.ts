@@ -1,14 +1,14 @@
-import { unified } from "unified";
-import fromHtml from "remark-parse";
-import toHast from "remark-rehype";
+import { createElement } from "react";
+import withHighlight from "rehype-highlight";
 import toReact from "rehype-react";
 import withSanitize, { defaultSchema } from "rehype-sanitize";
-import { createElement } from "react";
-import withGfm from "remark-gfm";
 import withBreaks from "remark-breaks";
-import withHighlight from "rehype-highlight";
-import withInlineHighlight from "./rehypeInlineHighlight";
+import withGfm from "remark-gfm";
+import fromHtml from "remark-parse";
+import toHast from "remark-rehype";
+import { unified } from "unified";
 import withCustomStyle from "./rehypeCustomStyle";
+import withInlineHighlight from "./rehypeInlineHighlight";
 
 export const convertMarkdownToReactElement = async (
   markdown: string,

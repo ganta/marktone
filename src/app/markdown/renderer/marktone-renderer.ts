@@ -1,10 +1,11 @@
-import { MarkedOptions, Renderer } from "marked";
 import hljs from "highlight.js";
-import MentionReplacer from "../replacer/mention-replacer";
-import EmojiReplacer from "../replacer/emoji-replacer";
+import { type MarkedOptions, Renderer } from "marked";
 import KintoneClient from "../../kintone/kintone-client";
+import type EmojiReplacer from "../replacer/emoji-replacer";
+import type MentionReplacer from "../replacer/mention-replacer";
 import { highlightStyles, languageAliases } from "./highlight-settings";
 
+// biome-ignore lint/complexity/noStaticOnlyClass: TODO: Refactor this class to be non-class.
 class MarktoneRendererHelper {
   static unescapeHTML(html: string): string {
     const unescapeTest = /(&(?:lt|amp|gt|quot|#39);)/;
@@ -230,7 +231,7 @@ class MarktoneRenderer extends Renderer {
     const additionalAttributes: { [key: string]: string } = {};
     let imageURL = href;
 
-    if (title != null && title.startsWith("=")) {
+    if (title?.startsWith("=")) {
       additionalAttributes.width = title.slice(1);
     }
 

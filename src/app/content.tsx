@@ -1,8 +1,8 @@
 import "../styles/content.scss";
 
 import KintoneClient from "./kintone/kintone-client";
-import MarktoneHandler from "./marktone-handler";
 import MarktoneConfig from "./marktone-config";
+import MarktoneHandler from "./marktone-handler";
 
 function setMarktoneEnabled(enabled: boolean): void {
   document.body.dataset.marktoneEnabled = enabled.toString();

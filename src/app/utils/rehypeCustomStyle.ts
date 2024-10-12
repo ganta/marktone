@@ -1,5 +1,5 @@
-import type { Plugin, Transformer } from "unified";
 import type { Element, Properties } from "hast";
+import type { Plugin, Transformer } from "unified";
 import { visit } from "unist-util-visit";
 
 const styles: Record<string, Record<string, string>> = {
@@ -72,7 +72,7 @@ const applyCustomStyle = (node: Element) => {
 };
 
 const addStyle = (
-  properties: Properties = {},
+  properties: Properties,
   style: Record<string, string>,
 ): void => {
   const currentStyle = properties.style;
