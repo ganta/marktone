@@ -1,7 +1,7 @@
-import type { Plugin } from "unified";
-import { visit } from "unist-util-visit";
-import type { Transformer } from "unified/lib";
 import type { Element } from "hast";
+import type { Plugin } from "unified";
+import type { Transformer } from "unified/lib";
+import { visit } from "unist-util-visit";
 
 const rehypeInlineHighlight: Plugin = (): Transformer => {
   const visitor = (node: Element) => {

@@ -1,4 +1,4 @@
-import { DirectoryEntity } from "./directory-entity";
+import type { DirectoryEntity } from "./directory-entity";
 
 class DirectoryEntityCache {
   private readonly cache: { [key: string]: DirectoryEntity | null };

@@ -3,6 +3,7 @@ interface ReplyMentionIdAndType {
   id: string;
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: TODO: Refactor this class to be non-class.
 class HTMLElementUtil {
   static extractReplyMentions(element: HTMLElement): ReplyMentionIdAndType[] {
     return Array.from<HTMLAnchorElement, ReplyMentionIdAndType>(

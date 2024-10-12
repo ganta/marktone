@@ -4,6 +4,7 @@ export enum DirectoryEntityType {
   GROUP = "group",
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: TODO: Refactor this class to be non-class.
 export class DirectoryEntityTypeUtil {
   static valueOf(value: string): DirectoryEntityType {
     switch (value) {
@@ -15,8 +16,6 @@ export class DirectoryEntityTypeUtil {
       case "group":
       case "GROUP":
         return DirectoryEntityType.GROUP;
-      case "user":
-      case "USER":
       default:
         return DirectoryEntityType.USER;
     }

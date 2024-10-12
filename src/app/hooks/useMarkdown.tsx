@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { convertMarkdownToReactElement } from "../utils/convertMarkdownToReact";
 
 export const useMarkdown = (text: string) => {
   const [markdown, setMarkdown] = useState(text);
-  const [renderedComponent, setRenderedComponent] = useState(<></>);
+  const [renderedComponent, setRenderedComponent] = useState(<Fragment />);
 
   useEffect(() => {
     void (async () => {

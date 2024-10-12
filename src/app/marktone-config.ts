@@ -1,3 +1,4 @@
+// biome-ignore lint/complexity/noStaticOnlyClass: TODO: Refactor this class to be non-class.
 class MarktoneConfig {
   static loadEnabled(func: (enabled: boolean) => void): void {
     chrome.storage.sync.get(["marktoneEnabled"], (result) => {

@@ -1,9 +1,9 @@
 import { createRoot } from "react-dom/client";
-import KintoneClient from "./kintone/kintone-client";
+import Marktone, { type ReplyMention } from "./components/marktone";
 import HTMLElementUtil from "./kintone/html-element-util";
-import MentionReplacer from "./markdown/replacer/mention-replacer";
+import type KintoneClient from "./kintone/kintone-client";
 import EmojiReplacer from "./markdown/replacer/emoji-replacer";
-import Marktone, { ReplyMention } from "./components/marktone";
+import MentionReplacer from "./markdown/replacer/mention-replacer";
 
 class MarktoneHandler {
   private readonly kintoneClient: KintoneClient;
@@ -43,7 +43,7 @@ class MarktoneHandler {
         MarktoneHandler.isExpandedStatusChangedCommentFormRecord(record),
       );
 
-      commentFormRecords.forEach((record) => {
+      for (const record of commentFormRecords) {
         const targetElement = record.target as HTMLElement;
         const isFormExpanded = targetElement.getAttribute("aria-expanded");
         const originalForm = targetElement.querySelector<HTMLFormElement>(
@@ -57,7 +57,7 @@ class MarktoneHandler {
           // The original comment form is closed.
           this.unmountMarktone(originalForm);
         }
-      });
+      }
     });
 
     observer.observe(document.body, {
