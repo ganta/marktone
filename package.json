@@ -38,7 +38,7 @@
     "unist-util-visit": "5.0.0"
   },
   "devDependencies": {
-    "@babel/core": "7.24.3",
+    "@babel/core": "7.25.8",
     "@biomejs/biome": "1.9.3",
     "@storybook/addon-a11y": "8.0.5",
     "@storybook/addon-actions": "8.0.5",
