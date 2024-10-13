@@ -51,7 +51,7 @@
     "@types/archiver": "6.0.2",
     "@types/chrome": "0.0.277",
     "@types/dompurify": "3.0.5",
-    "@types/jest": "29.5.12",
+    "@types/jest": "29.5.13",
     "@types/react": "18.2.74",
     "@types/react-dom": "18.2.23",
     "@types/styled-components": "5.1.34",
