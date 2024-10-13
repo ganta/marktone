@@ -62,7 +62,7 @@
     "prettier": "3.3.3",
     "sass": "1.79.5",
     "storybook": "8.0.5",
-    "ts-jest": "29.1.2",
+    "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsx": "4.19.1",
     "typescript": "5.4.3",
