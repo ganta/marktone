@@ -21,7 +21,7 @@ export default defineConfig({
             : "assets/[name]-[hash].js";
         },
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === "content.css") {
+          if (assetInfo.names?.includes("content.css")) {
             return "content.css";
           }
           return "assets/[name]-[hash][extname]";
