@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite build --watch",
-    "clean": "rimraf 'dist/' '*.zip'",
+    "clean": "tsx scripts/rm.ts dist/ *.zip",
     "build": "tsc && vite build",
     "typecheck": "tsc --noEmit",
     "lint": "run-p --print-label 'lint:*'",
