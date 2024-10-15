@@ -32,7 +32,10 @@ export default defineConfig({
   },
   test: {
     globals: true,
-    environment: "jsdom",
-    setupFiles: [resolve(__dirname, "tests/setup.ts")],
+    browser: {
+      enabled: true,
+      provider: "playwright",
+      name: "chromium",
+    },
   },
 });

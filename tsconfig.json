@@ -6,7 +6,11 @@
     "jsx": "react-jsx",
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": ["@types/chrome", "vitest/globals"],
+    "types": [
+      "@types/chrome",
+      "vitest/globals",
+      "@vitest/browser/providers/playwright"
+    ],
 
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
