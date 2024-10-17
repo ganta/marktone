@@ -21,6 +21,16 @@ jobs:
       - name: Run lint
         run: npm run lint
 
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+      - name: Run typecheck
+        run: npm run typecheck
+
   test:
     runs-on: ubuntu-latest
     steps:
