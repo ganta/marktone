@@ -6,6 +6,10 @@ on:
       - main
   pull_request:
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -13,19 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .node-version
-      - name: Cache node_modules
-        id: cache-node-modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('.node-version') }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: node-modules-${{ runner.os }}-${{ hashFiles('.node-version') }}-${{ hashFiles('package-lock.json') }}
-      - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
+        uses: ./.github/actions/setup-node
       - name: Run lint
         run: npm run lint
 
@@ -35,19 +27,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .node-version
-      - name: Cache node_modules
-        id: cache-node-modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('.node-version') }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: node-modules-${{ runner.os }}-${{ hashFiles('.node-version') }}-${{ hashFiles('package-lock.json') }}
-      - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
+        uses: ./.github/actions/setup-node
       - name: Run tests
         run: npm test
 
@@ -57,19 +37,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .node-version
-      - name: Cache node_modules
-        id: cache-node-modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('.node-version') }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: node-modules-${{ runner.os }}-${{ hashFiles('.node-version') }}-${{ hashFiles('package-lock.json') }}
-      - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
+        uses: ./.github/actions/setup-node
       - name: Package extension
         run: npm run package
 
@@ -79,18 +47,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .node-version
-      - name: Cache node_modules
-        id: cache-node-modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('.node-version') }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: node-modules-${{ runner.os }}-${{ hashFiles('.node-version') }}-${{ hashFiles('package-lock.json') }}
-      - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
+        uses: ./.github/actions/setup-node
       - name: Build Storybook
         run: npm run build-storybook
