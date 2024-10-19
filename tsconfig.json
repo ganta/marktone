@@ -6,7 +6,7 @@
     "jsx": "react-jsx",
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": ["@types/chrome", "vitest/globals"],
+    "types": ["@types/chrome", "vitest/globals", "@testing-library/jest-dom"],
 
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
