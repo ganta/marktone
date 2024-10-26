@@ -1,6 +1,9 @@
 /** @type { import('@storybook/react-vite').StorybookConfig } */
 const config = {
   stories: ["../src", "**/*.stories.tsx"],
+  core: {
+    disableTelemetry: true,
+  },
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
@@ -14,4 +17,5 @@ const config = {
     autodocs: "tag",
   },
 };
+
 export default config;
