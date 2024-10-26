@@ -1,5 +1,7 @@
-/** @type { import('@storybook/react-vite').StorybookConfig } */
-const config = {
+import type { StorybookConfig } from "@storybook/react-vite";
+
+const config: StorybookConfig = {
+  framework: "@storybook/react-vite",
   stories: ["../src", "**/*.stories.tsx"],
   core: {
     disableTelemetry: true,
@@ -9,13 +11,6 @@ const config = {
     "@storybook/addon-essentials",
     "@storybook/addon-a11y",
   ],
-  framework: {
-    name: "@storybook/react-vite",
-    options: {},
-  },
-  docs: {
-    autodocs: "tag",
-  },
 };
 
 export default config;
