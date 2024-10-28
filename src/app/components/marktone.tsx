@@ -132,7 +132,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
   }, [renderedHTML, originalEditorFieldEl]);
 
   // The reference of the Markdown text area
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   // Shows the confirm dialog before leave the page.
   useEffect(() => {
@@ -224,7 +224,8 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
 
     await mentionReplacer.fetchDirectoryEntityInText(markdownText);
 
-    const htmlString = marked(markdownText);
+    const htmlString = marked(markdownText, { async: false });
+    // @ts-ignore TODO: Remove this ignore after upgrading Marked to v14.0.0 or later.
     const sanitizedHTML = DOMPurify.sanitize(htmlString);
     setRenderedHTML(sanitizedHTML);
   };
@@ -460,8 +461,6 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
             }
             ref={reactTextAreaAutocompleteRef}
             innerRef={(textAreaEl): void => {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
               textAreaRef.current = textAreaEl;
               if (textAreaEl) {
                 textAreaEl.focus();
