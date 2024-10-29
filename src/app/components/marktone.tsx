@@ -10,8 +10,7 @@ import {
   DirectoryEntityType,
 } from "../kintone/directory-entity";
 import KintoneClient from "../kintone/kintone-client";
-import MarktoneRenderer from "../markdown/renderer/marktone-renderer";
-import type EmojiReplacer from "../markdown/replacer/emoji-replacer";
+import { getMarktoneRenderer } from "../markdown/renderer/marktoneRenderer.ts";
 import MentionReplacer from "../markdown/replacer/mention-replacer";
 
 import "@webscopeio/react-textarea-autocomplete/style.css";
@@ -28,7 +27,6 @@ interface MarktoneProps {
   replayMentions: ReplyMention[];
   kintoneClient: KintoneClient;
   mentionReplacer: MentionReplacer;
-  emojiReplacer: EmojiReplacer;
 }
 
 interface MentionCandidateItem {
@@ -66,16 +64,13 @@ const MentionCandidate: React.FC<ItemComponentProps<MentionCandidateItem>> = (
  * Marktone component.
  */
 const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
-  const { originalFormEl, kintoneClient, mentionReplacer, emojiReplacer } =
-    props;
+  const { originalFormEl, kintoneClient, mentionReplacer } = props;
 
   // Setup Marked.js
-  marked.setOptions({
+  marked.use({
     gfm: true, // Enable GitHub Flavored Markdown.
     breaks: true, // Add 'br' element on a single line break.
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore for `listitem()`
-    renderer: new MarktoneRenderer(mentionReplacer, emojiReplacer),
+    renderer: getMarktoneRenderer(mentionReplacer),
   });
 
   /**
@@ -224,7 +219,7 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
 
     await mentionReplacer.fetchDirectoryEntityInText(markdownText);
 
-    const htmlString = marked(markdownText, { async: false });
+    const htmlString = marked.parse(markdownText, { async: false });
     // @ts-ignore TODO: Remove this ignore after upgrading Marked to v14.0.0 or later.
     const sanitizedHTML = DOMPurify.sanitize(htmlString);
     setRenderedHTML(sanitizedHTML);
