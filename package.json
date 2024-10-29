@@ -27,17 +27,7 @@
     "highlight.js": "11.10.0",
     "marked": "12.0.2",
     "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "rehype-highlight": "7.0.1",
-    "rehype-react": "7.2.0",
-    "rehype-sanitize": "6.0.0",
-    "remark-breaks": "4.0.0",
-    "remark-gfm": "4.0.0",
-    "remark-parse": "10.0.2",
-    "remark-rehype": "11.1.1",
-    "styled-components": "6.1.13",
-    "unified": "10.1.2",
-    "unist-util-visit": "5.0.0"
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
     "@babel/core": "7.26.0",
@@ -56,7 +46,6 @@
     "@types/dompurify": "3.0.5",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
-    "@types/styled-components": "5.1.34",
     "@types/webscopeio__react-textarea-autocomplete": "4.7.5",
     "@vanilla-extract/vite-plugin": "4.0.17",
     "@vitejs/plugin-react-swc": "3.7.1",
