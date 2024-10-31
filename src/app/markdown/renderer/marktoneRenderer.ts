@@ -26,27 +26,28 @@ export function getMarktoneRenderer(
     // Block level renderer methods
     //
 
-    heading(text, level) {
-      const fontSize = 2.0 - 0.2 * level;
-      const lineHeight = 1.6 - 0.05 * level;
-      const margin = 12 - level;
+    heading({ tokens, depth }) {
+      const text = this.parser.parseInline(tokens);
+      const fontSize = 2.0 - 0.2 * depth;
+      const lineHeight = 1.6 - 0.05 * depth;
+      const margin = 12 - depth;
       let style = `font-size: ${fontSize}em; font-weight: bold; line-height: ${lineHeight}em; margin: ${margin}px 0;`;
-      if (level <= 2) {
+      if (depth <= 2) {
         style += " border-bottom: 1px solid #ddd;";
       }
 
-      return `<h${level} style="${style}">${text}</h${level}>`;
+      return `<h${depth} style="${style}">${text}</h${depth}>`;
     },
 
-    html(html) {
-      return mentionReplacer.replaceMention(emojiReplacer.replaceEmoji(html));
+    html({ text }) {
+      return mentionReplacer.replaceMention(emojiReplacer.replaceEmoji(text));
     },
 
-    code(code, infostring, escaped) {
-      const unescapedCode = escaped ? unescapeHTML(code) : code;
+    code({ text, lang, escaped }) {
+      const unescapedCode = escaped ? unescapeHTML(text) : text;
       const escapedCodeWithHighlight = highlightCode(
         unescapedCode,
-        infostring || "plaintext",
+        lang || "plaintext",
       );
 
       const preStyle =
@@ -56,47 +57,83 @@ export function getMarktoneRenderer(
       return `<pre style="${preStyle}"><code style="${codeStyle}">${escapedCodeWithHighlight}</code></pre>`;
     },
 
-    blockquote(quote) {
+    blockquote({ tokens }) {
+      const body = this.parser.parse(tokens);
       const style =
         "border-left: .25em solid #dfe2e5; color: #6a737d; margin: 0; padding: 0 1em;";
-      return `<blockquote style="${style}">${quote}</blockquote>`;
+      return `<blockquote style="${style}">${body}</blockquote>`;
     },
 
-    paragraph(text) {
+    paragraph({ tokens }) {
+      const text = this.parser.parseInline(tokens);
       const style = "margin: 0 0 16px;";
       return `<p style="${style}">${text}</p>`;
     },
 
-    table(header, body) {
+    table({ header, rows }) {
+      const headerText = header.map((cell) => this.tablecell(cell)).join("");
+      const tableHeader = this.tablerow({ text: headerText });
+
+      const body = rows
+        .map((row) => {
+          const rowText = row.map((cell) => this.tablecell(cell)).join("");
+          return this.tablerow({ text: rowText });
+        })
+        .join("");
       const tableBody = body ? `<tbody>${body}</tbody>` : "";
+
       const style =
         "border-collapse: collapse; border-spacing: 0; margin: 0 0 16px;";
-      return `<table style="${style}"><thead>${header}</thead>${tableBody}</table>`;
+      return `<table style="${style}"><thead>${tableHeader}</thead>${tableBody}</table>`;
     },
 
-    tablerow(content) {
+    tablerow({ text }) {
       const style = "background-color: #fff; border-top: 1px solid #c6cbd1;";
-      return `<tr style="${style}">${content}</tr>`;
+      return `<tr style="${style}">${text}</tr>`;
     },
 
-    tablecell(content, flags): string {
-      const type = flags.header ? "th" : "td";
+    tablecell({ tokens, header, align }): string {
+      const content = this.parser.parseInline(tokens);
+      const type = header ? "th" : "td";
       const style = "border: 1px solid #dfe2e5; padding: 6px 13px;";
-      const tag = flags.align
-        ? `<${type} align="${flags.align}" style="${style}">`
+      const tag = align
+        ? `<${type} align="${align}" style="${style}">`
         : `<${type} style="${style}">`;
       return `${tag}${content}</${type}>`;
     },
 
-    listitem(text, task) {
+    listitem({ tokens, checked, task, loose }) {
+      let itemBody = "";
       let style = "text-indent: 0";
       if (task) {
         style = "list-style-type: none; text-indent: -19px;";
+        const checkbox = this.checkbox({ checked: !!checked });
+        if (loose) {
+          if (tokens.length > 0 && tokens[0].type === "paragraph") {
+            tokens[0].text = `${checkbox} ${tokens[0].text}`;
+            if (
+              tokens[0].tokens &&
+              tokens[0].tokens.length > 0 &&
+              tokens[0].tokens[0].type === "text"
+            ) {
+              tokens[0].tokens[0].text = `${checkbox} ${tokens[0].tokens[0].text}`;
+            }
+          } else {
+            tokens.unshift({
+              type: "text",
+              raw: `${checkbox} `,
+              text: `${checkbox} `,
+            });
+          }
+        } else {
+          itemBody += `${checkbox} `;
+        }
       }
-      return `<li style="${style}">${text}</li>`;
+      itemBody += this.parser.parse(tokens, loose);
+      return `<li style="${style}">${itemBody}</li>`;
     },
 
-    checkbox(checked) {
+    checkbox({ checked }) {
       const length = 10;
 
       const imageURL = checked
@@ -112,22 +149,28 @@ export function getMarktoneRenderer(
     // Inline level renderer methods
     //
 
-    text(text) {
+    text(token) {
+      const text =
+        "tokens" in token && token.tokens
+          ? this.parser.parseInline(token.tokens)
+          : token.text;
       return mentionReplacer.replaceMention(emojiReplacer.replaceEmoji(text));
     },
 
-    codespan(code) {
+    codespan({ text }) {
       const style = `background-color: rgba(27,31,35,.05); border-radius: 3px; margin: 0 1px; padding: .2em .4em; font-family: ${monospaceFontFamiliesString};`;
-      return `<code style="${style}">${code}</code>`;
+      return `<code style="${style}">${text}</code>`;
     },
 
-    del(text) {
+    del({ tokens }) {
+      const text = this.parser.parseInline(tokens);
       // A del element is removed by kintone.
       // Use `text-decoration` because A `text-decoration-line` is also removed by kintone.
       return `<span style="text-decoration: line-through;">${text}</span>`;
     },
 
-    link(href, title, text) {
+    link({ href, title, tokens }) {
+      const text = this.parser.parseInline(tokens);
       if (href === null) return text;
 
       if (href.startsWith("tmp:")) {
@@ -162,7 +205,7 @@ export function getMarktoneRenderer(
       return `<a ${attributesString}>${text}</a>`;
     },
 
-    image(href, title, text) {
+    image({ href, title, text }) {
       if (href === null) {
         return text;
       }
