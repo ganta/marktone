@@ -1,4 +1,4 @@
-import type { DirectoryEntity } from "./directory-entity";
+import type { DirectoryEntity } from "./DirectoryEntity.ts";
 
 class DirectoryEntityCache {
   private readonly cache: { [key: string]: DirectoryEntity | null };
