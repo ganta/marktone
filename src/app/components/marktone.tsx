@@ -8,7 +8,7 @@ import React, { type KeyboardEvent, type ReactElement } from "react";
 import {
   type DirectoryEntity,
   DirectoryEntityType,
-} from "../kintone/directory-entity";
+} from "../kintone/DirectoryEntity.ts";
 import KintoneClient from "../kintone/kintone-client";
 import { getMarktoneRenderer } from "../markdown/renderer/marktoneRenderer.ts";
 import MentionReplacer from "../markdown/replacer/mention-replacer";

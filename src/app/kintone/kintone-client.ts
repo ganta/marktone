@@ -1,8 +1,8 @@
 import {
   type DirectoryEntity,
   DirectoryEntityType,
-  DirectoryEntityTypeUtil,
-} from "./directory-entity";
+  toDirectoryEntityType,
+} from "./DirectoryEntity.ts";
 
 interface SearchDirectoryUserResponse {
   entityType: string;
@@ -238,7 +238,7 @@ export default class KintoneClient {
 
     return response.result.entities.map(({ entityType, id, code, name }) => {
       return {
-        type: DirectoryEntityTypeUtil.valueOf(entityType),
+        type: toDirectoryEntityType(entityType),
         id,
         code,
         name,
