@@ -220,7 +220,6 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
     await mentionReplacer.fetchDirectoryEntityInText(markdownText);
 
     const htmlString = marked.parse(markdownText, { async: false });
-    // @ts-ignore TODO: Remove this ignore after upgrading Marked to v14.0.0 or later.
     const sanitizedHTML = DOMPurify.sanitize(htmlString);
     setRenderedHTML(sanitizedHTML);
   };
