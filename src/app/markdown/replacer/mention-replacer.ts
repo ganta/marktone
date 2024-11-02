@@ -52,16 +52,13 @@ class MentionReplacer {
   }
 
   async fetchDirectoryEntityInText(text: string): Promise<void> {
-    // TODO: Use `String.prototype.matchAll` when it becomes ES2020
-    let matched: RegExpExecArray | null;
-    const promises = [];
-    // biome-ignore lint/suspicious/noAssignInExpressions: TODO: Refactor not to use assignment in expressions.
-    while ((matched = MentionReplacer.mentionRegExp.exec(text)) !== null) {
-      const type = matched[1];
-      const escapedCode = matched[2];
+    const matches = text.matchAll(MentionReplacer.mentionRegExp);
+    const promises: Promise<DirectoryEntity | null>[] = [];
+    for (const match of matches) {
+      const type = match[1];
+      const escapedCode = match[2];
       const code = MentionReplacer.unescapeCode(escapedCode);
-      // It is needed to skip fetching an organization, a group or a user by code
-      // because kintone returns 520 error when `code` exceeds 100 characters.
+      // Fetching should be skipped if the `code` exceeds 100 characters, as the kintone API returns a 520 error.
       if (code.length > 100) {
         continue;
       }
