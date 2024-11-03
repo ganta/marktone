@@ -8,6 +8,11 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react(), vanillaExtractPlugin()],
   publicDir: "public",
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "src"),
+    },
+  },
   build: {
     outDir: "dist",
     minify: false,

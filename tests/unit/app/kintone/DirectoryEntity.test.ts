@@ -1,7 +1,7 @@
 import {
   DirectoryEntityType,
   toDirectoryEntityType,
-} from "../../../../src/app/kintone/DirectoryEntity.ts";
+} from "@/app/kintone/DirectoryEntity.ts";
 
 describe(toDirectoryEntityType, () => {
   it.each([

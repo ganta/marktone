@@ -8,10 +8,10 @@ import React, { type KeyboardEvent, type ReactElement } from "react";
 import {
   type DirectoryEntity,
   DirectoryEntityType,
-} from "../kintone/DirectoryEntity.ts";
-import KintoneClient from "../kintone/kintone-client";
-import { getMarktoneRenderer } from "../markdown/renderer/marktoneRenderer.ts";
-import MentionReplacer from "../markdown/replacer/mention-replacer";
+} from "@/app/kintone/DirectoryEntity.ts";
+import KintoneClient from "@/app/kintone/kintone-client";
+import { getMarktoneRenderer } from "@/app/markdown/renderer/marktoneRenderer.ts";
+import MentionReplacer from "@/app/markdown/replacer/mention-replacer";
 
 import "@webscopeio/react-textarea-autocomplete/style.css";
 

@@ -1,8 +1,8 @@
+import KintoneClient from "@/app/kintone/kintone-client";
+import EmojiReplacer from "@/app/markdown/replacer/emoji-replacer.ts";
+import type MentionReplacer from "@/app/markdown/replacer/mention-replacer";
 import hljs from "highlight.js";
 import type { RendererObject } from "marked";
-import KintoneClient from "../../kintone/kintone-client";
-import EmojiReplacer from "../replacer/emoji-replacer.ts";
-import type MentionReplacer from "../replacer/mention-replacer";
 import { highlightStyles, languageAliases } from "./highlight-settings";
 
 const monospaceFontFamilies = [
