@@ -1,4 +1,4 @@
-import "../styles/content.scss";
+import "@/styles/content.scss";
 
 import KintoneClient from "./kintone/kintone-client";
 import MarktoneConfig from "./marktone-config";

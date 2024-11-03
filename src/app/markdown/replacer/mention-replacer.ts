@@ -1,9 +1,9 @@
 import {
   type DirectoryEntity,
   DirectoryEntityType,
-} from "../../kintone/DirectoryEntity.ts";
-import DirectoryEntityCache from "../../kintone/directory-entity-cache";
-import type KintoneClient from "../../kintone/kintone-client";
+} from "@/app/kintone/DirectoryEntity.ts";
+import DirectoryEntityCache from "@/app/kintone/directory-entity-cache";
+import type KintoneClient from "@/app/kintone/kintone-client";
 
 class MentionReplacer {
   private static mentionRegExp = /@(?:(org|group)\/)?([^\s]+)/g;
