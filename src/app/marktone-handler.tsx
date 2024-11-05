@@ -1,5 +1,5 @@
+import Marktone, { type ReplyMention } from "@/components/Marktone";
 import { createRoot } from "react-dom/client";
-import Marktone, { type ReplyMention } from "./components/marktone";
 import HTMLElementUtil from "./kintone/html-element-util";
 import type KintoneClient from "./kintone/kintone-client";
 import MentionReplacer from "./markdown/replacer/mention-replacer";

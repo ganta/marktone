@@ -9,9 +9,9 @@ import {
   type DirectoryEntity,
   DirectoryEntityType,
 } from "@/app/kintone/DirectoryEntity.ts";
-import KintoneClient from "@/app/kintone/kintone-client";
+import KintoneClient from "@/app/kintone/kintone-client.ts";
 import { getMarktoneRenderer } from "@/app/markdown/renderer/marktoneRenderer.ts";
-import MentionReplacer from "@/app/markdown/replacer/mention-replacer";
+import MentionReplacer from "@/app/markdown/replacer/mention-replacer.ts";
 
 import "@webscopeio/react-textarea-autocomplete/style.css";
 
