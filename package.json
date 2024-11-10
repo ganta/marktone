@@ -17,7 +17,8 @@
     "package": "run-s --print-label clean build && tsx scripts/zip.ts marktone.zip dist",
     "test": "vitest",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "chromatic"
   },
   "dependencies": {
     "@vanilla-extract/css": "1.16.0",
