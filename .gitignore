@@ -9,3 +9,6 @@ dist/
 
 # Storybook
 storybook-static/
+
+# Logs
+*.log
