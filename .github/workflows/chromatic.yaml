@@ -1,0 +1,29 @@
+name: Chromatic
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  chromatic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+
+      - name: Run Chromatic
+        env:
+          CHROMATIC_PROJECT_TOKEN: "${{ secrets.CHROMATIC_PROJECT_TOKEN }}"
+        run: |
+          npm run chromatic
