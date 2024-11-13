@@ -27,6 +27,7 @@ interface MarktoneProps {
   replayMentions: ReplyMention[];
   kintoneClient: KintoneClient;
   mentionReplacer: MentionReplacer;
+  markdownText?: string;
 }
 
 interface MentionCandidateItem {
@@ -63,9 +64,13 @@ const MentionCandidate: React.FC<ItemComponentProps<MentionCandidateItem>> = (
 /**
  * Marktone component.
  */
-const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
-  const { originalFormEl, kintoneClient, mentionReplacer } = props;
-
+const Marktone: React.FC<MarktoneProps> = ({
+  originalFormEl,
+  kintoneClient,
+  mentionReplacer,
+  replayMentions,
+  markdownText = "",
+}: MarktoneProps) => {
   // Setup Marked.js
   marked.use({
     gfm: true, // Enable GitHub Flavored Markdown.
@@ -98,9 +103,11 @@ const Marktone: React.FC<MarktoneProps> = (props: MarktoneProps) => {
 
   // Inserts the mentions string to the raw text when the reply mentions were set.
   useEffect(() => {
-    const replayMentionsText = convertReplyMentionsToText(props.replayMentions);
-    setRawText(replayMentionsText === "" ? "" : `${replayMentionsText} `);
-  }, [props.replayMentions]);
+    const replayMentionsText = convertReplyMentionsToText(replayMentions);
+    setRawText(
+      replayMentionsText === "" ? markdownText : `${replayMentionsText} `,
+    );
+  }, []);
 
   // The HTML with Markdown rendered
   const [renderedHTML, setRenderedHTML] = useState("");
