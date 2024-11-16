@@ -1,6 +1,6 @@
 import Marktone, { type ReplyMention } from "@/components/Marktone";
+import { extractReplyMentions } from "@/utils/extractReplyMentions";
 import { createRoot } from "react-dom/client";
-import HTMLElementUtil from "./kintone/html-element-util";
 import type KintoneClient from "./kintone/kintone-client";
 import MentionReplacer from "./markdown/replacer/mention-replacer";
 
@@ -104,7 +104,7 @@ class MarktoneHandler {
   private async extractReplyMentions(
     element: HTMLElement,
   ): Promise<ReplyMention[]> {
-    const idAndTypes = HTMLElementUtil.extractReplyMentions(element);
+    const idAndTypes = extractReplyMentions(element);
     const entities =
       await this.kintoneClient.listDirectoryEntityByIdAndType(idAndTypes);
 
