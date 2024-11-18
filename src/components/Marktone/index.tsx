@@ -5,13 +5,13 @@ import DOMPurify from "dompurify";
 import { marked } from "marked";
 import React, { type KeyboardEvent, type ReactElement } from "react";
 
-import {
-  type DirectoryEntity,
-  DirectoryEntityType,
-} from "@/app/kintone/DirectoryEntity.ts";
 import KintoneClient from "@/app/kintone/kintone-client.ts";
 import { getMarktoneRenderer } from "@/app/markdown/renderer/marktoneRenderer.ts";
 import MentionReplacer from "@/app/markdown/replacer/mention-replacer.ts";
+import {
+  type DirectoryEntity,
+  DirectoryEntityType,
+} from "@/models/DirectoryEntity.ts";
 
 import "@webscopeio/react-textarea-autocomplete/style.css";
 
@@ -89,7 +89,7 @@ const Marktone: React.FC<MarktoneProps> = ({
   ): string => {
     const currentUser = KintoneClient.getLoginUser();
     const normalizedMentions = replyMentions.filter((replyMention) => {
-      if (replyMention.type !== DirectoryEntityType.USER) return true;
+      if (replyMention.type !== DirectoryEntityType.enum.User) return true;
       return replyMention.code !== currentUser.code;
     });
     const mentions = normalizedMentions.map((replyMention) =>

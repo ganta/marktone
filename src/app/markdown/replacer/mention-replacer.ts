@@ -1,9 +1,9 @@
+import DirectoryEntityCache from "@/app/kintone/directory-entity-cache";
+import type KintoneClient from "@/app/kintone/kintone-client";
 import {
   type DirectoryEntity,
   DirectoryEntityType,
-} from "@/app/kintone/DirectoryEntity.ts";
-import DirectoryEntityCache from "@/app/kintone/directory-entity-cache";
-import type KintoneClient from "@/app/kintone/kintone-client";
+} from "@/models/DirectoryEntity.ts";
 
 class MentionReplacer {
   private static mentionRegExp = /@(?:(org|group)\/)?([^\s]+)/g;
@@ -45,7 +45,7 @@ class MentionReplacer {
 
   static createMention(type: DirectoryEntityType, code: string): string {
     const escapedCode = MentionReplacer.escapeCode(code);
-    if (type === DirectoryEntityType.USER) {
+    if (type === DirectoryEntityType.enum.User) {
       return `@${escapedCode}`;
     }
     return `@${type}/${escapedCode}`;
@@ -64,10 +64,10 @@ class MentionReplacer {
       }
 
       switch (type) {
-        case DirectoryEntityType.ORGANIZATION:
+        case DirectoryEntityType.enum.Organization:
           promises.push(this.findOrganizationWithCache(code));
           break;
-        case DirectoryEntityType.GROUP:
+        case DirectoryEntityType.enum.Group:
           promises.push(this.findGroupWithCache(code));
           break;
         default:
@@ -91,10 +91,10 @@ class MentionReplacer {
       const code = MentionReplacer.unescapeCode(escapedCode);
       let entity: DirectoryEntity | null;
       switch (type) {
-        case DirectoryEntityType.ORGANIZATION:
+        case DirectoryEntityType.enum.Organization:
           entity = this.getOrganizationFromCache(code);
           break;
-        case DirectoryEntityType.GROUP:
+        case DirectoryEntityType.enum.Group:
           entity = this.getGroupFromCache(code);
           break;
         default:
