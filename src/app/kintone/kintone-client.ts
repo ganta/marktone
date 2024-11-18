@@ -2,7 +2,7 @@ import {
   type DirectoryEntity,
   DirectoryEntityType,
   toDirectoryEntityType,
-} from "./DirectoryEntity.ts";
+} from "@/models/DirectoryEntity.ts";
 
 interface SearchDirectoryUserResponse {
   entityType: string;
@@ -261,7 +261,7 @@ export default class KintoneClient {
 
     const users = response.result.users.map<DirectoryEntity>(
       ({ id, code, name, photo }) => ({
-        type: DirectoryEntityType.USER,
+        type: DirectoryEntityType.enum.User,
         id,
         code,
         name,
@@ -270,7 +270,7 @@ export default class KintoneClient {
     );
     const orgs = response.result.orgs.map<DirectoryEntity>(
       ({ id, code, name }) => ({
-        type: DirectoryEntityType.ORGANIZATION,
+        type: DirectoryEntityType.enum.Organization,
         id,
         code,
         name,
@@ -279,7 +279,7 @@ export default class KintoneClient {
     );
     const groups = response.result.groups.map<DirectoryEntity>(
       ({ id, code, name }) => ({
-        type: DirectoryEntityType.GROUP,
+        type: DirectoryEntityType.enum.Group,
         id,
         code,
         name,
