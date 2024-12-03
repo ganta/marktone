@@ -56,7 +56,7 @@
     "jsdom": "25.0.1",
     "npm-run-all2": "7.0.1",
     "prettier": "3.4.1",
-    "sass": "1.81.0",
+    "sass": "1.81.1",
     "storybook": "8.4.6",
     "tsx": "4.19.2",
     "typescript": "5.7.2",
