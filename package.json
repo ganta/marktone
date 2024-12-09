@@ -47,7 +47,7 @@
     "@types/archiver": "6.0.3",
     "@types/chrome": "0.0.287",
     "@types/react": "18.3.14",
-    "@types/react-dom": "18.3.2",
+    "@types/react-dom": "18.3.3",
     "@types/webscopeio__react-textarea-autocomplete": "4.7.5",
     "@vanilla-extract/vite-plugin": "4.0.18",
     "@vitejs/plugin-react-swc": "3.7.2",
