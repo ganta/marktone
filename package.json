@@ -52,7 +52,7 @@
     "@vanilla-extract/vite-plugin": "4.0.18",
     "@vitejs/plugin-react-swc": "3.7.2",
     "archiver": "7.0.1",
-    "chromatic": "11.20.0",
+    "chromatic": "11.20.1",
     "jsdom": "25.0.1",
     "npm-run-all2": "7.0.1",
     "prettier": "3.4.2",
