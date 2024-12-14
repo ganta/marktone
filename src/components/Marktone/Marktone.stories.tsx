@@ -1,3 +1,4 @@
+import { setCybozuData } from "@/apis/cybozu/api.ts";
 import KintoneClient from "@/app/kintone/kintone-client.ts";
 import MentionReplacer from "@/app/markdown/replacer/mention-replacer.ts";
 import type { Meta, StoryObj } from "@storybook/react";
@@ -10,8 +11,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof Marktone>;
 
-// FIXME: Remove the following workaround
-document.body.dataset.loginUser = JSON.stringify({});
+setCybozuData({
+  LOGIN_USER: { code: "test_code" },
+  DISPLAY_LOCALE: "ja",
+  REQUEST_TOKEN: "test_token",
+});
 const kintoneClient = new KintoneClient();
 const mentionReplacer = new MentionReplacer(kintoneClient);
 
