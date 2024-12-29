@@ -14,6 +14,7 @@ import {
 } from "@/models/DirectoryEntity.ts";
 
 import "@webscopeio/react-textarea-autocomplete/style.css";
+import { getLoginUser } from "@/apis/cybozu/api.ts";
 
 const { useState, useEffect, useRef } = React;
 
@@ -87,7 +88,7 @@ const Marktone: React.FC<MarktoneProps> = ({
   const convertReplyMentionsToText = (
     replyMentions: ReplyMention[],
   ): string => {
-    const currentUser = KintoneClient.getLoginUser();
+    const currentUser = getLoginUser();
     const normalizedMentions = replyMentions.filter((replyMention) => {
       if (replyMention.type !== DirectoryEntityType.enum.User) return true;
       return replyMention.code !== currentUser.code;

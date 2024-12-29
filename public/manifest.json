@@ -12,7 +12,7 @@
   "permissions": ["storage"],
   "web_accessible_resources": [
     {
-      "resources": ["content.js", "assets/*", "js/initialization.js"],
+      "resources": ["content.js", "assets/*", "js/passCybozuData.js"],
       "matches": ["<all_urls>"]
     }
   ],

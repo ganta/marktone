@@ -1,3 +1,4 @@
+import { getDisplayLocale, getRequestToken } from "@/apis/cybozu/api.ts";
 import {
   type DirectoryEntity,
   DirectoryEntityType,
@@ -86,21 +87,6 @@ class DirectoryEntityCollection {
   }
 }
 
-interface LoginUser {
-  id: string;
-  code: string;
-  name: string;
-  email: string;
-  url: string;
-  employeeNumber: string;
-  phone: string;
-  mobilePhone: string;
-  extensionNumber: string;
-  timezone: string;
-  isGuest: boolean;
-  language: string;
-}
-
 export default class KintoneClient {
   static defaultThumbnailWidth = 250;
 
@@ -134,29 +120,15 @@ export default class KintoneClient {
 
   private static uploadBlobAPI = "/blob/upload.json";
 
-  private readonly loginUser: LoginUser;
-
   private readonly spaceId: number | null;
 
-  private readonly requestToken: string;
-
   constructor() {
-    this.loginUser = KintoneClient.getLoginUser();
     this.spaceId = KintoneClient.getSpaceId();
-    this.requestToken = KintoneClient.getRequestToken();
-  }
-
-  static getLoginUser(): LoginUser {
-    return JSON.parse(document.body.dataset.loginUser as string) as LoginUser;
   }
 
   static getSpaceId(): number | null {
     const match = window.location.hash.match(/\/space\/(\d+)\//);
     return match ? Number.parseInt(match[1], 10) : null;
-  }
-
-  static getRequestToken(): string {
-    return document.body.dataset.requestToken || "";
   }
 
   static isSpacePage(): boolean {
@@ -186,7 +158,7 @@ export default class KintoneClient {
   ): string {
     const params = new URLSearchParams();
     params.append("fileKey", fileKey);
-    params.append("_lc", KintoneClient.getLoginUser().language);
+    params.append("_lc", getDisplayLocale());
     params.append("_ref", encodeURI(window.location.href));
 
     if (additionalParams) {
@@ -315,7 +287,7 @@ export default class KintoneClient {
     const params = new URLSearchParams();
     params.append("checkThumbnail", "true");
     params.append("w", KintoneClient.defaultThumbnailWidth.toString());
-    params.append("_lc", this.loginUser.language);
+    params.append("_lc", getDisplayLocale());
     params.append("_ref", encodeURI(window.location.href));
 
     const apiPath = `${KintoneClient.getAPIPathPrefix()}${
@@ -324,7 +296,7 @@ export default class KintoneClient {
     const rawResponse = await fetch(apiPath, {
       method: "POST",
       headers: {
-        "X-Cybozu-RequestToken": this.requestToken,
+        "X-Cybozu-RequestToken": getRequestToken(),
       },
       body: formData,
     });
@@ -333,7 +305,7 @@ export default class KintoneClient {
 
   private async postToAPI<T>(path: string, requestBody: unknown): Promise<T> {
     const params = new URLSearchParams();
-    params.append("_lc", this.loginUser.language);
+    params.append("_lc", getDisplayLocale());
     params.append("_ref", encodeURI(window.location.href));
 
     const apiPath = `${KintoneClient.getAPIPathPrefix()}${path}?${params.toString()}`;
