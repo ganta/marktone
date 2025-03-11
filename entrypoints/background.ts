@@ -1,4 +1,4 @@
-import MarktoneConfig from "./marktone-config";
+import MarktoneConfig from "./app/marktone-config";
 
 function setExtensionIcon(enabled: boolean): void {
   const path = chrome.runtime.getURL(
