@@ -1,9 +1,9 @@
 import "@/styles/content.scss";
 
-import { initializeCybozuData } from "./apis/cybozu/api.ts";
-import KintoneClient from "./app/kintone/kintone-client";
-import MarktoneConfig from "./app/marktone-config";
-import MarktoneHandler from "./app/marktone-handler";
+import { initializeCybozuData } from "@/apis/cybozu/api.ts";
+import KintoneClient from "./kintone/kintone-client";
+import MarktoneConfig from "./marktone-config";
+import MarktoneHandler from "./marktone-handler";
 
 function setMarktoneEnabled(enabled: boolean): void {
   document.body.dataset.marktoneEnabled = enabled.toString();
