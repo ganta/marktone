@@ -11,12 +11,14 @@ MarktoneConfig.loadEnabled((enabled) => {
   setExtensionIcon(enabled);
 });
 
-chrome.action.onClicked.addListener((_tab) => {
-  MarktoneConfig.loadEnabled((enabled) => {
-    const newEnabled = !enabled;
+export default defineBackground(() => {
+  chrome.action.onClicked.addListener((_tab) => {
+    MarktoneConfig.loadEnabled((enabled) => {
+      const newEnabled = !enabled;
 
-    setExtensionIcon(newEnabled);
+      setExtensionIcon(newEnabled);
 
-    void MarktoneConfig.saveEnabled(newEnabled);
+      void MarktoneConfig.saveEnabled(newEnabled);
+    });
   });
 });
