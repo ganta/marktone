@@ -1,4 +1,5 @@
 {
+  "extends": ".wxt/tsconfig.json",
   "compilerOptions": {
     "target": "ES2023",
     "useDefineForClassFields": true,
