@@ -4,17 +4,20 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "vite build --watch",
-    "clean": "tsx scripts/rm.ts dist/ *.zip",
-    "build": "tsc && vite build",
-    "typecheck": "tsc --noEmit",
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "tsc --noEmit",
+    "postinstall": "wxt prepare",
     "lint": "run-p --print-label 'lint:*'",
     "lint:biome": "biome check",
     "lint:prettier": "prettier --check .",
     "fix": "run-s 'fix:*'",
     "fix:biome": "biome check --write",
     "fix:prettier": "prettier --write .",
-    "package": "run-s --print-label clean build && tsx scripts/zip.ts marktone.zip dist",
     "test": "vitest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
@@ -61,6 +64,7 @@
     "tsx": "4.19.3",
     "typescript": "5.8.2",
     "vite": "5.4.14",
-    "vitest": "3.0.8"
+    "vitest": "3.0.8",
+    "wxt": "0.19.29"
   }
 }

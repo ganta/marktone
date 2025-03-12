@@ -15,13 +15,16 @@ function setMarktoneEnabled(enabled: boolean): void {
   }
 }
 
-(async () => {
-  MarktoneConfig.loadEnabled(setMarktoneEnabled);
-  MarktoneConfig.onEnabledChanged(setMarktoneEnabled);
+export default defineContentScript({
+  matches: [""],
+  async main() {
+    MarktoneConfig.loadEnabled(setMarktoneEnabled);
+    MarktoneConfig.onEnabledChanged(setMarktoneEnabled);
 
-  await initializeCybozuData();
+    await initializeCybozuData();
 
-  const kintoneClient = new KintoneClient();
-  const handler = new MarktoneHandler(kintoneClient);
-  handler.handle();
-})();
+    const kintoneClient = new KintoneClient();
+    const handler = new MarktoneHandler(kintoneClient);
+    handler.handle();
+  },
+});
