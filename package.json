@@ -32,7 +32,7 @@
     "zod": "3.25.30"
   },
   "devDependencies": {
-    "@babel/core": "7.27.1",
+    "@babel/core": "7.27.3",
     "@biomejs/biome": "1.9.4",
     "@chromatic-com/storybook": "3.2.6",
     "@storybook/addon-a11y": "8.6.14",
