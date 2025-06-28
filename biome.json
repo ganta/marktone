@@ -1,10 +1,14 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": ["dist", "storybook-static"]
-  },
-  "organizeImports": {
-    "enabled": true
+    "includes": [
+      ".storybook/**/*",
+      "public/**/*",
+      "scripts/**/*",
+      "src/**/*",
+      "tests/**/*",
+      "*"
+    ]
   },
   "linter": {
     "enabled": true,
