@@ -32,7 +32,7 @@ class MentionReplacer {
       code
         .replace(/[ @%&'"<>*+]/g, replacer)
         // Escape Markdown syntax characters following a multi-bytes character.
-        .replace(/(?<!\w)[ _~![\]|\\-]/g, replacer)
+        .replace(/(?<!\w)[ _~![\]|-]/g, replacer)
     );
   }
 

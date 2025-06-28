@@ -1,5 +1,5 @@
-import { LoginUserSchema } from "@/models/LoginUser.ts";
 import { z } from "zod";
+import { LoginUserSchema } from "@/models/LoginUser.ts";
 
 export const CybozuDataSchema = z.object({
   DISPLAY_LOCALE: z.string(),

@@ -1,3 +1,4 @@
+import { beforeEach, describe } from "vitest";
 import {
   clearCybozuData,
   getDisplayLocale,
@@ -10,7 +11,6 @@ import {
   CybozuDataInitializationTimeoutError,
   UninitializedCybozuDataError,
 } from "@/apis/cybozu/errors.ts";
-import { beforeEach, describe } from "vitest";
 
 describe(initializeCybozuData, () => {
   const getURLMock = vi.fn();

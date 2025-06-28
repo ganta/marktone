@@ -1,6 +1,6 @@
+import { createRoot } from "react-dom/client";
 import Marktone, { type ReplyMention } from "@/components/Marktone";
 import { extractReplyMentions } from "@/utils/extractReplyMentions";
-import { createRoot } from "react-dom/client";
 import type KintoneClient from "./kintone/kintone-client";
 import MentionReplacer from "./markdown/replacer/mention-replacer";
 
