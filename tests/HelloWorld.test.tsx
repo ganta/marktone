@@ -1,6 +1,6 @@
-import HelloWorld from "@/HelloWorld.tsx";
 import { render } from "@testing-library/react";
 import { act } from "react";
+import HelloWorld from "@/HelloWorld.tsx";
 
 test("renders name", async () => {
   const { getByText, getByRole } = render(<HelloWorld name="Vitest" />);

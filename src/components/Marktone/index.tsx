@@ -480,6 +480,7 @@ const Marktone: React.FC<MarktoneProps> = ({
           />
         </div>
         <div className="preview-wrapper" style={{ height: previewHeight }}>
+          {/** biome-ignore-start lint/a11y/noStaticElementInteractions: To prevent any actions */}
           <div
             className="preview"
             onClick={(event): void => event.preventDefault()}
@@ -489,6 +490,7 @@ const Marktone: React.FC<MarktoneProps> = ({
             // biome-ignore lint/security/noDangerouslySetInnerHtml: This is a preview area and the content is sanitized.
             dangerouslySetInnerHTML={{ __html: renderedHTML }}
           />
+          {/** biome-ignore-end lint/a11y/noStaticElementInteractions: To prevent any actions */}
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
+import type { Meta, StoryObj } from "@storybook/react";
 import { setCybozuData } from "@/apis/cybozu/api.ts";
 import KintoneClient from "@/app/kintone/kintone-client.ts";
 import MentionReplacer from "@/app/markdown/replacer/mention-replacer.ts";
-import type { Meta, StoryObj } from "@storybook/react";
 import Marktone from ".";
 
 const meta = {
