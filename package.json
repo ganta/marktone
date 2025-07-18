@@ -50,7 +50,7 @@
     "@types/react-dom": "18.3.7",
     "@types/webscopeio__react-textarea-autocomplete": "4.7.5",
     "@vanilla-extract/vite-plugin": "5.1.0",
-    "@vitejs/plugin-react-swc": "3.10.2",
+    "@vitejs/plugin-react-swc": "3.11.0",
     "archiver": "7.0.1",
     "chromatic": "13.0.1",
     "jsdom": "26.1.0",
