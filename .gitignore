@@ -12,3 +12,7 @@ storybook-static/
 
 # Logs
 *.log
+
+# AI agents
+.claude/settings.local.json
+CLAUDE.local.md
