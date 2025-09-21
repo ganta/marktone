@@ -19,37 +19,45 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
+
       - name: Run lint
-        run: npm run lint
+        run: pnpm run lint
 
   typecheck:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
+
       - name: Run typecheck
-        run: npm run typecheck
+        run: pnpm run typecheck
 
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
+
       - name: Run tests
-        run: npm test
+        run: pnpm test
 
   package:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
-      - name: Package extension
-        run: npm run package
+
+      - name: Package the extension
+        run: pnpm run package
