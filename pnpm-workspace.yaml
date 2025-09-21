@@ -1,0 +1,3 @@
+# How long (in minutes) pnpm waits before using newly published packages.
+# This delay helps prevent supply chain attacks by giving time for community verification of new releases.
+minimumReleaseAge: 1440 # 1 day
