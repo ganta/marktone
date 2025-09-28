@@ -24,8 +24,8 @@ importers:
         specifier: 11.11.1
         version: 11.11.1
       marked:
-        specifier: 16.2.1
-        version: 16.2.1
+        specifier: 16.3.0
+        version: 16.3.0
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -1811,8 +1811,8 @@ packages:
   map-or-similar@1.5.0:
     resolution: {integrity: sha512-0aF7ZmVon1igznGI4VS30yugpduQW3y3GkcgGJOp7d8x8QrizhigUxjI/m2UojsXXto+jLAH3KSz+xOJTiORjg==}
 
-  marked@16.2.1:
-    resolution: {integrity: sha512-r3UrXED9lMlHF97jJByry90cwrZBBvZmjG1L68oYfuPMW+uDTnuMbyJDymCWwbTE+f+3LhpNDKfpR3a3saFyjA==}
+  marked@16.3.0:
+    resolution: {integrity: sha512-K3UxuKu6l6bmA5FUwYho8CfJBlsUWAooKtdGgMcERSpF7gcBUrCGsLH7wDaaNOzwq18JzSUDyoEb/YsrqMac3w==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -4083,7 +4083,7 @@ snapshots:
 
   map-or-similar@1.5.0: {}
 
-  marked@16.2.1: {}
+  marked@16.3.0: {}
 
   math-intrinsics@1.1.0: {}
 
