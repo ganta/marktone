@@ -97,8 +97,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       chromatic:
-        specifier: 13.0.1
-        version: 13.0.1
+        specifier: 13.3.0
+        version: 13.3.0
       jsdom:
         specifier: 27.0.0
         version: 27.0.0(postcss@8.5.6)
@@ -1353,8 +1353,8 @@ packages:
       '@chromatic-com/playwright':
         optional: true
 
-  chromatic@13.0.1:
-    resolution: {integrity: sha512-vX0Rs/pAeFAnGuQiVrA4h0XD36MYbTUp9Mlm1jFqXo3Cejd2BdBY1CA+vd6CkeO5CRSc6TRWmCz0zQAsE1q3Hw==}
+  chromatic@13.3.0:
+    resolution: {integrity: sha512-OtXVKSFqGS1x6E6xYzmYX2iImSknbvo5CfTxP3ztFvXQhIAwhJzJuA3XpnIewER9gtWUNnV2DDi8/f9JyZJSfg==}
     hasBin: true
     peerDependencies:
       '@chromatic-com/cypress': ^0.*.* || ^1.0.0
@@ -3698,7 +3698,7 @@ snapshots:
 
   chromatic@11.29.0: {}
 
-  chromatic@13.0.1: {}
+  chromatic@13.3.0: {}
 
   color-convert@2.0.1:
     dependencies:
