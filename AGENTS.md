@@ -11,26 +11,26 @@ It allows users to write comments, posts, and messages using Markdown syntax wit
 
 ### Development
 
-- `npm run dev` - Build and watch for changes during development
-- `npm run build` - Build the extension for production
-- `npm run package` - Create a distributable zip file for the extension
+- `pnpm run dev` - Build and watch for changes during development
+- `pnpm run build` - Build the extension for production
+- `pnpm run package` - Create a distributable zip file for the extension
 
 ### Testing
 
-- `npm test` - Run all tests using Vitest
-- `npm run test -- path/to/test.test.ts` - Run a specific test file
+- `pnpm run test` - Run all tests using Vitest
+- `pnpm run test path/to/test.test.ts` - Run a specific test file
 
 ### Code Quality
 
-- `npm run typecheck` - Run TypeScript type checking without emitting files
-- `npm run lint` - Run both Biome and Prettier linters
-- `npm run fix` - Automatically fix linting issues
+- `pnpm run typecheck` - Run TypeScript type checking without emitting files
+- `pnpm run lint` - Run both Biome and Prettier linters
+- `pnpm run fix` - Automatically fix linting issues
 
 ### Storybook
 
-- `npm run storybook` - Start Storybook for component development
-- `npm run build-storybook` - Build static Storybook site
-- `npm run chromatic` - Run visual regression tests with Chromatic
+- `pnpm run storybook` - Start Storybook for component development
+- `pnpm run build-storybook` - Build static Storybook site
+- `pnpm run chromatic` - Run visual regression tests with Chromatic
 
 ## Architecture
 
