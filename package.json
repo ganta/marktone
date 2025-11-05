@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.28.4",
-    "@biomejs/biome": "2.2.6",
+    "@biomejs/biome": "2.2.7",
     "@chromatic-com/storybook": "4.1.1",
     "@storybook/addon-a11y": "9.1.13",
     "@storybook/addon-actions": "9.0.8",
