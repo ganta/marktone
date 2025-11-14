@@ -100,8 +100,8 @@ importers:
         specifier: 13.3.2
         version: 13.3.2
       jsdom:
-        specifier: 27.0.1
-        version: 27.0.1
+        specifier: 27.1.0
+        version: 27.1.0
       npm-run-all2:
         specifier: 8.0.4
         version: 8.0.4
@@ -125,9 +125,12 @@ importers:
         version: 7.1.12(@types/node@24.10.0)(sass@1.93.2)(tsx@4.20.6)
       vitest:
         specifier: 4.0.5
-        version: 4.0.5(@types/node@24.10.0)(jsdom@27.0.1)(sass@1.93.2)(tsx@4.20.6)
+        version: 4.0.5(@types/node@24.10.0)(jsdom@27.1.0)(sass@1.93.2)(tsx@4.20.6)
 
 packages:
+
+  '@acemir/cssom@0.9.23':
+    resolution: {integrity: sha512-2kJ1HxBKzPLbmhZpxBiTZggjtgCwKg1ma5RHShxvd6zgqhDEdEkzpiwe7jLkI2p2BrZvFCXIihdoMkl1H39VnA==}
 
   '@adobe/css-tools@4.4.4':
     resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
@@ -1561,9 +1564,9 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  jsdom@27.0.1:
-    resolution: {integrity: sha512-SNSQteBL1IlV2zqhwwolaG9CwhIhTvVHWg3kTss/cLE7H/X4644mtPQqYvCfsSrGQWt9hSZcgOXX8bOZaMN+kA==}
-    engines: {node: '>=20'}
+  jsdom@27.1.0:
+    resolution: {integrity: sha512-Pcfm3eZ+eO4JdZCXthW9tCDT3nF4K+9dmeZ+5X39n+Kqz0DDIABRP5CAEOHRFZk8RGuC2efksTJxrjp8EXCunQ==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
     peerDependencies:
       canvas: ^3.0.0
     peerDependenciesMeta:
@@ -1848,9 +1851,6 @@ packages:
     resolution: {integrity: sha512-n2I0V0lN3E9cxxMqBCT3opWOiQBzRN7UG60z/WDKqdX2zHUS/39lezBcsckZFsV6fUTSnfqI7kHf60jDAPGKug==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
-
-  rrweb-cssom@0.8.0:
-    resolution: {integrity: sha512-guoltQEx+9aMf2gDZ0s62EcV8lsXR+0w8915TC3ITdn2YueuNjdAYh/levpU9nFaoChh9RUS5ZdQMrKfVEN9tw==}
 
   safe-buffer@5.1.2:
     resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
@@ -2224,6 +2224,8 @@ packages:
     resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
 
 snapshots:
+
+  '@acemir/cssom@0.9.23': {}
 
   '@adobe/css-tools@4.4.4': {}
 
@@ -3521,8 +3523,9 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  jsdom@27.0.1:
+  jsdom@27.1.0:
     dependencies:
+      '@acemir/cssom': 0.9.23
       '@asamuzakjp/dom-selector': 6.7.4
       cssstyle: 5.3.3
       data-urls: 6.0.0
@@ -3532,7 +3535,6 @@ snapshots:
       https-proxy-agent: 7.0.6
       is-potential-custom-element-name: 1.0.1
       parse5: 8.0.0
-      rrweb-cssom: 0.8.0
       saxes: 6.0.0
       symbol-tree: 3.2.4
       tough-cookie: 6.0.0
@@ -3837,8 +3839,6 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.53.1
       fsevents: 2.3.3
 
-  rrweb-cssom@0.8.0: {}
-
   safe-buffer@5.1.2: {}
 
   safe-buffer@5.2.1: {}
@@ -4084,7 +4084,7 @@ snapshots:
       sass: 1.93.2
       tsx: 4.20.6
 
-  vitest@4.0.5(@types/node@24.10.0)(jsdom@27.0.1)(sass@1.93.2)(tsx@4.20.6):
+  vitest@4.0.5(@types/node@24.10.0)(jsdom@27.1.0)(sass@1.93.2)(tsx@4.20.6):
     dependencies:
       '@vitest/expect': 4.0.5
       '@vitest/mocker': 4.0.5(vite@7.1.12(@types/node@24.10.0)(sass@1.93.2)(tsx@4.20.6))
@@ -4108,7 +4108,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.10.0
-      jsdom: 27.0.1
+      jsdom: 27.1.0
     transitivePeerDependencies:
       - jiti
       - less
