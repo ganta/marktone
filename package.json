@@ -3,7 +3,7 @@
   "private": true,
   "license": "MIT",
   "type": "module",
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.21.0",
   "scripts": {
     "dev": "vite build --watch",
     "clean": "tsx scripts/rm.ts dist/ *.zip",
