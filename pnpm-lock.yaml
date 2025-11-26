@@ -100,8 +100,8 @@ importers:
         specifier: 13.3.3
         version: 13.3.3
       jsdom:
-        specifier: 27.1.0
-        version: 27.1.0
+        specifier: 27.2.0
+        version: 27.2.0
       npm-run-all2:
         specifier: 8.0.4
         version: 8.0.4
@@ -125,7 +125,7 @@ importers:
         version: 7.2.2(@types/node@24.10.1)(sass@1.94.0)(tsx@4.20.6)
       vitest:
         specifier: 4.0.8
-        version: 4.0.8(@types/node@24.10.1)(jsdom@27.1.0)(sass@1.94.0)(tsx@4.20.6)
+        version: 4.0.8(@types/node@24.10.1)(jsdom@27.2.0)(sass@1.94.0)(tsx@4.20.6)
 
 packages:
 
@@ -1564,8 +1564,8 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  jsdom@27.1.0:
-    resolution: {integrity: sha512-Pcfm3eZ+eO4JdZCXthW9tCDT3nF4K+9dmeZ+5X39n+Kqz0DDIABRP5CAEOHRFZk8RGuC2efksTJxrjp8EXCunQ==}
+  jsdom@27.2.0:
+    resolution: {integrity: sha512-454TI39PeRDW1LgpyLPyURtB4Zx1tklSr6+OFOipsxGUH1WMTvk6C65JQdrj455+DP2uJ1+veBEHTGFKWVLFoA==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
     peerDependencies:
       canvas: ^3.0.0
@@ -3523,7 +3523,7 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  jsdom@27.1.0:
+  jsdom@27.2.0:
     dependencies:
       '@acemir/cssom': 0.9.24
       '@asamuzakjp/dom-selector': 6.7.4
@@ -4084,7 +4084,7 @@ snapshots:
       sass: 1.94.0
       tsx: 4.20.6
 
-  vitest@4.0.8(@types/node@24.10.1)(jsdom@27.1.0)(sass@1.94.0)(tsx@4.20.6):
+  vitest@4.0.8(@types/node@24.10.1)(jsdom@27.2.0)(sass@1.94.0)(tsx@4.20.6):
     dependencies:
       '@vitest/expect': 4.0.8
       '@vitest/mocker': 4.0.8(vite@7.2.2(@types/node@24.10.1)(sass@1.94.0)(tsx@4.20.6))
@@ -4108,7 +4108,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.10.1
-      jsdom: 27.1.0
+      jsdom: 27.2.0
     transitivePeerDependencies:
       - jiti
       - less
