@@ -46,7 +46,7 @@
     "@testing-library/react": "16.3.0",
     "@testing-library/user-event": "14.6.1",
     "@types/archiver": "7.0.0",
-    "@types/chrome": "0.1.30",
+    "@types/chrome": "0.1.31",
     "@types/react": "19.2.6",
     "@types/react-dom": "19.2.3",
     "@types/webscopeio__react-textarea-autocomplete": "4.7.5",
