@@ -88,8 +88,8 @@ importers:
         specifier: 4.7.5
         version: 4.7.5
       '@vanilla-extract/vite-plugin':
-        specifier: 5.1.1
-        version: 5.1.1(@types/node@24.10.1)(sass@1.94.2)(tsx@4.20.6)(vite@7.2.4(@types/node@24.10.1)(sass@1.94.2)(tsx@4.20.6))
+        specifier: 5.1.2
+        version: 5.1.2(@types/node@24.10.1)(sass@1.94.2)(tsx@4.20.6)(vite@7.2.4(@types/node@24.10.1)(sass@1.94.2)(tsx@4.20.6))
       '@vitejs/plugin-react-swc':
         specifier: 4.2.2
         version: 4.2.2(vite@7.2.4(@types/node@24.10.1)(sass@1.94.2)(tsx@4.20.6))
@@ -1177,8 +1177,8 @@ packages:
   '@vanilla-extract/private@1.0.9':
     resolution: {integrity: sha512-gT2jbfZuaaCLrAxwXbRgIhGhcXbRZCG3v4TTUnjw0EJ7ArdBRxkq4msNJkbuRkCgfIK5ATmprB5t9ljvLeFDEA==}
 
-  '@vanilla-extract/vite-plugin@5.1.1':
-    resolution: {integrity: sha512-Nd1worqkHrd8XED4ZAA7Wmkd3pCqCwpmzCBVF8v6T1BSLHGXQE5HYflVgygw0CsIAbFRMS6zQBIk4F4/r/YKIw==}
+  '@vanilla-extract/vite-plugin@5.1.2':
+    resolution: {integrity: sha512-lUanlkLWXerAGxgiFtKRq1smEdAzC3NDKN8b6BKT/Wq0va9uYPxM5QixA6cJ/4+/xdm1Xw8vPgDBHWd0eUIpOw==}
     peerDependencies:
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0
 
@@ -3265,7 +3265,7 @@ snapshots:
 
   '@vanilla-extract/private@1.0.9': {}
 
-  '@vanilla-extract/vite-plugin@5.1.1(@types/node@24.10.1)(sass@1.94.2)(tsx@4.20.6)(vite@7.2.4(@types/node@24.10.1)(sass@1.94.2)(tsx@4.20.6))':
+  '@vanilla-extract/vite-plugin@5.1.2(@types/node@24.10.1)(sass@1.94.2)(tsx@4.20.6)(vite@7.2.4(@types/node@24.10.1)(sass@1.94.2)(tsx@4.20.6))':
     dependencies:
       '@vanilla-extract/compiler': 0.3.3(@types/node@24.10.1)(sass@1.94.2)(tsx@4.20.6)
       '@vanilla-extract/integration': 8.0.6
