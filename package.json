@@ -28,8 +28,8 @@
     "gemoji": "8.1.0",
     "highlight.js": "11.11.1",
     "marked": "16.4.2",
-    "react": "19.2.2",
-    "react-dom": "19.2.2",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "zod": "4.1.13"
   },
   "devDependencies": {
