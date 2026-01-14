@@ -30,7 +30,7 @@
     "marked": "16.4.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "zod": "4.3.2"
+    "zod": "4.3.3"
   },
   "devDependencies": {
     "@babel/core": "7.28.5",
