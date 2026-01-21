@@ -1,3 +1,4 @@
+import { defineContentScript } from "wxt/sandbox";
 import "@/styles/content.scss";
 
 import { initializeCybozuData } from "@/apis/cybozu/api.ts";
@@ -16,8 +17,16 @@ function setMarktoneEnabled(enabled: boolean): void {
 }
 
 export default defineContentScript({
-  matches: [""],
+  matches: [
+    "https://*.cybozu.com/k/*",
+    "https://*.cybozu-dev.com/k/*",
+    "https://*.kintone.com/k/*",
+    "https://*.kintone-dev.com/k/*",
+    "https://*.cybozu.cn/k/*",
+    "https://*.cybozu-dev.cn/k/*"
+  ],
   async main() {
+    console.log("load content")
     MarktoneConfig.loadEnabled(setMarktoneEnabled);
     MarktoneConfig.onEnabledChanged(setMarktoneEnabled);
 

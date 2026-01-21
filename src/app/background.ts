@@ -1,3 +1,5 @@
+import { defineBackground } from "wxt/sandbox";
+
 import MarktoneConfig from "./marktone-config";
 
 function setExtensionIcon(enabled: boolean): void {
@@ -12,6 +14,7 @@ MarktoneConfig.loadEnabled((enabled) => {
 });
 
 export default defineBackground(() => {
+  console.log("hoge");
   chrome.action.onClicked.addListener((_tab) => {
     MarktoneConfig.loadEnabled((enabled) => {
       const newEnabled = !enabled;
