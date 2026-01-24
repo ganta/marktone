@@ -47,7 +47,7 @@
     "@testing-library/user-event": "14.6.1",
     "@types/archiver": "7.0.0",
     "@types/chrome": "0.1.32",
-    "@types/react": "19.2.7",
+    "@types/react": "19.2.8",
     "@types/react-dom": "19.2.3",
     "@types/webscopeio__react-textarea-autocomplete": "4.7.5",
     "@vanilla-extract/vite-plugin": "5.1.4",
