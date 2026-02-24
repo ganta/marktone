@@ -26,6 +26,6 @@ jobs:
         uses: ./.github/actions/setup-node
 
       - name: Run Chromatic
-        uses: chromaui/action@ac86f2ff0a458ffbce7b40698abd44c0fa34d4b6 # v13.3.3
+        uses: chromaui/action@a8ce9c58f59be5cc7090cadfc8f130fb08fcf0c3 # v15.1.0
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
