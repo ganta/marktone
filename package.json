@@ -54,7 +54,7 @@
     "@vitejs/plugin-react-swc": "4.2.3",
     "archiver": "7.0.1",
     "chromatic": "13.3.3",
-    "jsdom": "27.4.0",
+    "jsdom": "28.1.0",
     "npm-run-all2": "8.0.4",
     "prettier": "3.8.1",
     "sass": "1.97.3",
