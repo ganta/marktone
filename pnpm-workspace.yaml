@@ -4,3 +4,5 @@ minimumReleaseAge: 1440 # 1 day
 minimumReleaseAgeExclude:
   # Renovate security update: storybook@10.2.10
   - storybook@10.2.10
+  # Renovate security update: dompurify@3.3.2
+  - dompurify@3.3.2
