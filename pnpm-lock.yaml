@@ -88,8 +88,8 @@ importers:
         specifier: 4.7.5
         version: 4.7.5
       '@vanilla-extract/vite-plugin':
-        specifier: 5.1.5
-        version: 5.1.5(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0)(vite@7.3.1(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0))
+        specifier: 5.2.0
+        version: 5.2.0(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0)(vite@7.3.1(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0))
       '@vitejs/plugin-react-swc':
         specifier: 4.3.0
         version: 4.3.0(vite@7.3.1(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0))
@@ -1049,8 +1049,8 @@ packages:
   '@vanilla-extract/babel-plugin-debug-ids@1.2.2':
     resolution: {integrity: sha512-MeDWGICAF9zA/OZLOKwhoRlsUW+fiMwnfuOAqFVohL31Agj7Q/RBWAYweqjHLgFBCsdnr6XIfwjJnmb2znEWxw==}
 
-  '@vanilla-extract/compiler@0.4.0':
-    resolution: {integrity: sha512-PQDe9tFZ1vvOHVpAQafLbTQs5b5xGGC16spHAhNc6vu8tSktkL7Yosh2S8WWPlGkKw1/32lu/QX8KnH8WG+eOw==}
+  '@vanilla-extract/compiler@0.5.1':
+    resolution: {integrity: sha512-0FyUMZYlgdvgQuv3e5sBii0Xc0f76hOMIiAaqc/KNClss6MkKrY8vib1g542uMC1fUHQ5xhViq/4sZK72GYPyQ==}
 
   '@vanilla-extract/css@1.19.0':
     resolution: {integrity: sha512-CmiHmTn0VXYW2/A575zzAJ+gJWBRdpEhEseg93WBst0QNQJiHO3cQXyVMIW+RhPi5D9TM8W4U929/ELDaXq6yQ==}
@@ -1064,10 +1064,10 @@ packages:
   '@vanilla-extract/private@1.0.9':
     resolution: {integrity: sha512-gT2jbfZuaaCLrAxwXbRgIhGhcXbRZCG3v4TTUnjw0EJ7ArdBRxkq4msNJkbuRkCgfIK5ATmprB5t9ljvLeFDEA==}
 
-  '@vanilla-extract/vite-plugin@5.1.5':
-    resolution: {integrity: sha512-sFI8VucmuFYvzyIm1mIQSoA63AivkepUuOLo2q5H/m7xkB+LxJHQj7qYvxo4sImnLc8pAGNX++XGdrva30QM0w==}
+  '@vanilla-extract/vite-plugin@5.2.0':
+    resolution: {integrity: sha512-FM2DP/jJG2BOdK83nZe+w5+2+Qv3oYlckApAOWMTnSG9rWBdBeh4L7PzJKcix9RctvuaRC0ogY1GOnoP99+BsQ==}
     peerDependencies:
-      vite: ^5.0.0 || ^6.0.0 || ^7.0.0
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
 
   '@vitejs/plugin-react-swc@4.3.0':
     resolution: {integrity: sha512-mOkXCII839dHyAt/gpoSlm28JIVDwhZ6tnG6wJxUy2bmOx7UaPjvOyIDf3SFv5s7Eo7HVaq6kRcu6YMEzt5Z7w==}
@@ -3083,9 +3083,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vanilla-extract/compiler@0.4.0(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0)':
+  '@vanilla-extract/compiler@0.5.1(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0)':
     dependencies:
-      '@vanilla-extract/css': 1.19.0
+      '@vanilla-extract/css': 1.20.0
       '@vanilla-extract/integration': 8.0.9
       vite: 7.3.1(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0)
       vite-node: 3.2.4(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0)
@@ -3156,9 +3156,9 @@ snapshots:
 
   '@vanilla-extract/private@1.0.9': {}
 
-  '@vanilla-extract/vite-plugin@5.1.5(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0)(vite@7.3.1(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0))':
+  '@vanilla-extract/vite-plugin@5.2.0(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0)(vite@7.3.1(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0))':
     dependencies:
-      '@vanilla-extract/compiler': 0.4.0(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0)
+      '@vanilla-extract/compiler': 0.5.1(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0)
       '@vanilla-extract/integration': 8.0.9
       vite: 7.3.1(@types/node@25.5.0)(sass@1.98.0)(tsx@4.21.0)
     transitivePeerDependencies:
