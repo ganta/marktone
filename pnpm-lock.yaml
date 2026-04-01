@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@vanilla-extract/css':
-        specifier: 1.19.0
-        version: 1.19.0
+        specifier: 1.19.1
+        version: 1.19.1
       '@webscopeio/react-textarea-autocomplete':
         specifier: 4.9.2
         version: 4.9.2(prop-types@15.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1171,11 +1171,8 @@ packages:
   '@vanilla-extract/compiler@0.5.1':
     resolution: {integrity: sha512-0FyUMZYlgdvgQuv3e5sBii0Xc0f76hOMIiAaqc/KNClss6MkKrY8vib1g542uMC1fUHQ5xhViq/4sZK72GYPyQ==}
 
-  '@vanilla-extract/css@1.19.0':
-    resolution: {integrity: sha512-CmiHmTn0VXYW2/A575zzAJ+gJWBRdpEhEseg93WBst0QNQJiHO3cQXyVMIW+RhPi5D9TM8W4U929/ELDaXq6yQ==}
-
-  '@vanilla-extract/css@1.20.1':
-    resolution: {integrity: sha512-5I9RNo5uZW9tsBnqrWzJqELegOqTHBrZyDFnES0gR9gJJHBB9dom1N0bwITM9tKwBcfKrTX4a6DHVeQdJ2ubQA==}
+  '@vanilla-extract/css@1.19.1':
+    resolution: {integrity: sha512-RKVi4TD56volJwFh+E9w8tYJ/FyVj58fmkRv+dP+YlYptGavxK2dKj5nNp8Vr1lYZ4CVMrLZvssYjBzA288Khg==}
 
   '@vanilla-extract/integration@8.0.9':
     resolution: {integrity: sha512-NP+CSo5IYHDmkMMy5vAxY4R9i2+CAg4sxgvVaxuHiuY9q30i6dNUTujNNKZGW2urEkd4HVVI6NggeIyYjbGPwA==}
@@ -3408,7 +3405,7 @@ snapshots:
 
   '@vanilla-extract/compiler@0.5.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.0)(esbuild@0.27.4)(lightningcss@1.32.0)(sass@1.98.0)(tsx@4.21.0)':
     dependencies:
-      '@vanilla-extract/css': 1.20.1
+      '@vanilla-extract/css': 1.19.1
       '@vanilla-extract/integration': 8.0.9
       vite: 7.3.1(@types/node@25.5.0)(lightningcss@1.32.0)(sass@1.98.0)(tsx@4.21.0)
       vite-node: 6.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.0)(esbuild@0.27.4)(sass@1.98.0)(tsx@4.21.0)
@@ -3431,7 +3428,7 @@ snapshots:
       - tsx
       - yaml
 
-  '@vanilla-extract/css@1.19.0':
+  '@vanilla-extract/css@1.19.1':
     dependencies:
       '@emotion/hash': 0.9.2
       '@vanilla-extract/private': 1.0.9
@@ -3448,28 +3445,12 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
 
-  '@vanilla-extract/css@1.20.1':
-    dependencies:
-      '@emotion/hash': 0.9.2
-      '@vanilla-extract/private': 1.0.9
-      css-what: 6.2.2
-      csstype: 3.2.3
-      dedent: 1.7.2
-      deep-object-diff: 1.1.9
-      deepmerge: 4.3.1
-      lru-cache: 10.4.3
-      media-query-parser: 2.0.2
-      modern-ahocorasick: 1.1.0
-      picocolors: 1.1.1
-    transitivePeerDependencies:
-      - babel-plugin-macros
-
   '@vanilla-extract/integration@8.0.9':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/plugin-syntax-typescript': 7.28.6(@babel/core@7.29.0)
       '@vanilla-extract/babel-plugin-debug-ids': 1.2.2
-      '@vanilla-extract/css': 1.20.1
+      '@vanilla-extract/css': 1.19.1
       dedent: 1.7.2
       esbuild: 0.27.4
       eval: 0.1.8
