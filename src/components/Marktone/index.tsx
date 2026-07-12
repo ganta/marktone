@@ -6,6 +6,7 @@ import { marked } from "marked";
 import React, { type KeyboardEvent, type ReactElement } from "react";
 
 import KintoneClient from "@/app/kintone/kintone-client.ts";
+import type { UIAdapter } from "@/app/kintone/ui-adapter.ts";
 import { getMarktoneRenderer } from "@/app/markdown/renderer/marktoneRenderer.ts";
 import MentionReplacer from "@/app/markdown/replacer/mention-replacer.ts";
 import {
@@ -24,10 +25,11 @@ export interface ReplyMention {
 }
 
 interface MarktoneProps {
-  originalFormEl: HTMLFormElement;
+  originalFormEl: HTMLElement;
   replayMentions: ReplyMention[];
   kintoneClient: KintoneClient;
   mentionReplacer: MentionReplacer;
+  uiAdapter: UIAdapter;
   markdownText?: string;
 }
 
@@ -70,6 +72,7 @@ const Marktone: React.FC<MarktoneProps> = ({
   kintoneClient,
   mentionReplacer,
   replayMentions,
+  uiAdapter,
   markdownText = "",
 }: MarktoneProps) => {
   // Setup Marked.js
@@ -114,9 +117,7 @@ const Marktone: React.FC<MarktoneProps> = ({
   const [renderedHTML, setRenderedHTML] = useState("");
 
   // The original editor field HTML element of kintone
-  const originalEditorFieldEl = originalFormEl.querySelector<HTMLElement>(
-    'div.ocean-ui-editor-field[role="textbox"]',
-  );
+  const originalEditorFieldEl = uiAdapter.getEditorField(originalFormEl);
 
   // Get Marktone enabled status.
   const isMarktoneEnabled = (): boolean => {
@@ -130,9 +131,9 @@ const Marktone: React.FC<MarktoneProps> = ({
   // Updates the kintone original editor field with the rendered HTML.
   useEffect(() => {
     if (isMarktoneEnabled() && originalEditorFieldEl) {
-      originalEditorFieldEl.innerHTML = renderedHTML;
+      uiAdapter.setEditorContent(originalEditorFieldEl, renderedHTML);
     }
-  }, [renderedHTML, originalEditorFieldEl]);
+  }, [renderedHTML, originalEditorFieldEl, uiAdapter]);
 
   // The reference of the Markdown text area
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);

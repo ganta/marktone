@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { setCybozuData } from "@/apis/cybozu/api.ts";
 import KintoneClient from "@/app/kintone/kintone-client.ts";
+import { createUIAdapters } from "@/app/kintone/ui-adapter.ts";
 import MentionReplacer from "@/app/markdown/replacer/mention-replacer.ts";
 import Marktone from ".";
 
@@ -18,6 +19,7 @@ setCybozuData({
 });
 const kintoneClient = new KintoneClient();
 const mentionReplacer = new MentionReplacer(kintoneClient);
+const [uiAdapter] = createUIAdapters();
 
 export const Default: Story = {
   args: {
@@ -25,6 +27,7 @@ export const Default: Story = {
     kintoneClient: kintoneClient,
     replayMentions: [],
     mentionReplacer: mentionReplacer,
+    uiAdapter: uiAdapter,
   },
 } satisfies Story;
 
@@ -35,6 +38,7 @@ export const WithMarkdownText: Story = {
     kintoneClient: kintoneClient,
     replayMentions: [],
     mentionReplacer: mentionReplacer,
+    uiAdapter: uiAdapter,
     markdownText: `# Block elements
 
 ## Headers

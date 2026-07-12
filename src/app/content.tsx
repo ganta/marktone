@@ -5,6 +5,15 @@ import KintoneClient from "./kintone/kintone-client";
 import MarktoneConfig from "./marktone-config";
 import MarktoneHandler from "./marktone-handler";
 
+// Runs in the page context (MAIN world) to reach `ckeditorInstance`, which the
+// isolated content script cannot. Injected unconditionally; on the legacy UI it
+// just never receives an event.
+function injectCKEditorBridge(): void {
+  const scriptEl = document.createElement("script");
+  scriptEl.src = chrome.runtime.getURL("js/marktoneCKEditorBridge.js");
+  document.body.appendChild(scriptEl);
+}
+
 function setMarktoneEnabled(enabled: boolean): void {
   document.body.dataset.marktoneEnabled = enabled.toString();
 
@@ -20,6 +29,8 @@ function setMarktoneEnabled(enabled: boolean): void {
   MarktoneConfig.onEnabledChanged(setMarktoneEnabled);
 
   await initializeCybozuData();
+
+  injectCKEditorBridge();
 
   const kintoneClient = new KintoneClient();
   const handler = new MarktoneHandler(kintoneClient);

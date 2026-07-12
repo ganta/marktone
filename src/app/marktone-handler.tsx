@@ -1,131 +1,147 @@
-import { createRoot } from "react-dom/client";
+import { createRoot, type Root } from "react-dom/client";
 import Marktone, { type ReplyMention } from "@/components/Marktone";
 import { extractReplyMentions } from "@/utils/extractReplyMentions";
 import type KintoneClient from "./kintone/kintone-client";
+import { createUIAdapters, type UIAdapter } from "./kintone/ui-adapter";
 import MentionReplacer from "./markdown/replacer/mention-replacer";
+
+interface MarktoneMount {
+  marktoneContainer: HTMLElement;
+  root: Root;
+  keepAlive: MutationObserver;
+}
 
 class MarktoneHandler {
   private readonly kintoneClient: KintoneClient;
   private readonly mentionReplacer: MentionReplacer;
-
-  private static isExpandedStatusChangedCommentFormRecord(
-    record: MutationRecord,
-  ): boolean {
-    const targetElement = record.target as HTMLElement;
-
-    if (!targetElement.classList.contains("ocean-ui-comments-commentform"))
-      return false;
-
-    const oldValue = record.oldValue;
-
-    if (oldValue === null) return false;
-
-    const currentValue = targetElement.getAttribute("aria-expanded");
-
-    return oldValue !== currentValue;
-  }
+  private readonly uiAdapters: UIAdapter[];
+  // Keyed by container so a repeatedly-reported form is not mounted twice.
+  private readonly mounts = new Map<HTMLElement, MarktoneMount>();
 
   constructor(kintoneClient: KintoneClient) {
     this.kintoneClient = kintoneClient;
     this.mentionReplacer = new MentionReplacer(kintoneClient);
+    this.uiAdapters = createUIAdapters();
   }
 
   handle(): void {
-    this.observeCommentFormAppearance();
+    // Each mount uses the adapter that detected it, rather than a single adapter
+    // picked from an unreliable early UI check (see createUIAdapters).
+    for (const adapter of this.uiAdapters) {
+      adapter.observeCommentForms({
+        onOpen: (container) => {
+          void this.renderMarktone(adapter, container);
+        },
+        onClose: (container) => {
+          this.unmountMarktone(container);
+        },
+      });
+    }
   }
 
-  private observeCommentFormAppearance(): void {
-    const observer = new MutationObserver((records) => {
-      const commentFormRecords = records.filter((record) =>
-        MarktoneHandler.isExpandedStatusChangedCommentFormRecord(record),
-      );
+  private async renderMarktone(
+    adapter: UIAdapter,
+    container: HTMLElement,
+  ): Promise<void> {
+    // Already mounted: only re-attach, don't create a second root.
+    if (this.mounts.has(container)) {
+      this.ensureAttached(container);
+      return;
+    }
 
-      for (const record of commentFormRecords) {
-        const targetElement = record.target as HTMLElement;
-        const isFormExpanded = targetElement.getAttribute("aria-expanded");
-        const originalForm = targetElement.querySelector<HTMLFormElement>(
-          "form.ocean-ui-comments-commentform-form",
-        ) as HTMLFormElement;
+    const originalTextbox = adapter.getEditorField(container);
+    let replyMentions: ReplyMention[] = [];
+    try {
+      replyMentions = originalTextbox
+        ? await this.extractReplyMentions(originalTextbox)
+        : [];
+    } catch {
+      // Don't mount on a failed lookup; a later reconcile pass will retry.
+      return;
+    }
 
-        if (isFormExpanded === "true") {
-          // The original comment form is opened.
-          void this.renderMarktone(originalForm);
-        } else {
-          // The original comment form is closed.
-          this.unmountMarktone(originalForm);
-        }
-      }
-    });
+    // A concurrent invocation may have mounted during the await above.
+    if (this.mounts.has(container)) {
+      this.ensureAttached(container);
+      return;
+    }
 
-    observer.observe(document.body, {
-      attributes: true,
-      subtree: true,
-      attributeOldValue: true,
-      attributeFilter: ["aria-expanded"],
-    });
-  }
-
-  private async renderMarktone(originalForm: HTMLFormElement): Promise<void> {
-    const originalTextbox = originalForm.querySelector<HTMLDivElement>(
-      ".ocean-ui-editor-field",
-    ) as HTMLDivElement;
-
-    const replyMentions = await this.extractReplyMentions(originalTextbox);
-    const marktoneContainer = this.findOrCreateMarktoneContainer(originalForm);
+    const marktoneContainer = document.createElement("div");
+    marktoneContainer.classList.add("marktone-container");
+    container.prepend(marktoneContainer);
 
     const root = createRoot(marktoneContainer);
-    originalForm.addEventListener(
-      "unmountMarktone",
-      () => {
-        root.unmount();
-      },
-      { once: true },
-    );
+
+    // kintone's React drops our container on re-render since it isn't in its
+    // virtual DOM. Re-prepend the same node (keeping the root) instead of
+    // remounting, which would discard the user's in-progress text.
+    const keepAlive = new MutationObserver(() => {
+      if (
+        container.isConnected &&
+        marktoneContainer.parentElement !== container
+      ) {
+        container.prepend(marktoneContainer);
+      }
+    });
+    keepAlive.observe(container, { childList: true });
+
+    this.mounts.set(container, { marktoneContainer, root, keepAlive });
 
     root.render(
       <Marktone
-        originalFormEl={originalForm}
+        originalFormEl={container}
         replayMentions={replyMentions}
         kintoneClient={this.kintoneClient}
         mentionReplacer={this.mentionReplacer}
+        uiAdapter={adapter}
       />,
     );
   }
 
-  private unmountMarktone(originalForm: HTMLFormElement): void {
-    const marktoneContainer = originalForm.querySelector<Element>(
-      ".marktone-container",
-    ) as Element;
-    const event = new Event("unmountMarktone");
-    originalForm.dispatchEvent(event);
-    originalForm.removeChild(marktoneContainer);
+  // Re-attaches the Marktone container if kintone detached it while the form
+  // itself is still on the page.
+  private ensureAttached(container: HTMLElement): void {
+    const mount = this.mounts.get(container);
+    if (mount === undefined) return;
+    if (
+      container.isConnected &&
+      mount.marktoneContainer.parentElement !== container
+    ) {
+      container.prepend(mount.marktoneContainer);
+    }
+  }
+
+  private unmountMarktone(container: HTMLElement): void {
+    const mount = this.mounts.get(container);
+    if (mount === undefined) return;
+    this.mounts.delete(container);
+
+    const { marktoneContainer, root, keepAlive } = mount;
+    keepAlive.disconnect();
+
+    // kintone may have already detached this subtree. Unmounting a root whose
+    // DOM is gone makes React throw removing absent nodes, so re-attach first.
+    if (!marktoneContainer.isConnected) {
+      document.body.appendChild(marktoneContainer);
+    }
+    root.unmount();
+    marktoneContainer.remove();
   }
 
   private async extractReplyMentions(
     element: HTMLElement,
   ): Promise<ReplyMention[]> {
     const idAndTypes = extractReplyMentions(element);
+    // Skip the request when empty, so mounting doesn't wait on the network and
+    // the original editor doesn't flash before Marktone replaces it.
+    if (idAndTypes.length === 0) return [];
+
     const entities =
       await this.kintoneClient.listDirectoryEntityByIdAndType(idAndTypes);
 
     return entities.map<ReplyMention>((entity) => {
       return { type: entity.type, code: entity.code };
     });
-  }
-
-  private findOrCreateMarktoneContainer(
-    originalForm: HTMLFormElement,
-  ): HTMLDivElement {
-    const container = originalForm.querySelector<HTMLDivElement>(
-      ".marktone-container",
-    );
-    if (container !== null) return container;
-
-    const createdContainer = document.createElement("div");
-    createdContainer.classList.add("marktone-container");
-    originalForm.prepend(createdContainer);
-
-    return createdContainer;
   }
 }
 
