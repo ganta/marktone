@@ -84,7 +84,14 @@ class MarktoneHandler {
 
     root.render(
       <Marktone
-        originalFormEl={originalForm}
+        setOriginalEditorContent={(html): void => {
+          const editorField = originalForm.querySelector<HTMLElement>(
+            'div.ocean-ui-editor-field[role="textbox"]',
+          );
+          if (editorField) {
+            editorField.innerHTML = html;
+          }
+        }}
         replayMentions={replyMentions}
         kintoneClient={this.kintoneClient}
         mentionReplacer={this.mentionReplacer}

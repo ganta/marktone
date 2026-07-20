@@ -21,7 +21,7 @@ const mentionReplacer = new MentionReplacer(kintoneClient);
 
 export const Default: Story = {
   args: {
-    originalFormEl: document.createElement("form"),
+    setOriginalEditorContent: () => {},
     kintoneClient: kintoneClient,
     replayMentions: [],
     mentionReplacer: mentionReplacer,
@@ -31,7 +31,7 @@ export const Default: Story = {
 export const WithMarkdownText: Story = {
   name: "with a Markdown text",
   args: {
-    originalFormEl: document.createElement("form"),
+    setOriginalEditorContent: () => {},
     kintoneClient: kintoneClient,
     replayMentions: [],
     mentionReplacer: mentionReplacer,
