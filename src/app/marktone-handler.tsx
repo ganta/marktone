@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import Marktone, { type ReplyMention } from "@/components/Marktone";
 import { extractReplyMentions } from "@/utils/extractReplyMentions";
 import type KintoneClient from "./kintone/kintone-client";
-import MentionReplacer from "./markdown/replacer/mention-replacer";
+import type MentionReplacer from "./markdown/replacer/mention-replacer";
 
 const ORIGINAL_EDITOR_FIELD_SELECTOR =
   'div.ocean-ui-editor-field[role="textbox"]';
@@ -28,9 +28,9 @@ class MarktoneHandler {
     return oldValue !== currentValue;
   }
 
-  constructor(kintoneClient: KintoneClient) {
+  constructor(kintoneClient: KintoneClient, mentionReplacer: MentionReplacer) {
     this.kintoneClient = kintoneClient;
-    this.mentionReplacer = new MentionReplacer(kintoneClient);
+    this.mentionReplacer = mentionReplacer;
   }
 
   handle(): void {

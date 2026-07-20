@@ -277,6 +277,13 @@ body:not(.marktone-disabled) {
     display: none;
   }
 
+  // Revamped UI: toggled from RevampedMarktoneHandler, not a sibling
+  // combinator on .marktone-container — `~` hid every following CKEditor
+  // under the shared parent, including editors Marktone did not take over.
+  .ck.ck-editor.marktone-original-editor-hidden {
+    display: none;
+  }
+
   form.ocean-ui-comments-commentform-form {
     button {
       font-size: 14px;
