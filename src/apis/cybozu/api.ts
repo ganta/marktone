@@ -2,6 +2,7 @@ import {
   CybozuDataInitializationTimeoutError,
   UninitializedCybozuDataError,
 } from "@/apis/cybozu/errors.ts";
+import { injectScript } from "@/apis/inject-script.ts";
 import { type CybozuData, CybozuDataSchema } from "@/models/CybozuData";
 import type { LoginUser } from "@/models/LoginUser.ts";
 
@@ -38,9 +39,9 @@ export async function initializeCybozuData(): Promise<CybozuData> {
       once: true,
     });
 
-    const scriptEl = document.createElement("script");
-    scriptEl.src = chrome.runtime.getURL("js/passCybozuData.js");
-    document.body.appendChild(scriptEl);
+    // The load promise is discarded: resolution is signaled by the
+    // cybozuDataPass event the script dispatches, not by script load.
+    void injectScript("js/passCybozuData.js");
   });
 }
 
