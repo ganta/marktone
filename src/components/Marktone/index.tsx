@@ -24,7 +24,7 @@ export interface ReplyMention {
 }
 
 interface MarktoneProps {
-  originalFormEl: HTMLFormElement;
+  setOriginalEditorContent: (html: string) => void;
   replayMentions: ReplyMention[];
   kintoneClient: KintoneClient;
   mentionReplacer: MentionReplacer;
@@ -66,7 +66,7 @@ const MentionCandidate: React.FC<ItemComponentProps<MentionCandidateItem>> = (
  * Marktone component.
  */
 const Marktone: React.FC<MarktoneProps> = ({
-  originalFormEl,
+  setOriginalEditorContent,
   kintoneClient,
   mentionReplacer,
   replayMentions,
@@ -113,11 +113,6 @@ const Marktone: React.FC<MarktoneProps> = ({
   // The HTML with Markdown rendered
   const [renderedHTML, setRenderedHTML] = useState("");
 
-  // The original editor field HTML element of kintone
-  const originalEditorFieldEl = originalFormEl.querySelector<HTMLElement>(
-    'div.ocean-ui-editor-field[role="textbox"]',
-  );
-
   // Get Marktone enabled status.
   const isMarktoneEnabled = (): boolean => {
     const marktoneEnabled = document.body.dataset.marktoneEnabled;
@@ -129,10 +124,10 @@ const Marktone: React.FC<MarktoneProps> = ({
 
   // Updates the kintone original editor field with the rendered HTML.
   useEffect(() => {
-    if (isMarktoneEnabled() && originalEditorFieldEl) {
-      originalEditorFieldEl.innerHTML = renderedHTML;
+    if (isMarktoneEnabled()) {
+      setOriginalEditorContent(renderedHTML);
     }
-  }, [renderedHTML, originalEditorFieldEl]);
+  }, [renderedHTML, setOriginalEditorContent]);
 
   // The reference of the Markdown text area
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);

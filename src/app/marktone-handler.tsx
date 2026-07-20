@@ -4,6 +4,9 @@ import { extractReplyMentions } from "@/utils/extractReplyMentions";
 import type KintoneClient from "./kintone/kintone-client";
 import MentionReplacer from "./markdown/replacer/mention-replacer";
 
+const ORIGINAL_EDITOR_FIELD_SELECTOR =
+  'div.ocean-ui-editor-field[role="textbox"]';
+
 class MarktoneHandler {
   private readonly kintoneClient: KintoneClient;
   private readonly mentionReplacer: MentionReplacer;
@@ -84,7 +87,14 @@ class MarktoneHandler {
 
     root.render(
       <Marktone
-        originalFormEl={originalForm}
+        setOriginalEditorContent={(html): void => {
+          const editorField = originalForm.querySelector<HTMLElement>(
+            ORIGINAL_EDITOR_FIELD_SELECTOR,
+          );
+          if (editorField) {
+            editorField.innerHTML = html;
+          }
+        }}
         replayMentions={replyMentions}
         kintoneClient={this.kintoneClient}
         mentionReplacer={this.mentionReplacer}
