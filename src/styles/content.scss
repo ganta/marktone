@@ -277,6 +277,13 @@ body:not(.marktone-disabled) {
     display: none;
   }
 
+  // Revamped UI: hide the original CKEditor only next to a mounted Marktone,
+  // not unconditionally — a hidden CKEditor never initializes the editable
+  // that Marktone waits for before mounting.
+  .marktone-container ~ .ck.ck-editor {
+    display: none;
+  }
+
   form.ocean-ui-comments-commentform-form {
     button {
       font-size: 14px;
