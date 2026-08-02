@@ -5,8 +5,33 @@ import {
   DirectoryEntityType,
 } from "@/models/DirectoryEntity.ts";
 
+const mentionPrefixes = {
+  [DirectoryEntityType.enum.User]: null,
+  [DirectoryEntityType.enum.Organization]: "org",
+  [DirectoryEntityType.enum.Group]: "group",
+} as const satisfies Record<DirectoryEntityType, string | null>;
+
+type MentionPrefix = Exclude<
+  (typeof mentionPrefixes)[DirectoryEntityType],
+  null
+>;
+
+const mentionPrefixToType: Record<MentionPrefix, DirectoryEntityType> = {
+  org: DirectoryEntityType.enum.Organization,
+  group: DirectoryEntityType.enum.Group,
+};
+
+function isMentionPrefix(value: string | undefined): value is MentionPrefix {
+  return value !== undefined && value in mentionPrefixToType;
+}
+
 class MentionReplacer {
-  private static mentionRegExp = /@(?:(org|group)\/)?([^\s]+)/g;
+  // Not a literal, so that the notation, the parser and the attribute name cannot drift apart again.
+  // Not case-insensitive: the captured prefix is embedded in the attribute name as-is.
+  private static mentionRegExp = new RegExp(
+    `@(?:(${Object.keys(mentionPrefixToType).join("|")})\\/)?([^\\s]+)`,
+    "g",
+  );
 
   private readonly kintoneClient: KintoneClient;
 
@@ -43,19 +68,28 @@ class MentionReplacer {
     });
   }
 
+  // Not `toDirectoryEntityType`: that one silently falls back to `User` for any unknown value,
+  // which is what hid the `org`/`Organization` mismatch this replaces.
+  private static toEntityType(prefix: string | undefined): DirectoryEntityType {
+    return isMentionPrefix(prefix)
+      ? mentionPrefixToType[prefix]
+      : DirectoryEntityType.enum.User;
+  }
+
   static createMention(type: DirectoryEntityType, code: string): string {
     const escapedCode = MentionReplacer.escapeCode(code);
-    if (type === DirectoryEntityType.enum.User) {
+    const prefix = mentionPrefixes[type];
+    if (prefix === null) {
       return `@${escapedCode}`;
     }
-    return `@${type}/${escapedCode}`;
+    return `@${prefix}/${escapedCode}`;
   }
 
   async fetchDirectoryEntityInText(text: string): Promise<void> {
     const matches = text.matchAll(MentionReplacer.mentionRegExp);
     const promises: Promise<DirectoryEntity | null>[] = [];
     for (const match of matches) {
-      const type = match[1];
+      const prefix = match[1];
       const escapedCode = match[2];
       const code = MentionReplacer.unescapeCode(escapedCode);
       // Fetching should be skipped if the `code` exceeds 100 characters, as the kintone API returns a 520 error.
@@ -63,7 +97,7 @@ class MentionReplacer {
         continue;
       }
 
-      switch (type) {
+      switch (MentionReplacer.toEntityType(prefix)) {
         case DirectoryEntityType.enum.Organization:
           promises.push(this.findOrganizationWithCache(code));
           break;
@@ -85,12 +119,12 @@ class MentionReplacer {
 
     const replacer = (
       match: string,
-      type: string,
+      prefix: string | undefined,
       escapedCode: string,
     ): string => {
       const code = MentionReplacer.unescapeCode(escapedCode);
       let entity: DirectoryEntity | null;
-      switch (type) {
+      switch (MentionReplacer.toEntityType(prefix)) {
         case DirectoryEntityType.enum.Organization:
           entity = this.getOrganizationFromCache(code);
           break;
@@ -103,8 +137,8 @@ class MentionReplacer {
       }
       if (!entity) return match;
 
-      const attrName = type ? `${type}-mention-id` : "mention-id";
-      const href = type
+      const attrName = prefix ? `${prefix}-mention-id` : "mention-id";
+      const href = prefix
         ? "#"
         : code.includes("@")
           ? `/k/guest/#/people/guest/${escapedCode}`
