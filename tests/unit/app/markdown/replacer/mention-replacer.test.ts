@@ -127,25 +127,25 @@ describe(MentionReplacer, () => {
         type: DirectoryEntityType.enum.User,
         entity: user,
         expected:
-          '<a class="ocean-ui-plugin-mention-user ocean-ui-plugin-linkbubble-no" href="/k/#/people/user/taro" data-mention-id="123" tabindex="-1" style="-webkit-user-modify: read-only;">@<bdi>Taro</bdi></a>',
+          '<a class="ocean-ui-plugin-mention-user ocean-ui-plugin-linkbubble-no" href="/k/#/people/user/taro" data-mention-id="123" data-mention-code="taro" tabindex="-1" style="-webkit-user-modify: read-only;">@<bdi>Taro</bdi></a>',
       },
       {
         type: DirectoryEntityType.enum.User,
         entity: guestUser,
         expected:
-          '<a class="ocean-ui-plugin-mention-user ocean-ui-plugin-linkbubble-no" href="/k/guest/#/people/guest/guest%40example.com" data-mention-id="234" tabindex="-1" style="-webkit-user-modify: read-only;">@<bdi>Guest</bdi></a>',
+          '<a class="ocean-ui-plugin-mention-user ocean-ui-plugin-linkbubble-no" href="/k/guest/#/people/guest/guest%40example.com" data-mention-id="234" data-mention-code="guest@example.com" tabindex="-1" style="-webkit-user-modify: read-only;">@<bdi>Guest</bdi></a>',
       },
       {
         type: DirectoryEntityType.enum.Organization,
         entity: organization,
         expected:
-          '<a class="ocean-ui-plugin-mention-user ocean-ui-plugin-linkbubble-no" href="#" data-org-mention-id="456" tabindex="-1" style="-webkit-user-modify: read-only;">@<bdi>Sales</bdi></a>',
+          '<a class="ocean-ui-plugin-mention-user ocean-ui-plugin-linkbubble-no" href="#" data-org-mention-id="456" data-mention-code="sales" tabindex="-1" style="-webkit-user-modify: read-only;">@<bdi>Sales</bdi></a>',
       },
       {
         type: DirectoryEntityType.enum.Group,
         entity: group,
         expected:
-          '<a class="ocean-ui-plugin-mention-user ocean-ui-plugin-linkbubble-no" href="#" data-group-mention-id="789" tabindex="-1" style="-webkit-user-modify: read-only;">@<bdi>Admins</bdi></a>',
+          '<a class="ocean-ui-plugin-mention-user ocean-ui-plugin-linkbubble-no" href="#" data-group-mention-id="789" data-mention-code="admins" tabindex="-1" style="-webkit-user-modify: read-only;">@<bdi>Admins</bdi></a>',
       },
     ])(
       "converts the mention created for $entity.type $entity.code back to its anchor",

@@ -144,7 +144,10 @@ class MentionReplacer {
           ? `/k/guest/#/people/guest/${escapedCode}`
           : `/k/#/people/user/${escapedCode}`;
       // LRO/RLO may be included in `name`. Therefore, it is surrounded by bdi element.
-      return `<a class="${className}" href="${href}" data-${attrName}="${entity.id}" tabindex="-1" style="${style}">@<bdi>${entity.name}</bdi></a>`;
+      // The code is emitted alongside the id because kintone's revamped UI
+      // carries an organization or group mention into a "reply to all" prefill
+      // by code only, and drops the ones it has no code for.
+      return `<a class="${className}" href="${href}" data-${attrName}="${entity.id}" data-mention-code="${entity.code}" tabindex="-1" style="${style}">@<bdi>${entity.name}</bdi></a>`;
     };
     return text.replace(MentionReplacer.mentionRegExp, replacer);
   }

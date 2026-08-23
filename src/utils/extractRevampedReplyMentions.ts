@@ -20,9 +20,9 @@ export function extractRevampedReplyMentions(
   for (const mentionEl of editorField.querySelectorAll<HTMLElement>(
     MENTION_SELECTOR,
   )) {
-    // Marktone's own mention anchors are upcast into this same widget with an
-    // empty code, so taking them in — or resolving their id through the
-    // directory API — would feed the prefill back into itself.
+    // kintone's prefill always carries a code, and a mention cannot be turned
+    // back into Markdown without one, so resolving the id through the
+    // directory API would only add a request that cannot help.
     const code = mentionEl.dataset.mentionCode;
     if (!code) continue;
 

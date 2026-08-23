@@ -7,6 +7,7 @@ import {
   mergeReplyMentions,
   replyMentionsSignature,
 } from "@/utils/extractRevampedReplyMentions";
+import { toRevampedMentionHTML } from "@/utils/toRevampedMentionHTML";
 import type KintoneClient from "./kintone/kintone-client";
 import type MentionReplacer from "./markdown/replacer/mention-replacer";
 
@@ -221,7 +222,7 @@ export function createRevampedMarktoneHandler(
             currentMount.lastSyncedEditorField = null;
             return;
           }
-          setCKEditorData(editorField, html);
+          setCKEditorData(editorField, toRevampedMentionHTML(html));
           currentMount.lastSyncedEditorField = editorField;
         }}
         replayMentions={replyMentions}
@@ -259,7 +260,7 @@ export function createRevampedMarktoneHandler(
     // from the same comment. Reset while hidden rather than unmounting: the
     // container is the one kintone reuses when the form reopens.
     if (!container.checkVisibility()) {
-      resetReplyMentions(currentMount, container);
+      resetReplyMentions(currentMount, container, editorField);
       return;
     }
 
@@ -287,7 +288,10 @@ export function createRevampedMarktoneHandler(
       currentMount.lastWrittenHTML !== "" &&
       currentMount.lastSyncedEditorField !== editorField
     ) {
-      setCKEditorData(editorField, currentMount.lastWrittenHTML);
+      setCKEditorData(
+        editorField,
+        toRevampedMentionHTML(currentMount.lastWrittenHTML),
+      );
       currentMount.lastSyncedEditorField = editorField;
     }
   }
@@ -295,6 +299,7 @@ export function createRevampedMarktoneHandler(
   function resetReplyMentions(
     currentMount: MarktoneMount,
     container: HTMLElement,
+    editorField: HTMLElement,
   ): void {
     if (
       currentMount.replyMentionsSignature === "" &&
@@ -303,6 +308,11 @@ export function createRevampedMarktoneHandler(
     ) {
       return;
     }
+
+    // Cleared as well as reset: Marktone's own mentions are written back as
+    // kintone's widgets, complete with codes, so leaving them behind would
+    // make the next reply from this form read them as its prefill.
+    setCKEditorData(editorField, "");
 
     currentMount.userEdited = false;
     currentMount.lastWrittenHTML = "";
