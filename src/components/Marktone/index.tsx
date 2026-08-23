@@ -113,6 +113,24 @@ const Marktone: React.FC<MarktoneProps> = ({
   // The HTML with Markdown rendered
   const [renderedHTML, setRenderedHTML] = useState("");
 
+  // Not rendered in the textarea change handler: the reply mention prefill
+  // and the file upload update the raw text without going through it.
+  useEffect(() => {
+    let isStale = false;
+
+    void (async (): Promise<void> => {
+      await mentionReplacer.fetchDirectoryEntityInText(rawText);
+      if (isStale) return;
+
+      const htmlString = marked.parse(rawText, { async: false });
+      setRenderedHTML(DOMPurify.sanitize(htmlString));
+    })();
+
+    return (): void => {
+      isStale = true;
+    };
+  }, [rawText]);
+
   // Get Marktone enabled status.
   const isMarktoneEnabled = (): boolean => {
     const marktoneEnabled = document.body.dataset.marktoneEnabled;
@@ -214,17 +232,10 @@ const Marktone: React.FC<MarktoneProps> = ({
   /**
    * Handles the event when the Markdown textarea is updated.
    */
-  const handleChangeMarkdownTextArea = async (
+  const handleChangeMarkdownTextArea = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
-  ): Promise<void> => {
-    const markdownText = event.target.value;
-    setRawText(markdownText);
-
-    await mentionReplacer.fetchDirectoryEntityInText(markdownText);
-
-    const htmlString = marked.parse(markdownText, { async: false });
-    const sanitizedHTML = DOMPurify.sanitize(htmlString);
-    setRenderedHTML(sanitizedHTML);
+  ): void => {
+    setRawText(event.target.value);
   };
 
   // The preview area height
