@@ -4,6 +4,7 @@ import Marktone, { type ReplyMention } from "@/components/Marktone";
 import {
   extractRevampedReplyMentions,
   isEmptyExceptReplyMentions,
+  mergeReplyMentions,
   replyMentionsSignature,
 } from "@/utils/extractRevampedReplyMentions";
 import type KintoneClient from "./kintone/kintone-client";
@@ -33,7 +34,9 @@ interface MarktoneMount {
   lastWrittenHTML: string;
   lastSyncedEditorField: HTMLElement | null;
   editorFieldMissingSince: number | null;
+  replyMentions: ReplyMention[];
   replyMentionsSignature: string;
+  userEdited: boolean;
 }
 
 export interface RevampedMarktoneHandler {
@@ -160,9 +163,21 @@ export function createRevampedMarktoneHandler(
         lastWrittenHTML: "",
         lastSyncedEditorField: null,
         editorFieldMissingSince: null,
+        replyMentions: [],
         replyMentionsSignature: "",
+        userEdited: false,
       };
       mounts.set(container, newMount);
+
+      // Bound on the container rather than the textarea, which React has not
+      // committed yet. Comparing the textarea's value against the injected
+      // text is no substitute: the prefill and a file drop both change it
+      // without a user event.
+      for (const type of ["input", "paste", "drop"]) {
+        marktoneContainer.addEventListener(type, () => {
+          newMount.userEdited = true;
+        });
+      }
 
       render(newMount, container, replyMentions);
     } finally {
@@ -176,6 +191,7 @@ export function createRevampedMarktoneHandler(
     replyMentions: ReplyMention[],
   ): void {
     const signature = replyMentionsSignature(replyMentions);
+    currentMount.replyMentions = replyMentions;
     currentMount.replyMentionsSignature = signature;
 
     currentMount.root.render(
@@ -234,18 +250,16 @@ export function createRevampedMarktoneHandler(
       .closest<HTMLElement>(CKEDITOR_ROOT_SELECTOR)
       ?.classList.add(ORIGINAL_EDITOR_HIDDEN_CLASS);
 
-    // kintone fills a reply form's mentions in a later task than the one that
-    // creates the editable, so a mount can win the race against its own
-    // prefill. An empty lastWrittenHTML means Marktone has nothing of the
-    // user's to lose, and an empty signature means the only mentions left are
-    // Marktone's own write-back, which carries no code.
-    if (currentMount.lastWrittenHTML === "") {
-      const replyMentions = extractRevampedReplyMentions(editorField);
+    // Gated on the user not having edited rather than on an empty
+    // lastWrittenHTML, which stops being empty as soon as the first batch of a
+    // prefill is taken in and would drop every later batch.
+    if (!currentMount.userEdited) {
+      const replyMentions = mergeReplyMentions(
+        currentMount.replyMentions,
+        extractRevampedReplyMentions(editorField),
+      );
       const signature = replyMentionsSignature(replyMentions);
-      if (
-        signature !== "" &&
-        signature !== currentMount.replyMentionsSignature
-      ) {
+      if (signature !== currentMount.replyMentionsSignature) {
         render(currentMount, container, replyMentions);
         return;
       }

@@ -25,7 +25,7 @@ vi.mock("@/components/Marktone", () => ({
     marktoneProps.current = props;
     marktoneProps.all.push(props);
     marktoneProps.renderCount += 1;
-    return <div data-testid="marktone-mock" />;
+    return <textarea data-testid="marktone-mock" />;
   },
 }));
 
@@ -478,12 +478,62 @@ describe(createRevampedMarktoneHandler, () => {
     expect(marktoneProps.renderCount).toBe(renderCountAfterMount);
   });
 
-  it("should not take in a prefill after the user has written something", async () => {
+  it("should accumulate a prefill that arrives in more than one batch", async () => {
+    // setup
+    const { editorField } = createCommentEditor();
+    appendMentionWidget(editorField, "data-mention-id", "1", "cybozu");
+    const handler = newHandler();
+    await reconcile(handler);
+
+    // exercise
+    appendMentionWidget(
+      editorField,
+      "data-group-mention-id",
+      "2",
+      "Administrators",
+    );
+    await reconcile(handler);
+
+    // verify
+    expect(marktoneProps.current?.replayMentions).toEqual([
+      { type: DirectoryEntityType.enum.User, code: "cybozu" },
+      { type: DirectoryEntityType.enum.Group, code: "Administrators" },
+    ]);
+  });
+
+  it("should keep the accumulated mentions when Marktone's write-back replaces them", async () => {
+    // setup
+    const { editorField } = createCommentEditor();
+    appendMentionWidget(editorField, "data-mention-id", "1", "cybozu");
+    const handler = newHandler();
+    await reconcile(handler);
+
+    // exercise: the write-back leaves only upcast mentions, which carry no code
+    editorField.replaceChildren();
+    appendMentionWidget(editorField, "data-mention-id", "1", "");
+    appendMentionWidget(
+      editorField,
+      "data-group-mention-id",
+      "2",
+      "Administrators",
+    );
+    await reconcile(handler);
+
+    // verify
+    expect(marktoneProps.current?.replayMentions).toEqual([
+      { type: DirectoryEntityType.enum.User, code: "cybozu" },
+      { type: DirectoryEntityType.enum.Group, code: "Administrators" },
+    ]);
+  });
+
+  it("should not take in a prefill after the user has typed", async () => {
     // setup
     const { editorField } = createCommentEditor();
     const handler = newHandler();
     await reconcile(handler);
-    marktoneProps.current?.setOriginalEditorContent("<p>typed</p>");
+    document
+      .querySelector("textarea")
+      ?.dispatchEvent(new Event("input", { bubbles: true }));
 
     // exercise
     appendMentionWidget(editorField, "data-mention-id", "1", "cybozu");

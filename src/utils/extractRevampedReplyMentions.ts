@@ -49,11 +49,27 @@ export function isEmptyExceptReplyMentions(editorField: HTMLElement): boolean {
 }
 
 export function replyMentionsSignature(mentions: ReplyMention[]): string {
-  return Array.from(
-    new Set(mentions.map(({ type, code }) => `${type}:${code}`)),
-  )
+  return Array.from(new Set(mentions.map(mentionKey)))
     .sort()
     .join(",");
+}
+
+// Merged rather than replaced: kintone may add a reply form's mentions in more
+// than one task, and by the time the later ones arrive Marktone's write-back
+// has already replaced the earlier ones in the editor.
+export function mergeReplyMentions(
+  mentions: ReplyMention[],
+  additional: ReplyMention[],
+): ReplyMention[] {
+  const seen = new Set(mentions.map(mentionKey));
+  return [
+    ...mentions,
+    ...additional.filter((mention) => !seen.has(mentionKey(mention))),
+  ];
+}
+
+function mentionKey({ type, code }: ReplyMention): string {
+  return `${type}:${code}`;
 }
 
 function mentionTypeOf(mentionEl: HTMLElement): DirectoryEntityType | null {
