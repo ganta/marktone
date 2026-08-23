@@ -6,20 +6,25 @@ import {
   createRevampedMarktoneHandler,
   type RevampedMarktoneHandler,
 } from "@/app/revamped-marktone-handler";
+import type { ReplyMention } from "@/components/Marktone";
+import { DirectoryEntityType } from "@/models/DirectoryEntity";
 
 interface CapturedMarktoneProps {
   setOriginalEditorContent: (html: string) => void;
+  replayMentions: ReplyMention[];
 }
 
 const marktoneProps = vi.hoisted(() => ({
-  current: undefined as
-    | { setOriginalEditorContent: (html: string) => void }
-    | undefined,
+  current: undefined as CapturedMarktoneProps | undefined,
+  all: [] as CapturedMarktoneProps[],
+  renderCount: 0,
 }));
 
 vi.mock("@/components/Marktone", () => ({
   default: (props: CapturedMarktoneProps) => {
     marktoneProps.current = props;
+    marktoneProps.all.push(props);
+    marktoneProps.renderCount += 1;
     return <div data-testid="marktone-mock" />;
   },
 }));
@@ -59,6 +64,27 @@ function createCommentEditor(editorFieldContent = ""): {
   return { container, ckEditorRoot, editorField };
 }
 
+function appendMentionWidget(
+  editorField: HTMLElement,
+  idAttributeName: string,
+  id: string,
+  code: string,
+): void {
+  const widget = document.createElement("span");
+  widget.classList.add("editor-mention-wrapper", "ck-widget");
+
+  const mention = document.createElement("button");
+  mention.type = "button";
+  mention.classList.add("editor-mention");
+  mention.setAttribute(idAttributeName, id);
+  mention.dataset.mentionCode = code;
+  mention.textContent = `@${code}`;
+
+  widget.appendChild(mention);
+  editorField.appendChild(widget);
+  editorField.appendChild(document.createTextNode("⁠ "));
+}
+
 async function reconcile(handler: RevampedMarktoneHandler): Promise<void> {
   handler.reconcile();
   // mount() is fire-and-forget inside reconcile(), so it cannot be awaited
@@ -73,6 +99,8 @@ describe(createRevampedMarktoneHandler, () => {
   beforeEach(() => {
     document.body.innerHTML = "";
     marktoneProps.current = undefined;
+    marktoneProps.all = [];
+    marktoneProps.renderCount = 0;
     isRevampedUIMock.mockReset();
     isRevampedUIMock.mockResolvedValue(true);
   });
@@ -360,6 +388,131 @@ describe(createRevampedMarktoneHandler, () => {
     // verify
     expect(container.querySelector(".marktone-container")).toBeNull();
     expect(ckEditorRoot.classList.contains(HIDDEN_CLASS)).toBe(false);
+  });
+
+  it("should mount with the prefilled reply mentions", async () => {
+    // setup
+    const { container, editorField } = createCommentEditor();
+    appendMentionWidget(editorField, "data-mention-id", "1", "cybozu");
+    appendMentionWidget(editorField, "data-org-mention-id", "2", "test_org");
+    appendMentionWidget(
+      editorField,
+      "data-group-mention-id",
+      "3",
+      "Administrators",
+    );
+    const handler = newHandler();
+
+    // exercise
+    await reconcile(handler);
+
+    // verify
+    expect(container.querySelector(".marktone-container")).not.toBeNull();
+    expect(marktoneProps.current?.replayMentions).toEqual([
+      { type: DirectoryEntityType.enum.User, code: "cybozu" },
+      { type: DirectoryEntityType.enum.Organization, code: "test_org" },
+      { type: DirectoryEntityType.enum.Group, code: "Administrators" },
+    ]);
+  });
+
+  it("should not mount when the editor holds a mention alongside other content", async () => {
+    // setup
+    const { container, editorField } = createCommentEditor();
+    appendMentionWidget(editorField, "data-mention-id", "1", "cybozu");
+    editorField.appendChild(document.createElement("img"));
+    const handler = newHandler();
+
+    // exercise
+    await reconcile(handler);
+
+    // verify
+    expect(container.querySelector(".marktone-container")).toBeNull();
+  });
+
+  it("should take in a prefill that lands after the mount", async () => {
+    // setup
+    const { editorField } = createCommentEditor();
+    const handler = newHandler();
+    await reconcile(handler);
+    expect(marktoneProps.current?.replayMentions).toEqual([]);
+
+    // exercise
+    appendMentionWidget(editorField, "data-mention-id", "1", "cybozu");
+    await reconcile(handler);
+
+    // verify
+    expect(marktoneProps.current?.replayMentions).toEqual([
+      { type: DirectoryEntityType.enum.User, code: "cybozu" },
+    ]);
+  });
+
+  it("should not re-render for an unchanged prefill", async () => {
+    // setup
+    const { editorField } = createCommentEditor();
+    appendMentionWidget(editorField, "data-mention-id", "1", "cybozu");
+    const handler = newHandler();
+    await reconcile(handler);
+    const renderCountAfterMount = marktoneProps.renderCount;
+
+    // exercise
+    await reconcile(handler);
+    await reconcile(handler);
+
+    // verify
+    expect(marktoneProps.renderCount).toBe(renderCountAfterMount);
+  });
+
+  it("should ignore mentions written back by Marktone itself", async () => {
+    // setup: an upcast Marktone mention carries no code
+    const { editorField } = createCommentEditor();
+    const handler = newHandler();
+    await reconcile(handler);
+    const renderCountAfterMount = marktoneProps.renderCount;
+
+    // exercise
+    appendMentionWidget(editorField, "data-mention-id", "1", "");
+    await reconcile(handler);
+
+    // verify
+    expect(marktoneProps.current?.replayMentions).toEqual([]);
+    expect(marktoneProps.renderCount).toBe(renderCountAfterMount);
+  });
+
+  it("should not take in a prefill after the user has written something", async () => {
+    // setup
+    const { editorField } = createCommentEditor();
+    const handler = newHandler();
+    await reconcile(handler);
+    marktoneProps.current?.setOriginalEditorContent("<p>typed</p>");
+
+    // exercise
+    appendMentionWidget(editorField, "data-mention-id", "1", "cybozu");
+    await reconcile(handler);
+
+    // verify
+    expect(marktoneProps.current?.replayMentions).toEqual([]);
+  });
+
+  it("should keep the reply mentions of simultaneous reply forms apart", async () => {
+    // setup
+    const first = createCommentEditor();
+    appendMentionWidget(first.editorField, "data-mention-id", "1", "cybozu");
+    const second = createCommentEditor();
+    appendMentionWidget(second.editorField, "data-mention-id", "2", "guest");
+    const handler = newHandler();
+
+    // exercise
+    await reconcile(handler);
+
+    // verify
+    expect(marktoneProps.all.map((props) => props.replayMentions)).toEqual([
+      [{ type: DirectoryEntityType.enum.User, code: "cybozu" }],
+      [{ type: DirectoryEntityType.enum.User, code: "guest" }],
+    ]);
+    expect(first.container.querySelector(".marktone-container")).not.toBeNull();
+    expect(
+      second.container.querySelector(".marktone-container"),
+    ).not.toBeNull();
   });
 
   it("should coalesce scheduled reconciliations into one run", async () => {

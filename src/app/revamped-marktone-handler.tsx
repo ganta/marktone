@@ -1,6 +1,11 @@
 import { createRoot, type Root } from "react-dom/client";
 import { isRevampedUI, setCKEditorData } from "@/apis/kintone/api";
-import Marktone from "@/components/Marktone";
+import Marktone, { type ReplyMention } from "@/components/Marktone";
+import {
+  extractRevampedReplyMentions,
+  isEmptyExceptReplyMentions,
+  replyMentionsSignature,
+} from "@/utils/extractRevampedReplyMentions";
 import type KintoneClient from "./kintone/kintone-client";
 import type MentionReplacer from "./markdown/replacer/mention-replacer";
 
@@ -28,6 +33,7 @@ interface MarktoneMount {
   lastWrittenHTML: string;
   lastSyncedEditorField: HTMLElement | null;
   editorFieldMissingSince: number | null;
+  replyMentionsSignature: string;
 }
 
 export interface RevampedMarktoneHandler {
@@ -91,9 +97,9 @@ export function createRevampedMarktoneHandler(
       // (e.g. editing a thread body). Skipped per pass, not rejected
       // permanently: the same container may hold an empty comment form
       // later, e.g. after a prefilled reply is cleared.
-      if ((editorField.textContent ?? "").trim() !== "") continue;
+      if (!isEmptyExceptReplyMentions(editorField)) continue;
 
-      void mount(container);
+      void mount(container, extractRevampedReplyMentions(editorField));
     }
 
     const now = Date.now();
@@ -120,7 +126,10 @@ export function createRevampedMarktoneHandler(
     }
   }
 
-  async function mount(container: HTMLElement): Promise<void> {
+  async function mount(
+    container: HTMLElement,
+    replyMentions: ReplyMention[],
+  ): Promise<void> {
     mountsInProgress.add(container);
 
     try {
@@ -145,48 +154,61 @@ export function createRevampedMarktoneHandler(
         ?.closest<HTMLElement>(CKEDITOR_ROOT_SELECTOR)
         ?.classList.add(ORIGINAL_EDITOR_HIDDEN_CLASS);
 
-      const root = createRoot(marktoneContainer);
       const newMount: MarktoneMount = {
         marktoneContainer,
-        root,
+        root: createRoot(marktoneContainer),
         lastWrittenHTML: "",
         lastSyncedEditorField: null,
         editorFieldMissingSince: null,
+        replyMentionsSignature: "",
       };
       mounts.set(container, newMount);
 
-      root.render(
-        <Marktone
-          setOriginalEditorContent={(html): void => {
-            // Marktone's write-back effect fires on first render with "";
-            // writing it through would wipe non-text content (e.g. an
-            // image-only editor) that passed the textContent mount guard.
-            // After the first non-empty write, "" is a legitimate clear.
-            // Suppressed here, not in the component: the legacy handler
-            // depends on the current write-back timing.
-            if (html === "" && newMount.lastWrittenHTML === "") return;
-            newMount.lastWrittenHTML = html;
-
-            // Queried per write, not captured: kintone may replace the
-            // editable element between renders.
-            const editorField = container.querySelector<HTMLElement>(
-              EDITOR_FIELD_SELECTOR,
-            );
-            if (editorField === null) {
-              newMount.lastSyncedEditorField = null;
-              return;
-            }
-            setCKEditorData(editorField, html);
-            newMount.lastSyncedEditorField = editorField;
-          }}
-          replayMentions={[]}
-          kintoneClient={kintoneClient}
-          mentionReplacer={mentionReplacer}
-        />,
-      );
+      render(newMount, container, replyMentions);
     } finally {
       mountsInProgress.delete(container);
     }
+  }
+
+  function render(
+    currentMount: MarktoneMount,
+    container: HTMLElement,
+    replyMentions: ReplyMention[],
+  ): void {
+    const signature = replyMentionsSignature(replyMentions);
+    currentMount.replyMentionsSignature = signature;
+
+    currentMount.root.render(
+      <Marktone
+        // Keyed so a late prefill recreates the component: its mention effect
+        // runs once on mount, so a prop change alone would not pick one up.
+        key={signature}
+        setOriginalEditorContent={(html): void => {
+          // Marktone's write-back effect fires on first render with "";
+          // writing it through would wipe a prefill that landed after this
+          // mount read the editor. After the first non-empty write, "" is a
+          // legitimate clear. Suppressed here, not in the component: the
+          // legacy handler depends on the current write-back timing.
+          if (html === "" && currentMount.lastWrittenHTML === "") return;
+          currentMount.lastWrittenHTML = html;
+
+          // Queried per write, not captured: kintone may replace the
+          // editable element between renders.
+          const editorField = container.querySelector<HTMLElement>(
+            EDITOR_FIELD_SELECTOR,
+          );
+          if (editorField === null) {
+            currentMount.lastSyncedEditorField = null;
+            return;
+          }
+          setCKEditorData(editorField, html);
+          currentMount.lastSyncedEditorField = editorField;
+        }}
+        replayMentions={replyMentions}
+        kintoneClient={kintoneClient}
+        mentionReplacer={mentionReplacer}
+      />,
+    );
   }
 
   function ensureAttached(
@@ -211,6 +233,23 @@ export function createRevampedMarktoneHandler(
     editorField
       .closest<HTMLElement>(CKEDITOR_ROOT_SELECTOR)
       ?.classList.add(ORIGINAL_EDITOR_HIDDEN_CLASS);
+
+    // kintone fills a reply form's mentions in a later task than the one that
+    // creates the editable, so a mount can win the race against its own
+    // prefill. An empty lastWrittenHTML means Marktone has nothing of the
+    // user's to lose, and an empty signature means the only mentions left are
+    // Marktone's own write-back, which carries no code.
+    if (currentMount.lastWrittenHTML === "") {
+      const replyMentions = extractRevampedReplyMentions(editorField);
+      const signature = replyMentionsSignature(replyMentions);
+      if (
+        signature !== "" &&
+        signature !== currentMount.replyMentionsSignature
+      ) {
+        render(currentMount, container, replyMentions);
+        return;
+      }
+    }
 
     // Re-synced by identity, not content: a recreated editable starts empty
     // while Marktone still holds the user's text. Marked synced without an
