@@ -36,6 +36,7 @@ interface MarktoneMount {
   editorFieldMissingSince: number | null;
   replyMentions: ReplyMention[];
   replyMentionsSignature: string;
+  renderKey: number;
   userEdited: boolean;
 }
 
@@ -165,6 +166,7 @@ export function createRevampedMarktoneHandler(
         editorFieldMissingSince: null,
         replyMentions: [],
         replyMentionsSignature: "",
+        renderKey: 0,
         userEdited: false,
       };
       mounts.set(container, newMount);
@@ -190,15 +192,17 @@ export function createRevampedMarktoneHandler(
     container: HTMLElement,
     replyMentions: ReplyMention[],
   ): void {
-    const signature = replyMentionsSignature(replyMentions);
     currentMount.replyMentions = replyMentions;
-    currentMount.replyMentionsSignature = signature;
+    currentMount.replyMentionsSignature = replyMentionsSignature(replyMentions);
+    currentMount.renderKey += 1;
 
     currentMount.root.render(
       <Marktone
-        // Keyed so a late prefill recreates the component: its mention effect
-        // runs once on mount, so a prop change alone would not pick one up.
-        key={signature}
+        // Keyed on a counter, not on the mentions: the component must be
+        // recreated on every call — its mention effect runs once on mount, so
+        // a prop change alone would not pick one up — including a reset back
+        // to no mentions, where the mentions would not have changed.
+        key={currentMount.renderKey}
         setOriginalEditorContent={(html): void => {
           // Marktone's write-back effect fires on first render with "";
           // writing it through would wipe a prefill that landed after this
@@ -250,6 +254,15 @@ export function createRevampedMarktoneHandler(
       .closest<HTMLElement>(CKEDITOR_ROOT_SELECTOR)
       ?.classList.add(ORIGINAL_EDITOR_HIDDEN_CLASS);
 
+    // Cancelling a reply form hides it instead of removing it, so the mount
+    // survives and would carry its accumulated mentions into the next reply
+    // from the same comment. Reset while hidden rather than unmounting: the
+    // container is the one kintone reuses when the form reopens.
+    if (!container.checkVisibility()) {
+      resetReplyMentions(currentMount, container);
+      return;
+    }
+
     // Gated on the user not having edited rather than on an empty
     // lastWrittenHTML, which stops being empty as soon as the first batch of a
     // prefill is taken in and would drop every later batch.
@@ -277,6 +290,24 @@ export function createRevampedMarktoneHandler(
       setCKEditorData(editorField, currentMount.lastWrittenHTML);
       currentMount.lastSyncedEditorField = editorField;
     }
+  }
+
+  function resetReplyMentions(
+    currentMount: MarktoneMount,
+    container: HTMLElement,
+  ): void {
+    if (
+      currentMount.replyMentionsSignature === "" &&
+      !currentMount.userEdited &&
+      currentMount.lastWrittenHTML === ""
+    ) {
+      return;
+    }
+
+    currentMount.userEdited = false;
+    currentMount.lastWrittenHTML = "";
+    currentMount.lastSyncedEditorField = null;
+    render(currentMount, container, []);
   }
 
   function unmount(container: HTMLElement): void {

@@ -526,6 +526,56 @@ describe(createRevampedMarktoneHandler, () => {
     ]);
   });
 
+  it("should reset the reply mentions while the form is hidden", async () => {
+    // setup
+    const { container, editorField } = createCommentEditor();
+    appendMentionWidget(editorField, "data-mention-id", "1", "cybozu");
+    appendMentionWidget(
+      editorField,
+      "data-group-mention-id",
+      "2",
+      "Administrators",
+    );
+    const handler = newHandler();
+    await reconcile(handler);
+    expect(marktoneProps.current?.replayMentions).toHaveLength(2);
+
+    // exercise: cancelling hides the form instead of removing it
+    container.style.display = "none";
+    editorField.replaceChildren();
+    await reconcile(handler);
+
+    // verify
+    expect(marktoneProps.current?.replayMentions).toEqual([]);
+  });
+
+  it("should take in only the new prefill after the form is reopened", async () => {
+    // setup
+    const { container, editorField } = createCommentEditor();
+    appendMentionWidget(editorField, "data-mention-id", "1", "cybozu");
+    appendMentionWidget(
+      editorField,
+      "data-group-mention-id",
+      "2",
+      "Administrators",
+    );
+    const handler = newHandler();
+    await reconcile(handler);
+    container.style.display = "none";
+    editorField.replaceChildren();
+    await reconcile(handler);
+
+    // exercise
+    container.style.display = "";
+    appendMentionWidget(editorField, "data-mention-id", "1", "cybozu");
+    await reconcile(handler);
+
+    // verify
+    expect(marktoneProps.current?.replayMentions).toEqual([
+      { type: DirectoryEntityType.enum.User, code: "cybozu" },
+    ]);
+  });
+
   it("should not take in a prefill after the user has typed", async () => {
     // setup
     const { editorField } = createCommentEditor();
@@ -551,7 +601,8 @@ describe(createRevampedMarktoneHandler, () => {
     appendMentionWidget(second.editorField, "data-mention-id", "2", "guest");
     const handler = newHandler();
 
-    // exercise
+    // exercise: two passes, so React flushes both roots
+    await reconcile(handler);
     await reconcile(handler);
 
     // verify
