@@ -616,6 +616,89 @@ describe(createRevampedMarktoneHandler, () => {
     ).not.toBeNull();
   });
 
+  it("should focus the textarea when a hidden form becomes visible again", async () => {
+    // setup
+    const { container } = createCommentEditor();
+    const handler = newHandler();
+    await reconcile(handler);
+    container.style.display = "none";
+    await reconcile(handler);
+    (document.activeElement as HTMLElement | null)?.blur();
+
+    // exercise
+    container.style.display = "";
+    await reconcile(handler);
+
+    // verify
+    expect(document.activeElement).toBe(
+      container.querySelector("textarea.rta__textarea"),
+    );
+  });
+
+  it("should focus the textarea when the form that reopens holds the focus", async () => {
+    // setup: kintone keeps the focus on the collapsed placeholder it removes
+    const { container } = createCommentEditor();
+    const placeholder = document.createElement("textarea");
+    container.parentElement?.appendChild(placeholder);
+    const handler = newHandler();
+    await reconcile(handler);
+    container.style.display = "none";
+    await reconcile(handler);
+    placeholder.focus();
+
+    // exercise
+    container.style.display = "";
+    await reconcile(handler);
+
+    // verify
+    expect(document.activeElement).toBe(
+      container.querySelector("textarea.rta__textarea"),
+    );
+  });
+
+  it("should focus the textarea when the button that reopened the form holds the focus", async () => {
+    // setup
+    const { container } = createCommentEditor();
+    const reply = document.createElement("button");
+    document.body.appendChild(reply);
+    const handler = newHandler();
+    await reconcile(handler);
+    container.style.display = "none";
+    await reconcile(handler);
+    reply.focus();
+
+    // exercise
+    container.style.display = "";
+    await reconcile(handler);
+
+    // verify
+    expect(document.activeElement).toBe(
+      container.querySelector("textarea.rta__textarea"),
+    );
+  });
+
+  it("should not take the focus when an unrelated element holds it", async () => {
+    // setup
+    const { container } = createCommentEditor();
+    const commentForm = document.createElement("div");
+    document.body.appendChild(commentForm);
+    commentForm.appendChild(container);
+    const other = document.createElement("input");
+    document.body.appendChild(other);
+    const handler = newHandler();
+    await reconcile(handler);
+    container.style.display = "none";
+    await reconcile(handler);
+    other.focus();
+
+    // exercise
+    container.style.display = "";
+    await reconcile(handler);
+
+    // verify
+    expect(document.activeElement).toBe(other);
+  });
+
   it("should not mount when the editor is inside a form", async () => {
     // setup
     const { container } = createCommentEditor();

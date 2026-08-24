@@ -39,6 +39,7 @@ interface MarktoneMount {
   replyMentionsSignature: string;
   renderKey: number;
   userEdited: boolean;
+  hidden: boolean;
 }
 
 export interface RevampedMarktoneHandler {
@@ -171,6 +172,7 @@ export function createRevampedMarktoneHandler(
         replyMentionsSignature: "",
         renderKey: 0,
         userEdited: false,
+        hidden: false,
       };
       mounts.set(container, newMount);
 
@@ -271,7 +273,20 @@ export function createRevampedMarktoneHandler(
     // container is the one kintone reuses when the form reopens.
     if (!container.checkVisibility()) {
       resetReplyMentions(currentMount, container, editorField);
+      currentMount.hidden = true;
       return;
+    }
+
+    if (currentMount.hidden) {
+      currentMount.hidden = false;
+      // Focused from here, not from the component: a reopened form reuses the
+      // same nodes, so React never remounts and the mount-time focus of the
+      // textarea never runs again.
+      if (isFocusClaimable(container)) {
+        currentMount.marktoneContainer
+          .querySelector<HTMLTextAreaElement>("textarea.rta__textarea")
+          ?.focus();
+      }
     }
 
     // Gated on the user not having edited rather than on an empty
@@ -352,6 +367,23 @@ export function createRevampedMarktoneHandler(
   }
 
   return { handle, reconcile, scheduleReconcile };
+}
+
+// Not gated on the focus being nowhere: reopening a form leaves it on the
+// collapsed placeholder beside the editor, or on the Reply button that
+// revealed the form. Only a field the user can type into is theirs to keep.
+function isFocusClaimable(container: HTMLElement): boolean {
+  const focused = document.activeElement;
+  if (focused === null || focused === document.body) return true;
+  if (container.parentElement?.contains(focused) === true) return true;
+  return !isTextEntry(focused);
+}
+
+function isTextEntry(element: Element): boolean {
+  return (
+    element.matches("input, textarea, select") ||
+    (element instanceof HTMLElement && element.isContentEditable)
+  );
 }
 
 // Told apart by the form rather than by a class name or the hash: kintone's
