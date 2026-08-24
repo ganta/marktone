@@ -98,6 +98,8 @@ export function createRevampedMarktoneHandler(
       }
       if (mountsInProgress.has(container)) continue;
 
+      if (isUnsupportedEditor(editorField)) continue;
+
       // An editor currently holding content is not an empty comment form
       // (e.g. editing a thread body). Skipped per pass, not rejected
       // permanently: the same container may hold an empty comment form
@@ -239,6 +241,14 @@ export function createRevampedMarktoneHandler(
     const currentMount = mounts.get(container);
     if (currentMount === undefined) return;
 
+    // Re-checked, not only checked before mounting: hash navigation does not
+    // reload the page, so kintone can reuse this container for an editor
+    // Marktone does not support.
+    if (isUnsupportedEditor(editorField)) {
+      unmount(container);
+      return;
+    }
+
     // kintone's React drops the injected container on re-render since it is
     // not in its virtual DOM. Re-prepend the same node (keeping the React
     // root) instead of remounting, which would discard in-progress text.
@@ -342,6 +352,13 @@ export function createRevampedMarktoneHandler(
   }
 
   return { handle, reconcile, scheduleReconcile };
+}
+
+// Told apart by the form rather than by a class name or the hash: kintone's
+// class names are build-time hashed, and the comment and reply editors are
+// the only ones it puts outside a form.
+function isUnsupportedEditor(editorField: HTMLElement): boolean {
+  return editorField.closest("form") !== null;
 }
 
 function findContainer(editorField: HTMLElement): HTMLElement | null {

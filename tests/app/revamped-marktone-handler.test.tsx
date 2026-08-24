@@ -25,7 +25,7 @@ vi.mock("@/components/Marktone", () => ({
     marktoneProps.current = props;
     marktoneProps.all.push(props);
     marktoneProps.renderCount += 1;
-    return <textarea data-testid="marktone-mock" />;
+    return <textarea className="rta__textarea" data-testid="marktone-mock" />;
   },
 }));
 
@@ -614,6 +614,39 @@ describe(createRevampedMarktoneHandler, () => {
     expect(
       second.container.querySelector(".marktone-container"),
     ).not.toBeNull();
+  });
+
+  it("should not mount when the editor is inside a form", async () => {
+    // setup
+    const { container } = createCommentEditor();
+    const form = document.createElement("form");
+    document.body.appendChild(form);
+    form.appendChild(container);
+    const handler = newHandler();
+
+    // exercise
+    await reconcile(handler);
+
+    // verify
+    expect(container.querySelector(".marktone-container")).toBeNull();
+  });
+
+  it("should unmount when kintone moves the editor into a form", async () => {
+    // setup
+    const { container, ckEditorRoot } = createCommentEditor();
+    const handler = newHandler();
+    await reconcile(handler);
+    expect(container.querySelector(".marktone-container")).not.toBeNull();
+
+    // exercise
+    const form = document.createElement("form");
+    document.body.appendChild(form);
+    form.appendChild(container);
+    await reconcile(handler);
+
+    // verify
+    expect(container.querySelector(".marktone-container")).toBeNull();
+    expect(ckEditorRoot.classList.contains(HIDDEN_CLASS)).toBe(false);
   });
 
   it("should coalesce scheduled reconciliations into one run", async () => {
